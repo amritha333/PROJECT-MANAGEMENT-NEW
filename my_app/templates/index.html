@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="container-fluid">
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-title-box">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="page-title prjct">Home</h4>
+                    </div>
+                    <!--end col-->
+
+                </div>
+                <!--end row-->
+            </div>
+            <!--end page-title-box-->
+        </div>
+        <!--end col-->
+    </div>
+   
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <!-- card -->
+            <div class="card card-h-100">
+                <!-- card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-2 lh-1 d-block text-truncate">Total
+                                Projects</h5>
+                            <h3 class="mb-2">
+                                <span class="counter-value" data-target="10">10</span>
+                            </h3>
+                            <div class="text-nowrap txt">
+                                <span class="badge bg-soft-info text-info">4 Projects</span>
+                                <span class="ms-1 text-muted font-size-13">Since last week</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-shrink-0 text-end dash-widget">
+                            <div class="avatar-box thumb-xl align-self-center me-2">
+                                <span class="avatar-title bg-prim rounded"><i
+                                        class="mdi mdi-briefcase"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card body -->
+            </div><!-- end card -->
+        </div><!-- end col -->
+
+        <div class="col-xl-3 col-md-6">
+            <!-- card -->
+            <div class="card card-h-100">
+                <!-- card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-2 lh-1 d-block text-truncate">Total Tasks</h5>
+                            <h3 class="mb-2">
+                                <span class="counter-value" data-target="100">100</h3>
+
+                            <div class="text-nowrap txt">
+                                <span class="badge bg-soft-info text-info">40 Tasks</span>
+                                <span class="ms-1 text-muted font-size-13">Since last week</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 text-end dash-widget">
+                            <div class="avatar-box thumb-xl align-self-center me-2">
+                                <span class="avatar-title bg-prim rounded"><i
+                                        class="mdi mdi-briefcase-outline"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card body -->
+            </div><!-- end card -->
+        </div><!-- end col-->
+
+        <div class="col-xl-3 col-md-6">
+            <!-- card -->
+            <div class="card card-h-100">
+                <!-- card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-2 lh-1 d-block text-truncate">Completed
+                                Tasks</h5>
+                            <h3 class="mb-2">
+                                <span class="counter-value" data-target="40">60</span>
+                            </h3>
+                            <div class="text-nowrap txt">
+                                <span class="badge bg-soft-info text-info">40 Tasks</span>
+                                <span class="ms-1 text-muted font-size-13">Since last week</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 text-end dash-widget">
+                            <div class="avatar-box thumb-xl align-self-center me-2">
+                                <span class="avatar-title bg-prim rounded"><i
+                                        class="mdi mdi-briefcase-check"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card body -->
+            </div><!-- end card -->
+        </div><!-- end col -->
+
+        <div class="col-xl-3 col-md-6">
+            <!-- card -->
+            <div class="card card-h-100">
+                <!-- card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-2 lh-1 d-block text-truncate">Progress
+                                Tasks</h5>
+                            <h3 class="mb-2">
+                                <span class="counter-value" data-target="30">30</span>
+                            </h3>
+                            <div class="text-nowrap txt">
+                                <span class="badge bg-soft-info text-info">10 Tasks</span>
+                                <span class="ms-1 text-muted font-size-13">Since last week</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 text-end dash-widget">
+                            <div class="avatar-box thumb-xl align-self-center me-2">
+                                <span class="avatar-title bg-prim rounded"><i
+                                        class="mdi mdi-briefcase-upload"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card body -->
+            </div><!-- end card -->
+        </div><!-- end col -->
+    </div>
+    <div class="row">
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Team Members</h4>
+                    <div class="flex-shrink-0">
+                        <div class="dropdown">
+                            <a class=" dropdown-toggle" href="#" id="dropdownMenuButton2"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="text-muted">All Members<i
+                                        class="mdi mdi-chevron-down ms-1"></i></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="dropdownMenuButton2">
+                                <a class="dropdown-item" href="#">Members</a>
+                                <a class="dropdown-item" href="#">New Members</a>
+                                <a class="dropdown-item" href="#">Old Members</a>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card header -->
+
+                <div class="card-body px-0">
+                    <div class="px-3 mbr" data-simplebar style="max-height: 360px;">
+                        <div class="d-flex align-items-center pb-4">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                    alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Randy
+                                        Matthews</a></h5>
+                                <span class="text-muted">Randy@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center pb-4">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                    alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Vernon
+                                        Wood</a></h5>
+                                <span class="text-muted">Vernon@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center pb-4">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                    alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Howard
+                                        Rhoades</a></h5>
+                                <span class="text-muted">Howard@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center pb-4">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Arthur
+                                        Zurcher</a></h5>
+                                <span class="text-muted">Arthur@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center pb-4">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                    alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Angela
+                                        Palmer</a></h5>
+                                <span class="text-muted">Angela@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center pb-3">
+                            <div class="avatar-md me-4">
+                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg" class="img-fluid rounded-circle"
+                                    alt="">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Dorothy
+                                        Wimson</a></h5>
+                                <span class="text-muted">Dorothy@gmail.com</span>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <div class="dropdown align-self-start">
+                                    <a class="dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Copy</a>
+                                        <a class="dropdown-item" href="#">Save</a>
+                                        <a class="dropdown-item" href="#">Forward</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end card body -->
+            </div>
+            <!-- end card -->
+        </div>
+        <div class="col-lg-9">
+            <div class="row justify-content-center">
+
+
+            </div>
+            <!--end row-->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="card-title">Week Tasks</h4>
+                        </div>
+                        <!--end col-->
+                        <div class="col-auto">
+                            <div class="dropdown">
+                                <a href="#" class="btn btn-sm btn-outline-light dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    This Year<i class="las la-angle-down ms-1"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="#">Today</a>
+                                    <a class="dropdown-item" href="#">Last Week</a>
+                                    <a class="dropdown-item" href="#">Last Month</a>
+                                    <a class="dropdown-item" href="#">This Year</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end col-->
+                    </div>
+                    <!--end row-->
+                </div>
+                <!--end card-header-->
+                <div class="card-body">
+                    <div class="">
+                        <div id="ana_dash_1" class="apex-charts"></div>
+                    </div>
+                </div>
+                <!--end card-body-->
+            </div>
+            <!--end card-->
+        </div>
+        <!--end col-->
+
+    </div>
+    <!--end row-->
+
+
+
+
+</div><!-- container -->
+<!-- container -->
+
+
+
+{% endblock %}

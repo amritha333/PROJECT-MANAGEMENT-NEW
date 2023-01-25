@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="card ">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="m-b-30">
+                    <a href="new_meeting.html">
+                        <button id="addToTable" class="btn btn-success waves-effect waves-light">+ New Meeting <i class="mdi mdi-plus-circle-outline"></i></button>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-striped add-edit-table dt-responsive nowrap" id="datatable-editable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+            <thead>
+            <tr>
+                <th>
+                    Title</th>
+                <th>	Date</th>
+                <th>Time</th>
+                <th>	Description</th>
+                <th>Created By</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="gradeX">
+                <td>Trident</td>
+                <td>Internet
+                    Explorer 4.0
+                </td>
+                <td>Win 95+</td>
+                <td>ss</td>
+                <td>4</td>
+           
+                <td class="actions">
+                    <a href="#" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a href="#" class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash-o"></i></a>
+                    <a href="#" class="hidden on-editing save-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"><i class="fa fa-save"></i></a>
+                    <a href="#" class="hidden on-editing cancel-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"><i class="fa fa-times"></i></a>
+                </td>
+            </tr>
+          
+           
+            </tbody>
+        </table>
+
+    </div> <!-- end card-body -->
+</div>
+
+{% endblock %}

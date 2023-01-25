@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="side-create">
+    <div class="create-section">
+        <div class="create-btn-box d-flex">
+            <img src="assets/images/plus.svg">
+        
+            <h4 style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal">Create New Task</h4>
+        </div>
+        <div class="created-group">
+            <h3> Project</h3>
+
+            <div class="department-box d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="assets/images/oodo.svg" class="img-fluid">
+                    <h3>Odoo First Project </h3>
+                </div>
+
+                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                    <i class="md-more-vert"></i>
+            </button>
+                <ul class="dropdown-menu">
+                    <li><a href="view_group.html" class="dropdown-item">View</a></li>
+                    <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
+                  
+                </ul>
+            </div>
+
+       
+
+        </div>
+    </div>
+</div>
+
+<div class="content-rigt">
+    <div class="row">
+    
+        <!-- Left sidebar -->
+    
+
+        
+        <!-- Right Sidebar -->
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <div class="btn-toolbar" role="toolbar">
+                            
+                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card m-t-20">
+                <div class="card-body p-t-30">
+                    
+                    <form>
+                        <div class="form-group">
+                            
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Project Name</label>
+                                    <input type="email"  class="form-control" placeholder="Company Name">
+                                </div>
+                              
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">
+
+Start Date</label>
+                                  <input type="date" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Assignees</label>
+                                  <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">End Date</label>
+                                  <input type="date" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Progress</label>
+                                  <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Priority</label>
+                                  <input type="text" class="form-control">
+                                </div>  <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Checklist</label>
+                                  <input type="text" class="form-control">
+                                </div>
+                              
+                               
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="m-4">Task</p>
+                        <div class="card-body body-change">
+                            <div class="row">
+
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                                        <thead class="border-class">
+
+                                            <tr class="heading-text">
+                                                <th>Title</th>
+                                                <th>Assigned to</th>
+                                                <th>Attachments & Checklist</th>
+                                                <th>Priority</th>
+                                                <th>Due</th>
+                                                <th>Bucket</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody class="body-textcls">
+                                            <tr>
+                                                <td>
+
+                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
+                                                        <input id="checkbox-9" type="checkbox">
+                                                        <label for="checkbox-9">
+                                            SESP Website Html Conversion
+                                        </label>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class="profile-image d-flex align-items-center">
+                                                        <img src="assets/images/avatar.svg">
+                                                        <img src="assets/images/avatar2.svg">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="files">
+                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                        <i class="md-done"></i><span>0/5</span>
+                                                    </div>
+                                                </td>
+                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
+                                                <td>01/12/2023</td>
+                                                <td>To Do</td>
+                                                <td>
+
+                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="md-more-vert"></i>
+                                </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="view_project_page.html" class="dropdown-item">View</a></li>
+                                                      
+                                                    </ul>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+
+                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
+                                                        <input id="checkbox-9" type="checkbox">
+                                                        <label for="checkbox-9">
+                                                Badr medical group
+                                        </label>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class="profile-image d-flex align-items-center">
+                                                        <img src="assets/images/avatar.svg">
+                                                        <img src="assets/images/avatar2.svg">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="files">
+                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                        <i class="md-done"></i><span>0/5</span>
+                                                    </div>
+                                                </td>
+                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
+                                                <td>01/12/2023</td>
+                                                <td>To Do</td>
+                                                <td>
+
+                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="md-more-vert"></i>
+                                </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#" class="dropdown-item">View</a></li>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+
+                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
+                                                        <input id="checkbox-9" type="checkbox">
+                                                        <label for="checkbox-9">
+                                                Badr medical group
+                                        </label>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class="profile-image d-flex align-items-center">
+                                                        <img src="assets/images/avatar.svg">
+                                                        <img src="assets/images/avatar2.svg">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="files">
+                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                        <i class="md-done"></i><span>0/5</span>
+                                                    </div>
+                                                </td>
+                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
+                                                <td>01/12/2023</td>
+                                                <td>To Do</td>
+                                                <td>
+
+                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="md-more-vert"></i>
+                                </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#" class="dropdown-item">View</a></li>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div> <!-- card-body -->
+            </div> <!-- card -->
+        </div> <!-- End Rightsidebar -->
+
+</div>
+
+{% endblock %}

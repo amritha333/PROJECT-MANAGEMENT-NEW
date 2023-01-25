@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 class="pull-left page-title">Create New User</h4>
+            <ol class="breadcrumb pull-right">
+                <!-- <li><a href="#">Moltran</a></li>
+                <li><a href="#">Mail</a></li>
+                <li class="active">Compose Mail</li> -->
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <!-- Left sidebar -->
+    
+        <form name="user_form" method="POST" action="user_management_action" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="user_type" value="company_admin">
+
+        
+        <!-- Right Sidebar -->
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <div class="btn-toolbar" role="toolbar">
+                            
+                            <button type="submit" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card m-t-20">
+                <div class="card-body p-t-30 m-4">
+                    
+                        <div class="form-group">
+                            
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Company Name</label>
+                                    <input type="text" name="companyname" id="company_name"  class="form-control" placeholder="Company Name">
+                                </div>
+                              
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Photo</label>
+                                  <input type="file" name="photo" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Name</label>
+                                  <input type="text" name="name" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Username</label>
+                                  <input type="text" name="username" class="form-control">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Password Option</label>
+                                <div>
+                                    <input type="radio" id="Manual"  name="password_option" value="Manual">&nbsp;&nbsp;Manual
+                                </div>
+                                <div>
+                                    <input type="radio" id="Automatic"  name="password_option" value="Automatic">&nbsp;&nbsp;Automatic
+                                </div>
+
+                                  <input autocomplete="off" name="password" type="password" id="password2" placeholder="Enter Password" class="form-control mt-4" style="display:none ;">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Phone</label>
+                                  <input type="text" name="phone" class="form-control">
+                                </div>
+                                <div class="col-md-6 mt-4">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Email</label>
+                                  <input  name="email" type="email" class="form-control">
+                                </div>
+                               
+                                </div>
+                            </div>
+                </div>
+                        
+                     
+                    
+                </div> <!-- card-body -->
+            </div> <!-- card -->
+
+        </form>
+        </div> <!-- End Rightsidebar -->
+    
+    </div><!-- End row -->
+
+
+    <script>
+        $("#Manual").click(function(){
+           
+            $("#password2").show()
+        })
+        $("#Automatic").click(function(){
+            $("#password2").hide()
+        })
+        </script>
+         
+    {% endblock %}
