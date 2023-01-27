@@ -60,3 +60,31 @@ def due_date_check_task(value,args):
             return True
         else:
             pass
+
+
+@register.filter
+def index_f(value, args):
+    s1 = "/" in args
+    if s1 == True:
+        data = args.split("/")
+   
+        try:
+            if data[0][0] == data[1][0]:
+
+                result = data[0][0]+data[1][1]
+            else:
+                result = data[0][0]+data[1][1]
+        except:
+            result = data[0][0]
+            pass
+        pass
+    else:
+
+        data = args.split(" ")
+   
+        try:
+            result = data[0][0]+data[1][0]
+        except:
+            result = data[0][0]
+            pass
+    return result

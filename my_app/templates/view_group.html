@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions %}
 {% block content %}
 
 <div class="side-create">
@@ -7,16 +8,18 @@
         <div class="create-btn-box d-flex">
             <img src="{% static 'assets/images/plus.svg' %}">
         
-            <h4 style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal">Create New Project</h4>
+            <h4 style="cursor: pointer;" data-space-id="{{space_data.id}}" class="new_project">Create New Project</h4>
         </div>
         <div class="created-group">
             <h3> Groups</h3>
 
-           
             <div class="department-box d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <img src="{% static 'assets/images/oodo.svg' %}" class="img-fluid">
-                    <h3>{{space_data.space_name}}</h3>
+                    <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
+                        {{request.user|index_f:space_data.space_name}}
+                    </div>
+                    <h3 style="padding: 9px 7px;">{{space_data.space_name}}</h3>
+                   
                 </div>
 
                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
@@ -113,39 +116,40 @@
                                         </tr>
                                     </thead>
 
-
                                     <tbody class="body-textcls">
+                                        {% for i in sub_space_data %}
                                         <tr>
                                             <td>
-
                                                 <div class="checkbox margin-check checkbox-primary checkbox-circle">
                                                     <input id="checkbox-9" type="checkbox">
                                                     <label for="checkbox-9">
-                                        SESP Website Html Conversion
-                                    </label>
+                                                       {{i.sub_space_name}}
+                                                    </label>
                                                 </div>
-
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
+                                                    {% for j in i.invite_user_details_id.all %}
+                                                    <img src="./media/{{j.photo}}">
+                                                    {% endfor %}
+                                                    <!-- <img src="{% static 'assets/images/avatar2.svg' %}">
+                                                    <img src="{% static 'assets/images/avatar2.svg' %}"> -->
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
+                                                    <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_comments.count}}</span>
                                                 </div>
                                             </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
+                                            <td>{{i.priority}}</td>
+                                            <td>{{i.end_date|safe}}</td>
+                                            <td>{{i.bucket_mapping_id}}</td>
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
+                                            <i class="md-more-vert"></i>
+                                            </button>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="view_project_page" class="dropdown-item">View</a></li>
                                                   
@@ -153,78 +157,9 @@
 
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>
 
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox">
-                                                    <label for="checkbox-9">
-                                            Badr medical group
-                                    </label>
-                                                </div>
-
-                                            </td>
-                                            <td>
-                                                <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
-                                                </div>
-                                            </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
-                                            <td>
-
-                                                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#" class="dropdown-item">View</a></li>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox">
-                                                    <label for="checkbox-9">
-                                            Badr medical group
-                                    </label>
-                                                </div>
-
-                                            </td>
-                                            <td>
-                                                <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
-                                                </div>
-                                            </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
-                                            <td>
-
-                                                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#" class="dropdown-item">View</a></li>
-
-                                            </td>
-                                        </tr>
+                                        {% endfor %}
+                                       
                                     </tbody>
                                 </table>
 
@@ -240,8 +175,7 @@
 
 
 
-
-<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+<div id="project_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog  modal-lg"> 
         <div class="modal-content"> 
             <div class="modal-header">
@@ -251,92 +185,113 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div> 
+            <form name="task_form" method="POST" action="project_add_action" enctype="multipart/form-data">
+                {% csrf_token %}
             <div class="modal-body"> 
+               
+                    <input type="hidden" id="space_id" name="space_id">
+
                 <div class="row"> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">Project name</label> 
-                            <input type="text" class="form-control" id="field-1" placeholder="John"> 
+                            <input type="text" name="foldername" class="form-control" id="field-1" > 
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Bucket</label> 
-                         <select class="form-control">
-                            <option>Amarnath</option>
-                         </select>
+                            <label for="field-2" class="control-label" >Bucket</label> 
+                            <div id="bucket_append">
+                                <select class="form-control" name="bucket">
+                                    {% for b in bucket_data %}
+                                    <option  value="{{b.id}}">{{b.status_name}}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                         
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Progress</label> 
-                         <select class="form-control">
-                            <option>Amarnath</option>
+                         <select class="form-control" name="progress">
+                            <option value="not_started" selected="">Not Started</option>
+                            <option value="inprogress">In progress</option>
+                            <option value="completed">Completed</option>
                          </select>
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Priority</label> 
-                         <select class="form-control">
-                            <option>Amarnath</option>
+                         <select class="form-control"  name="priority">
+                            <option value="urgent" selected="">Urgent</option>
+                            <option value="important">Important</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
                          </select>
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Start date</label> 
-                         <input type="date" class="form-control">
+                         <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">End date</label> 
-                         <input type="date" class="form-control">
+                         <input type="date" min="{{today_date}}" name="end_date"  class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-12"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Checklist </label>    <a href="" style="float: right;
-                            font-size: 18px;
+                            <label for="field-2" class="control-label">Checklist </label>
+                            <a id="add_checklist" style="float: right;
+                            font-size: 18px; cursor: pointer;
                             font-weight: bold;">+</a>
-                            <input type="text" class="form-control">
+                            <input type="text" name="checklist" class="form-control">
+
+                            <div class="" id="new_checklist" style="display:none;">
+                                <div class="checklist_add">
+                                    <input class="form-control mt-2"   type="text" name="checklist"> 
+                                </div>
+                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus">Add</i></a>
+                            </div>
                         </div> 
                     </div> 
                     <div class="col-md-12"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Attachments </label>    <a href="" style="float: right;
+                            <label for="field-2" class="control-label">Attachments </label> 
+                            <!-- <a  style="float: right;
                             font-size: 18px;
-                            font-weight: bold;">+</a>
-                            <input type="file" class="form-control">
+                            font-weight: bold;">+</a> -->
+                            <input type="file" name="attached_file" class="form-control">
                         </div> 
                     </div> 
 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Note</label> 
-                         <input type="text" class="form-control">
+                         <input type="text" name="notes" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Description</label> 
-                         <input type="text" class="form-control">
+                            <label for="field-2" class="control-label">Commands</label> 
+                         <input type="text" name="comments" class="form-control">
                         </div> 
                     </div> 
                     <div class="img-group mx-2" style="float: right;">
-                        
                         <a  data-toggle="modal" data-target="#con-close-modal1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
                     </div>
                 </div> 
               
-          
-              
             </div> 
             <div class="modal-footer"> 
                 <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
-                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button> 
+                <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save</button> 
             </div> 
         </div> 
     </div>
@@ -358,68 +313,29 @@
                         <div class="form-group"> 
                            <div class="row">
 
+                            {% for i in member_data %}
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <img style="border-radius: 50%;
-                                        width: 50%;" src="assets/images/avatar-1.jpg">  
+                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.photo}}">  
                                     </div>
-                                   <div class="col-md-6" style="margin: 22px -52px;
-                                   font-size: 14px;">
-                                    <p> <input type="checkbox"> Test Name</p>
+                                   <div class="col-md-4" style="margin: 22px -52px;
+                                   font-size: 12px;">
+                                    <input name="member_data" value="{{i.id}}" type="checkbox">&nbsp;&nbsp;
+                                        {{i.name}}
                                    </div>
                                 </div>
                                
                           
 
                             </div>
+                            {% endfor %}
+
                            </div>
                         </div> 
                     </div> 
-                    <div class="col-md-12"> 
-                        <div class="form-group"> 
-                           <div class="row">
-
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <img style="border-radius: 50%;
-                                        width: 50%;" src="assets/images/avatar-1.jpg">  
-                                    </div>
-                                   <div class="col-md-6" style="margin: 22px -52px;
-                                   font-size: 14px;">
-                                    <p> <input type="checkbox"> Test Name</p>
-                                   </div>
-                                </div>
-                               
-                          
-
-                            </div>
-                           </div>
-                        </div> 
-                    </div> 
-                    <div class="col-md-12"> 
-                        <div class="form-group"> 
-                           <div class="row">
-
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <img style="border-radius: 50%;
-                                        width: 50%;" src="assets/images/avatar-1.jpg">  
-                                    </div>
-                                   <div class="col-md-6" style="margin: 22px -52px;
-                                   font-size: 14px;">
-                                    <p> <input type="checkbox"> Test Name</p>
-                                   </div>
-                                </div>
-                               
-                          
-
-                            </div>
-                           </div>
-                        </div> 
-                    </div> 
+                   
                     </div> 
                 </div> 
               
@@ -432,5 +348,51 @@
             </div> 
         </div> 
 </div>
+</form>
 
+
+
+
+
+
+<script>
+    $(".new_project").click(function(){
+    var space_id = $(this).attr("data-space-id")
+    $("#space_id").val(space_id)
+    $("#project_modal").modal("show")
+    $.ajax(
+    {
+        type:"GET",
+        url: "get_bucket_details",
+        data:{
+            space_id: space_id
+        },
+        success: function( data ) 
+        {
+            $("#bucket_append").empty().append(data)
+        }
+     });
+    })
+</script>
+
+
+
+
+<script>
+    $("#add_checklist").click(function(){
+       
+        $("#new_checklist").show()
+    })
+    </script>
+
+
+    <script>
+    $(".add_check_list").click(function(){
+        
+        $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
+        
+    })
+    </script>
+
+    
 {% endblock %}

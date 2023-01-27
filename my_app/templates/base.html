@@ -9,9 +9,12 @@
     <meta content="Coderthemes" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <link rel="shortcut icon" href="veuz.png">
+    <link rel="shortcut icon" href="{% static 'veuz.png' %}">
 
     <link href="{% static 'plugins/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css">
+
+    <link href="../static/plugins/select2/dist/css/select2.css" rel="stylesheet" type="text/css">
+    <link href="../static/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet" type="text/css">
     
 
     <!-- Custom Files -->
@@ -416,6 +419,11 @@
 
     <!-- App js  -->
     <script src="{% static 'assets/js/jquery.app.js'%}"></script>
+
+
+    <script src="../static/plugins/select2/dist/js/select2.min.js"></script>
+    <script src="../static/plugins/jquery-multi-select/jquery.multi-select.js"></script>
+    <script src="../static/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
    
     <script>
         /* ==============================================

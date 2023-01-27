@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions %}
 {% block content %}
 
 <div class="side-create">
     <div class="create-section">
+        {% if user_details_data.user_type == "company_admin"%}
         <div class="create-btn-box d-flex">
             <img src="{% static 'assets/images/plus.svg' %}">
         
             <h4 style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal">Create Group</h4>
         </div>
+        {% endif %}
         <div class="created-group">
             <h3>Created Groups</h3>
 
@@ -16,8 +19,11 @@
 
             <div class="department-box d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <img src="{% static 'assets/images/pd.svg' %}" class="img-fluid">
-                    <h3>{{sp.space_name}}</h3>
+                    <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
+                        {{request.user|index_f:sp.space_name}}
+                    </div>
+                    <h3 style="padding: 9px 7px;">{{sp.space_name}}</h3>
+                   
                 </div>
 
                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
@@ -121,32 +127,33 @@
 
 
                                     <tbody class="body-textcls">
+                                        {% for i in sub_space_data %}
+                                        {% if request.user in i.invite_user_auth_id.all %}  
                                         <tr>
                                             <td>
-
                                                 <div class="checkbox margin-check checkbox-primary checkbox-circle">
                                                     <input id="checkbox-9" type="checkbox">
                                                     <label for="checkbox-9">
-                                        SESP Website Html Conversion
-                                    </label>
+                                                        {{i.sub_space_name}}
+                                        </label>
                                                 </div>
-
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
+                                                    {% for j in i.invite_user_details_id.all %}
+                                                    <img src="./media/{{j.photo}}">
+                                                    {% endfor %}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
+                                                    <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_comments.count}}</span>
                                                 </div>
                                             </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
+                                            <td>{{i.priority}}</td>
+                                            <td>{{i.end_date|safe}}</td>
+                                            <td>{{i.bucket_mapping_id}}</td>
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
@@ -161,21 +168,23 @@
 
                                             </td>
                                         </tr>
+
+                                        {% elif request.user in i.space_id.manager_auth.all %} 
                                         <tr>
                                             <td>
-
                                                 <div class="checkbox margin-check checkbox-primary checkbox-circle">
                                                     <input id="checkbox-9" type="checkbox">
                                                     <label for="checkbox-9">
-                                            Badr medical group
+                                                        {{i.sub_space_name}}
                                     </label>
                                                 </div>
 
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
+                                                    {% for j in i.invite_user_details_id.all %}
+                                                    <img src="./media/{{j.photo}}">
+                                                    {% endfor %}
                                                 </div>
                                             </td>
                                             <td>
@@ -184,9 +193,9 @@
                                                     <i class="md-done"></i><span>0/5</span>
                                                 </div>
                                             </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
+                                            <td>{{i.priority}}</td>
+                                            <td>{{i.end_date|safe}}</td>
+                                            <td>{{i.bucket_mapping_id}}</td>
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
@@ -197,24 +206,27 @@
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
                                                     <li><a href="#" class="dropdown-item">Something else here</a></li>
                                                     <li><a href="#" class="dropdown-item">Separated link</a></li>
+                                                </ul>
 
                                             </td>
                                         </tr>
+
+                                        {% elif request.user.user_details_authuser.all.0.user_type == 'company_admin' %}
                                         <tr>
                                             <td>
-
                                                 <div class="checkbox margin-check checkbox-primary checkbox-circle">
                                                     <input id="checkbox-9" type="checkbox">
                                                     <label for="checkbox-9">
-                                            Badr medical group
+                                                        {{i.sub_space_name}}
                                     </label>
                                                 </div>
 
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
-                                                    <img src="{% static 'assets/images/avatar.svg' %}">
-                                                    <img src="{% static 'assets/images/avatar2.svg' %}">
+                                                    {% for j in i.invite_user_details_id.all %}
+                                                    <img src="./media/{{j.photo}}">
+                                                    {% endfor %}
                                                 </div>
                                             </td>
                                             <td>
@@ -223,9 +235,9 @@
                                                     <i class="md-done"></i><span>0/5</span>
                                                 </div>
                                             </td>
-                                            <td><img src="{% static 'assets/images/danger.png' %}" class="img-fluid danger-icon">important</td>
-                                            <td>01/12/2023</td>
-                                            <td>To Do</td>
+                                            <td>{{i.priority}}</td>
+                                            <td>{{i.end_date|safe}}</td>
+                                            <td>{{i.bucket_mapping_id}}</td>
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
@@ -236,9 +248,12 @@
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
                                                     <li><a href="#" class="dropdown-item">Something else here</a></li>
                                                     <li><a href="#" class="dropdown-item">Separated link</a></li>
+                                                </ul>
 
                                             </td>
                                         </tr>
+                                        {% endif %}
+                                        {% endfor %}
                                     </tbody>
                                 </table>
 
@@ -272,13 +287,7 @@
                             <input type="text" name="spacename" class="form-control" id="field-1"> 
                         </div> 
                     </div> 
-                    <select class="jsSelect1" name="states[]" multiple="multiple">
-                        <option value="example1">example1</option>
-                        <option value="example2">example2</option>
-                        <option value="example3">example3</option>
-                        <option value="example4">example4</option>
-                        <option value="example5">example5</option>
-                        </select>
+                   
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Team member</label> 
@@ -292,7 +301,7 @@
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Manager</label> 
-                         <select multiple class="form-control " name="manager_id">
+                         <select multiple class="form-control jsSelect1" name="manager_id">
                             {% for i in  manager_data %}
                             <option value="{{i.id}}">{{i.username}}</option>
                             {% endfor %}

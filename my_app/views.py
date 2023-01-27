@@ -59,9 +59,41 @@ def new_user(request):
 def view_group(request):
     space_id = request.GET.get("space_id")
     space_data = space_master.objects.get(id=space_id)
+    today_date = datetime.today().strftime('%Y-%m-%d')
+
+    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    if user_manage_all_permission:
+        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(active_user_id.active_auth_user_id.id))
+        member_data = User_details.objects.filter(created_by__in=child_user_id)
+    else:
+        if user_details_data.user_type == "company_admin":
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(request.user.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id) 
+            member_data1 = User_details.objects.filter(auth_user=request.user) 
+            member_data = list(chain(member_data1,member_data))
+        else:
+            
+            member_data = User_details.objects.filter(created_by=request.user)
+
+
+
+    sub_space_data = sub_space_master.objects.filter(space_id=space_id)
+
 
     context={
-        "space_data":space_data
+        "space_data":space_data,
+        "today_date":today_date,
+        "member_data":member_data,
+        "sub_space_data":sub_space_data
     }
     return render(request, 'view_group.html',context)
 
@@ -367,7 +399,7 @@ def member_management(request):
             member_data = list(chain(member_data1,member_data))
 
         else:
-            member_data = User_details.objects.filter(created_by=request.user)
+            member_data = User_details.objects.filter(manager_auth=request.user)
 
 
     user_company = user_details_data.company_id
@@ -624,59 +656,81 @@ def project_management(request):
             member_data = list(chain(member_data1,member_data))
 
         else:
-            member_data = User_details.objects.filter(created_by=request.user)
+            member_data = User_details.objects.filter(manager_auth=request.user)
 
     role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
     status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
 
     space_master_data = ""
+    sub_space_data =""
     try:
         userdetails_data = User_details.objects.get(auth_user=request.user)
 
         # if user is company_admin (navab sir (all space of him))
         if userdetails_data.user_type == "company_admin":
             space_master_data = space_master.objects.filter(added_user_id=request.user)
+            space_list = list(space_master_data.values_list('id',flat=True))
+
+            sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
     
         else:
-
             # if user is company_user(their space only)
             space_access_data = space_view_access_user.objects.filter(space_view_auth_id=request.user)
             user_permission_space = list(space_access_data.values_list('space_id',flat=True))
             space_master_data = space_master.objects.filter(id__in=user_permission_space)
+
+
+            space_list = list(space_master_data.values_list('id',flat=True))
+            sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
+
     except:
         pass
-    
 
+   
+
+    if userdetails_data.user_type == "company_admin":
+        space_data = space_master.objects.filter(added_user_id = request.user)
+        
+
+   
+
+    
+    
     context = {
     "member_data" : member_data,
     "role_data":role_data,
     "user_details_data":user_details_data,
     "status_name":status_name,
     "manager_data":manager_data,
-    "space_master_data":space_master_data
+    "space_master_data":space_master_data,
+    "sub_space_data":sub_space_data
     }
-    return render(request, 'demo.html',context)
+    return render(request, 'project_management.html',context)
 
 
 # -----------------------------------------------------space_management-----------------------------------------------------------------
-
 
 def space_add_action(request):
     if request.method == "POST":
         spacename = request.POST.get("spacename",False)
         task_status_add = request.POST.getlist("task_status_add",False)
-        print("task_status_add:",task_status_add)
-        for t in task_status_add:
-
-            user_data = User_details.objects.get(auth_user = request.user)
-            status_name_master.objects.create(active_user_id_id =user_data.id,
-            active_auth_user_id_id =request.user.id ,status_name = t,created_by = request.user,status="True",
-            company_id_id = user_data.company_id.id )
+        # if not task_status_add
+        new_task_status_add = list(filter(None, task_status_add))
+        print("new_task_status_add::::",new_task_status_add)
+        if new_task_status_add:
+            
+            for t in new_task_status_add:
+                user_data = User_details.objects.get(auth_user = request.user)
+                status_name_master.objects.create(active_user_id_id =user_data.id,
+                active_auth_user_id_id =request.user.id ,status_name = t,created_by = request.user,status="True",
+                company_id_id = user_data.company_id.id )
 
         user_id_list = request.POST.getlist("manager_id")
+        
         member_data = request.POST.getlist("member_data",False)
         list_new = user_id_list + member_data
         res = [*set(list_new)]
+        print("res:::::::::::::",res)
 
         task_status_id = request.POST.getlist("task_status_name")
         task_status_data = status_name_master.objects.filter(id__in=task_status_id)
@@ -685,10 +739,8 @@ def space_add_action(request):
 
         task_new_status_id = request.POST.getlist("task_status_add")
         task_new_status_data =status_name_master.objects.filter(status_name__in=task_new_status_id)
-        print("task_new_status_data:",task_new_status_data)
         task_new_status_list = list(task_new_status_data.values_list('id',flat=True))
         print("task_new_status_list:",task_new_status_list)
-
 
         status_list = task_status_list + task_new_status_list
         new_status = [*set(status_list)]
@@ -702,35 +754,143 @@ def space_add_action(request):
             created_by = request.user
             )
             for j in user_id_list:
-                space_master_data.manager_auth.add(j)
+                user_details = User_details.objects.get(id=j)
+                auth_data = user_details.auth_user
+                space_master_data.manager_auth.add(auth_data)
             for k in new_status:
                 space_master_data.task_status.add(k)
 
         else:
-            user_active = user_active_account.objects.get(active_user_id=user_data.id)
+            user_active = user_active_account.objects.get(user_id=user_data.id)
+            print("user_active:::::;",user_active)
 
             space_master_data = space_master.objects.create(space_name=spacename,
-            active_account_id_id=user_active.active_user_id,
+            active_account_id_id=user_active.active_user_id.id,
             added_user_id = request.user,
-            manager_auth_id = user_detail.auth_user.id,
             status = "True",
             created_by = request.user
             )
             for j in user_id_list:
-                space_master_data.manager_auth.add(j)
+                user_details = User_details.objects.get(id=j)
+                auth_data = user_details.auth_user
+                space_master_data.manager_auth.add(auth_data)
 
             for k in new_status:
                 space_master_data.task_status.add(k)
        
-        for i in member_data:
-            user_details = User_details.objects.get(auth_user=i)
-            space_access_permission_user.objects.create(space_id_id = space_master_data.id ,invite_user_details_id_id = user_details.id,invite_user_auth_id_id = i)
+        # for i in member_data:
+        #     user_details = User_details.objects.get(auth_user=i)
+        #     space_access_permission_user.objects.create(space_id_id = space_master_data.id ,invite_user_details_id_id = user_details.id,invite_user_auth_id_id = i)
 
-        
         for r in res:
-            space_view_access_user.objects.create(space_id_id = space_master_data.id ,space_view_auth_id_id = r)
+            user_details = User_details.objects.get(id=r)
+            auth_data = user_details.auth_user
+            space_view_access_user.objects.create(space_id_id = space_master_data.id ,space_view_auth_id_id = auth_data.id)
         messages.success(request,"Successfully added Space")
         return redirect('project_management')
 
 
 
+def get_bucket_details(request):
+    space_id = request.GET.get("space_id")
+    space_data = space_master.objects.get(id=space_id)
+    return render(request,'get_bucket_details.html',{"bucket_data":space_data.task_status.all()})
+
+
+
+
+def project_add_action(request):
+    if request.method == "POST":
+        space_id = request.POST.get("space_id")
+        print("space_id_folder",space_id)
+        foldername = request.POST.get("foldername")
+        member_data = request.POST.getlist("member_data",False)
+        print("member_data::::::",member_data)
+        notes = request.POST.get("notes",False)
+        bucket = request.POST.get("bucket",False)
+        progress = request.POST.get("progress",False)
+        priority = request.POST.get("priority",False)
+        start_date = request.POST.get("start_date",False)
+        end_date = request.POST.get("end_date",False)
+        comments = request.POST.get("comments",False)
+        checklist_item = request.POST.get("checklist",False)
+        
+        user_data = User_details.objects.get(auth_user = request.user)
+        if user_data.user_type == "company_admin":
+            data_save = sub_space_master.objects.create(space_id_id = space_id,
+            sub_space_name = foldername,
+            bucket_mapping_id_id = bucket,
+            progress = progress,
+            priority = priority,
+            notes = notes,
+            start_date = start_date,
+            end_date = end_date,
+            added_user_id = request.user,
+            created_by = request.user,status="True")
+
+            for i in member_data:
+                user_details = User_details.objects.get(id=i)
+                data_save.invite_user_auth_id.add(user_details.auth_user.id)
+                data_save.invite_user_details_id.add(i)
+
+            sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
+            milestone = checklist_item)
+
+            try:
+                file_name = request.POST.get("file_name",False)
+                attached_file =  request.FILES['attached_file']
+                import os
+                extension = os.path.splitext(str(attached_file))[1]
+                sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
+                file_name = file_name,file_type =extension ,attached_file = attached_file)
+            except:
+                pass
+
+            user_data = User_details.objects.get(auth_user=request.user)
+            sub_space_comments.objects.create(sub_space_id_id=data_save.id,
+            added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+
+        else:
+            user_active = user_active_account.objects.get(user_id=user_data.id)
+
+            data_save = sub_space_master.objects.create(space_id_id = space_id,
+            sub_space_name = foldername,
+            bucket_mapping_id_id = bucket,
+            progress = progress,
+            priority = priority,
+            notes = notes,
+            start_date = start_date,
+            end_date = end_date,
+            active_account_id_id=user_active.active_user_id.id,
+            added_user_id = request.user,
+            created_by = request.user,status="True")
+
+            for i in member_data:
+                user_details = User_details.objects.get(id=i)
+                data_save.invite_user_auth_id.add(user_details.auth_user.id)
+                data_save.invite_user_details_id.add(i)
+
+            sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
+            milestone = checklist_item)
+
+            try:
+                file_name = request.POST.get("file_name",False)
+                attached_file =  request.FILES['attached_file']
+                import os
+                extension = os.path.splitext(str(attached_file))[1]
+                sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
+                file_name = file_name,file_type =extension ,attached_file = attached_file)
+            except:
+                pass
+
+            user_data = User_details.objects.get(auth_user=request.user)
+            sub_space_comments.objects.create(sub_space_id_id=data_save.id,
+            added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+
+
+           
+        for sp in member_data:
+            user_details = User_details.objects.get(id=sp)
+            sub_space_access_permission.objects.create(space_id_id = space_id ,sub_space_id_id=data_save.id,invite_user_details_id_id = sp,invite_user_auth_id_id = user_details.auth_user.id)
+        messages.success(request,"Successfully added Project")
+        return redirect(request.META['HTTP_REFERER'])

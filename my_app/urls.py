@@ -31,13 +31,15 @@ urlpatterns = [
     path('logout',auth_views.LogoutView.as_view(),name="logout"),
 
 
-
     path('login_action',views.login_action,name='login_action'),
     path('company_add_action',views.company_add_action,name='company_add_action'),
     path('user_management_action',views.user_management_action,name='user_management_action'),
     path('role_management_action',views.role_management_action,name='role_management_action'),
     path('task_status_action',views.task_status_action,name='task_status_action'),
     path('space_add_action',views.space_add_action,name='space_add_action'),
+    path('get_bucket_details',views.get_bucket_details,name='get_bucket_details'),
+    path('project_add_action',views.project_add_action,name='project_add_action'),
+
 
 
 ]
