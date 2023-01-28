@@ -33,16 +33,45 @@
                             </tr>
                         </thead>
 
-                 
                         <tbody>
                             {% for i in data %}
                             <tr>
-                                <td> <img  style="width:55px;height:55px;border-radius: 50%;" src="./media/{{i.company_logo}}"></td>
+                               
+                                {% if i.company_logo == "" or i.company_logo == None %}
+                                
+                                <td><img  style="width:55px;height:55px;border-radius: 50%;" src="{% static 'assets/images/user-dummy-img.jpg' %}"></td>
+                                {% else %}
+                                <td><img  style="width:55px;height:55px;border-radius: 50%;" src="./media/{{i.company_logo}}"></td>
+                                {% endif %}
+
+
                                 <td>{{i.company_name}}</td>
+                                
+
+                                {% if i.mobile == None %}
+                                <td></td>
+                                {% else %}
                                 <td>{{i.mobile}} </td>
+                                {% endif %}
+
+                                {% if i.website == None %}
+                                <td></td>
+                                {% else %}
                                 <td>{{i.website}} </td>
+                                {% endif %}
+
+                                {% if i.email == None %}
+                                <td></td>
+                                {% else %}
                                 <td>{{i.email}} </td>
+                                {% endif %}
+
+                                {% if i.address == None %}
+                                <td></td>
+                                {% else %}
                                 <td>{{i.address}} </td>
+                                {% endif %}
+                                
                                 <td>
                                     <a href="#" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
                                 </td>

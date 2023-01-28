@@ -1,36 +1,35 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions %}
 {% block content %}
-
 
 <div class="side-create">
     <div class="create-section">
         <div class="create-btn-box d-flex">
-            <img src="assets/images/plus.svg">
+            <img src="../static/assets/images/plus.svg">
         
-            <h4 style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal">Create New Task</h4>
+            <h4 style="cursor: pointer;" data-subspace-id="{{sub_space_data.id}}" data-space-id="{{space_data.id}}" class="create_task">Create New Task</h4>
         </div>
         <div class="created-group">
             <h3> Project</h3>
 
             <div class="department-box d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <img src="assets/images/oodo.svg" class="img-fluid">
-                    <h3>Odoo First Project </h3>
+                    <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
+                        {{request.user|index_f:space_data.space_name}}
+                    </div>
+                    <h3 style="padding: 9px 7px;">{{space_data.space_name}}</h3>
                 </div>
 
                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
                     <i class="md-more-vert"></i>
             </button>
                 <ul class="dropdown-menu">
-                    <li><a href="view_group.html" class="dropdown-item">View</a></li>
+                    <li><a href="view_group" class="dropdown-item">View</a></li>
                     <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
                   
                 </ul>
             </div>
-
-       
-
         </div>
     </div>
 </div>
@@ -40,16 +39,12 @@
     
         <!-- Left sidebar -->
     
-
-        
-        <!-- Right Sidebar -->
         <div class="col-lg-9">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="float-right">
+                    <div class="float-right mt-4">
                         <div class="btn-toolbar" role="toolbar">
-                            
-                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i> </button>
+                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i></button>
                         </div>
                     </div>
                 </div>
@@ -67,39 +62,45 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Project Name</label>
-                                    <input type="email"  class="form-control" placeholder="Company Name">
+                                    <input type="email" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
                                 </div>
                               
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">
 
-Start Date</label>
-                                  <input type="date" class="form-control">
+                                Start Date</label>
+                                  <input type="date" value="{{sub_space_data.start_date|safe}}" class="form-control">
                                 </div>
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Assignees</label>
-                                  <input type="text" class="form-control">
+                                    {% for m in sub_space_data.invite_user_details_id.all %}
+                                    <input type="text"  value="{{m.name}}" class="form-control">
+                                    {% endfor %}
                                 </div>
-                                <div class="col-md-6 ">
+                                <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">End Date</label>
-                                  <input type="date" class="form-control">
+                                  <input value="{{sub_space_data.end_date|safe}}" type="date" class="form-control">
                                 </div>
-                                <div class="col-md-6 ">
+                                <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Progress</label>
-                                  <input type="text" class="form-control">
+                                  <input value="{{sub_space_data.progress}}" type="text" class="form-control">
                                 </div>
-                                <div class="col-md-6 ">
+                                <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Priority</label>
-                                  <input type="text" class="form-control">
-                                </div>  <div class="col-md-6 ">
+                                  <input value="{{sub_space_data.priority}}" type="text" class="form-control">
+                                </div> 
+
+                                <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Checklist</label>
-                                  <input type="text" class="form-control">
+                                    {% for c in sub_space_data.sub_space_checklist.all %}
+                                  <input value="{{c.milestone}}" type="text" class="form-control">
+                                    {% endfor %}
                                 </div>
                               
                                
@@ -119,7 +120,7 @@ Start Date</label>
                                             <tr class="heading-text">
                                                 <th>Title</th>
                                                 <th>Assigned to</th>
-                                                <th>Attachments & Checklist</th>
+                                                <th>Checklist</th>
                                                 <th>Priority</th>
                                                 <th>Due</th>
                                                 <th>Bucket</th>
@@ -129,37 +130,36 @@ Start Date</label>
 
 
                                         <tbody class="body-textcls">
+
+                                            {% for i in task_data %}
                                             <tr>
                                                 <td>
-
-                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                        <input id="checkbox-9" type="checkbox">
-                                                        <label for="checkbox-9">
-                                            SESP Website Html Conversion
-                                        </label>
-                                                    </div>
-
+                                                            {{i.task_name}}
                                                 </td>
                                                 <td>
                                                     <div class="profile-image d-flex align-items-center">
-                                                        <img src="assets/images/avatar.svg">
-                                                        <img src="assets/images/avatar2.svg">
+                                                        {% for j in i.add_task_space.all %}
+                                                        <img src="./media/{{j.invite_user_details_id.photo}}">
+                                                        {% endfor %}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="files">
-                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                        <i class="md-done"></i><span>0/5</span>
+                                                        <!-- <i class="md-attach-file"></i><span>{{i.add_attachment.count}}</span> &ensp; -->
+                                                        <i class="md-done"></i><span>0/{{i.add_task_checklist.count}}</span>
                                                     </div>
                                                 </td>
-                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
+                                                <td>
+
+                                                    <img src="../static/assets/images/danger.png" class="img-fluid danger-icon">
+                                                    {{i.priority}}</td>
                                                 <td>01/12/2023</td>
                                                 <td>To Do</td>
                                                 <td>
 
                                                     <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="md-more-vert"></i>
-                                </button>
+                                                    <i class="md-more-vert"></i>
+                                                    </button>
                                                     <ul class="dropdown-menu">
                                                         <li><a href="view_project_page.html" class="dropdown-item">View</a></li>
                                                       
@@ -167,78 +167,8 @@ Start Date</label>
 
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>
-
-                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                        <input id="checkbox-9" type="checkbox">
-                                                        <label for="checkbox-9">
-                                                Badr medical group
-                                        </label>
-                                                    </div>
-
-                                                </td>
-                                                <td>
-                                                    <div class="profile-image d-flex align-items-center">
-                                                        <img src="assets/images/avatar.svg">
-                                                        <img src="assets/images/avatar2.svg">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="files">
-                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                        <i class="md-done"></i><span>0/5</span>
-                                                    </div>
-                                                </td>
-                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
-                                                <td>01/12/2023</td>
-                                                <td>To Do</td>
-                                                <td>
-
-                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="md-more-vert"></i>
-                                </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#" class="dropdown-item">View</a></li>
-
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-
-                                                    <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                        <input id="checkbox-9" type="checkbox">
-                                                        <label for="checkbox-9">
-                                                Badr medical group
-                                        </label>
-                                                    </div>
-
-                                                </td>
-                                                <td>
-                                                    <div class="profile-image d-flex align-items-center">
-                                                        <img src="assets/images/avatar.svg">
-                                                        <img src="assets/images/avatar2.svg">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="files">
-                                                        <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                        <i class="md-done"></i><span>0/5</span>
-                                                    </div>
-                                                </td>
-                                                <td><img src="assets/images/danger.png" class="img-fluid danger-icon">important</td>
-                                                <td>01/12/2023</td>
-                                                <td>To Do</td>
-                                                <td>
-
-                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="md-more-vert"></i>
-                                </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#" class="dropdown-item">View</a></li>
-
-                                                </td>
-                                            </tr>
+                                            {% endfor %}
+                                            
                                         </tbody>
                                     </table>
 
@@ -250,7 +180,206 @@ Start Date</label>
                 </div> <!-- card-body -->
             </div> <!-- card -->
         </div> <!-- End Rightsidebar -->
-
 </div>
+
+<form name="task_form" method="POST" action="task_management_action" enctype="multipart/form-data">
+    {% csrf_token %} 
+
+<div id="new_task_create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog  modal-lg"> 
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <h4 class="modal-title mt-0" style="color: #f9365f;
+                font-weight: bold;">Create New Task</h4> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> 
+            <div class="modal-body"> 
+                <input type="hidden" id="sub_space_id1" name="sub_space_id">
+                <input type="hidden" id="space_id1" name="space_id">
+                <div class="row"> 
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-1" class="control-label">Task Name</label> 
+                            <input type="text" name="task_name" class="form-control" id="field-1" placeholder="Task Name"> 
+                        </div> 
+                    </div> 
+                  
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Bucket</label> 
+                            <div id="bucket_append">
+                                <select class="form-control" name="bucket">
+                                    {% for b in bucket_data %}
+                                    <option  value="{{b.id}}">{{b.status_name}}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                        </div> 
+                    </div> 
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Progress</label> 
+                            <select class="form-control" name="progress">
+                                <option value="Not Started" selected="">Not Started</option>
+                                <option value="In progress">In progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div> 
+                    </div> 
+
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Priority</label> 
+                         <select class="form-control"  name="priority">
+                            <option value="Urgent" selected="">Urgent</option>
+                            <option value="Important">Important</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                         </select>
+                        </div> 
+                    </div> 
+
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Start date</label> 
+                         <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
+                        </div> 
+                    </div> 
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">End date</label> 
+                         <input type="date"  min="{{today_date}}" name="end_date" class="form-control">
+                        </div> 
+                    </div> 
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Checklist</label>
+
+                            <a id="add_checklist" style="float: right;
+                            font-size: 18px; cursor: pointer;
+                            font-weight: bold;">+</a>
+
+                            <input type="text" name="checklist" class="form-control">
+
+                            <div class="" id="new_checklist" style="display:none;">
+                                <div class="checklist_add">
+                                    <input class="form-control mt-2"   type="text" name="checklist"> 
+                                </div>
+                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus">Add</i></a>
+                            </div>
+                        </div> 
+                    </div>
+                 
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Note</label> 
+                         <input type="text" class="form-control">
+                        </div> 
+                    </div> 
+                   
+                    <div class="img-group mx-2" style="float: right;">
+                        <a  data-toggle="modal" data-target="#task_employee">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
+                    </div>
+                </div> 
+            </div> 
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
+                <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save</button> 
+            </div> 
+        </div> 
+    </div>
+</div><!-- /.modal -->
+
+<div id="task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog"> 
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <h4 class="modal-title mt-0" style="color: #f9365f;
+                font-weight: bold;">Employee Invitation</h4> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> 
+            <div class="modal-body"> 
+                <div class="row"> 
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                           <div class="row">
+
+                            {% for i in sub_space_member_data.invite_user_details_id.all %}
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img style="border-radius: 50%;
+                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.photo}}">  
+                                    </div>
+                                   <div class="col-md-4" style="margin: 22px -52px;
+                                   font-size: 12px;">
+                                    <input name="member_checkbox" value="{{i.id}}" type="checkbox">&nbsp;&nbsp;
+                                        {{i.name}}
+                                   </div>
+                                </div>
+                              
+                            </div>
+                            {% endfor %}
+
+                           </div>
+                        </div> 
+                    </div> 
+                   
+                    </div> 
+                </div> 
+            </div> 
+            <!-- <div class="modal-footer"> 
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
+                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button> 
+            </div>  -->
+        </div> 
+</div>
+
+</form>
+
+<script>
+    $(".create_task").click(function(){
+    var sub_space_id = $(this).attr("data-subspace-id")
+    var space_id = $(this).attr("data-space-id")
+    $("#sub_space_id1").val(sub_space_id)
+    $("#space_id1").val(space_id)
+    $("#new_task_create").modal("show")
+    $.ajax(
+    {
+        type:"GET",
+        url: "get_bucket_details",
+        data:{
+            space_id: space_id
+        },
+        success: function( data ) 
+        {
+            $("#bucket_append").empty().append(data)
+        }
+     });
+    })
+</script>
+
+
+<script>
+    $("#add_checklist").click(function(){
+       
+        $("#new_checklist").show()
+        $("#add_checklist").hide()
+    })
+   
+
+
+    
+    $(".add_check_list").click(function(){
+        
+        $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
+        
+    })
+    </script>
 
 {% endblock %}

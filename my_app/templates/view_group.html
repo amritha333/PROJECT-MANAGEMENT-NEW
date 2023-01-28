@@ -26,7 +26,7 @@
                     <i class="md-more-vert"></i>
             </button>
                 <ul class="dropdown-menu">
-                    <li><a href="view_group.html" class="dropdown-item">View</a></li>
+                    <li><a href="view_group" class="dropdown-item">View</a></li>
                     <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
                   
                 </ul>
@@ -54,7 +54,7 @@
                 <div class="margin-class">
                     <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bucket   Filter
-</button>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="dropdown-item">To Do</a></li>
                         <li><a href="#" class="dropdown-item">In progress</a></li>
@@ -67,17 +67,17 @@
                 <div>
                     <button type="button" class="btn btn-filter">
         <i class="md-view-list"></i>&ensp;List
-</button>&ensp;
+        </button>&ensp;
                     <button type="button" class="btn btn-filter board-view">
         <i class="ion-grid"></i>&ensp;Board
-</button>
+        </button>
                 </div>
 
                 <div class="btn-group dropdown button-space">
                     <!-- <button type="button" class="btn btn-meet waves-effect waves-light">Meet</button> -->
                     <button type="button" class="btn btn-meet dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="sr-only">Toggle Dropdown</span>
-    </button>
+                    <span class="sr-only">Toggle Dropdown</span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="dropdown-item">Action</a></li>
                         <li><a href="#" class="dropdown-item">Another action</a></li>
@@ -143,7 +143,7 @@
                                                 </div>
                                             </td>
                                             <td>{{i.priority}}</td>
-                                            <td>{{i.end_date|safe}}</td>
+                                            <td>{{i.Actual_end_date|safe}}</td>
                                             <td>{{i.bucket_mapping_id}}</td>
                                             <td>
 
@@ -151,7 +151,7 @@
                                             <i class="md-more-vert"></i>
                                             </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="view_project_page" class="dropdown-item">View</a></li>
+                                                    <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View</a></li>
                                                   
                                                 </ul>
 
@@ -200,7 +200,7 @@
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label" >Bucket</label> 
+                            <label for="field-2" class="control-label" >Stages</label> 
                             <div id="bucket_append">
                                 <select class="form-control" name="bucket">
                                     {% for b in bucket_data %}
@@ -208,16 +208,15 @@
                                     {% endfor %}
                                  </select>
                             </div>
-                         
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Progress</label> 
                          <select class="form-control" name="progress">
-                            <option value="not_started" selected="">Not Started</option>
-                            <option value="inprogress">In progress</option>
-                            <option value="completed">Completed</option>
+                            <option value="Not Started" selected="">Not Started</option>
+                            <option value="In progress">In progress</option>
+                            <option value="Completed">Completed</option>
                          </select>
                         </div> 
                     </div> 
@@ -225,25 +224,40 @@
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Priority</label> 
                          <select class="form-control"  name="priority">
-                            <option value="urgent" selected="">Urgent</option>
-                            <option value="important">Important</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
+                            <option value="Urgent" selected="">Urgent</option>
+                            <option value="Important">Important</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
                          </select>
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Start date</label> 
-                         <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
+                            <label for="field-2" class="control-label">Planning Start date</label> 
+                         <input type="date" name="planning_start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">End date</label> 
-                         <input type="date" min="{{today_date}}" name="end_date"  class="form-control">
+                            <label for="field-2" class="control-label">Planning End date</label> 
+                         <input type="date" min="{{today_date}}" name="planning_end_date" required  class="form-control">
                         </div> 
                     </div> 
+
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Actual Start date</label> 
+                         <input type="date" name="actual_start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
+                        </div> 
+                    </div> 
+                    <div class="col-md-6"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Actual End date</label> 
+                         <input type="date" min="{{today_date}}" name="actual_end_date" required  class="form-control">
+                        </div> 
+                    </div> 
+
+
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Checklist </label>
@@ -313,22 +327,20 @@
                         <div class="form-group"> 
                            <div class="row">
 
-                            {% for i in member_data %}
+                            {% for i in space_member_data %}
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <img style="border-radius: 50%;
-                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.photo}}">  
+                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.space_view_user_details.photo}}">  
                                     </div>
                                    <div class="col-md-4" style="margin: 22px -52px;
                                    font-size: 12px;">
-                                    <input name="member_data" value="{{i.id}}" type="checkbox">&nbsp;&nbsp;
-                                        {{i.name}}
+                                    <input name="member_data" value="{{i.space_view_user_details.id}}" type="checkbox">&nbsp;&nbsp;
+                                        {{i.space_view_user_details.name}}
                                    </div>
                                 </div>
-                               
-                          
-
+                              
                             </div>
                             {% endfor %}
 
@@ -337,15 +349,12 @@
                     </div> 
                    
                     </div> 
-                </div> 
-              
-          
-              
             </div> 
-            <div class="modal-footer"> 
+            </div> 
+            <!-- <div class="modal-footer"> 
                 <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
                 <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button> 
-            </div> 
+            </div>  -->
         </div> 
 </div>
 </form>
@@ -382,6 +391,7 @@
     $("#add_checklist").click(function(){
        
         $("#new_checklist").show()
+        $("#add_checklist").hide()
     })
     </script>
 

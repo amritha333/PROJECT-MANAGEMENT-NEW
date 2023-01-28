@@ -33,14 +33,9 @@
                     <li><a href="view_group?space_id={{sp.id}}" class="dropdown-item">View</a></li>
 
                     <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
-                  
                 </ul>
             </div>
-
             {% endfor %}
-
-           
-
         </div>
     </div>
 </div>
@@ -52,7 +47,7 @@
                 <div class="d-flexl">
                     <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Progress Filter
-</button>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="dropdown-item">Not Started</a></li>
                         <li><a href="#" class="dropdown-item">In progress</a></li>
@@ -63,7 +58,7 @@
                 <div class="margin-class">
                     <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bucket   Filter
-</button>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="dropdown-item">To Do</a></li>
                         <li><a href="#" class="dropdown-item">In progress</a></li>
@@ -73,13 +68,13 @@
             </div>
 
             <div class="d-flex align-items-center">
-                <div>
+            <div>
                     <button type="button" class="btn btn-filter">
-        <i class="md-view-list"></i>&ensp;List
-</button>&ensp;
-                    <button type="button" class="btn btn-filter board-view">
-        <i class="ion-grid"></i>&ensp;Board
-</button>
+            <i class="md-view-list"></i>&ensp;List
+            </button>&ensp;
+                        <button type="button" class="btn btn-filter board-view">
+            <i class="ion-grid"></i>&ensp;Board
+            </button>
                 </div>
 
                 <div class="btn-group dropdown button-space">
@@ -131,12 +126,7 @@
                                         {% if request.user in i.invite_user_auth_id.all %}  
                                         <tr>
                                             <td>
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox">
-                                                    <label for="checkbox-9">
                                                         {{i.sub_space_name}}
-                                        </label>
-                                                </div>
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
@@ -148,7 +138,7 @@
                                             <td>
                                                 <div class="files">
                                                     <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
-                                                    <i class="md-done"></i><span>0/{{i.sub_space_comments.count}}</span>
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_checklist.count}}</span>
                                                 </div>
                                             </td>
                                             <td>{{i.priority}}</td>
@@ -157,10 +147,10 @@
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
+                                                        <i class="md-more-vert"></i>
+                                                </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#" class="dropdown-item">Action</a></li>
+                                                    <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View Project</a></li>
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
                                                     <li><a href="#" class="dropdown-item">Something else here</a></li>
                                                     <li><a href="#" class="dropdown-item">Separated link</a></li>
@@ -172,13 +162,7 @@
                                         {% elif request.user in i.space_id.manager_auth.all %} 
                                         <tr>
                                             <td>
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox">
-                                                    <label for="checkbox-9">
                                                         {{i.sub_space_name}}
-                                    </label>
-                                                </div>
-
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
@@ -189,8 +173,8 @@
                                             </td>
                                             <td>
                                                 <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
+                                                    <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_checklist.count}}</span>
                                                 </div>
                                             </td>
                                             <td>{{i.priority}}</td>
@@ -199,10 +183,10 @@
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
+                                                <i class="md-more-vert"></i>
+                                                </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#" class="dropdown-item">Action</a></li>
+                                                    <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View Project</a></li>
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
                                                     <li><a href="#" class="dropdown-item">Something else here</a></li>
                                                     <li><a href="#" class="dropdown-item">Separated link</a></li>
@@ -214,12 +198,7 @@
                                         {% elif request.user.user_details_authuser.all.0.user_type == 'company_admin' %}
                                         <tr>
                                             <td>
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox">
-                                                    <label for="checkbox-9">
-                                                        {{i.sub_space_name}}
-                                    </label>
-                                                </div>
+                                                        {{i.space_id.space_name}} / <a href="view_project_page?sub_space_id={{i.id}}">{{i.sub_space_name}}</a>
 
                                             </td>
                                             <td>
@@ -231,8 +210,8 @@
                                             </td>
                                             <td>
                                                 <div class="files">
-                                                    <i class="md-attach-file"></i><span>01</span> &ensp;
-                                                    <i class="md-done"></i><span>0/5</span>
+                                                    <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_checklist.count}}</span>
                                                 </div>
                                             </td>
                                             <td>{{i.priority}}</td>
@@ -244,7 +223,7 @@
                                     <i class="md-more-vert"></i>
                             </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#" class="dropdown-item">Action</a></li>
+                                                    <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View Project</a></li>
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
                                                     <li><a href="#" class="dropdown-item">Something else here</a></li>
                                                     <li><a href="#" class="dropdown-item">Separated link</a></li>

@@ -132,6 +132,7 @@ class space_master(common_table):
 class space_view_access_user(common_table):
     space_id = models.ForeignKey(space_master,related_name="space_view_id",on_delete=models.CASCADE,null=True)
     space_view_auth_id = models.ForeignKey(User,related_name="space_view_auth_id",on_delete=models.CASCADE,null=True)
+    space_view_user_details = models.ForeignKey(User_details,related_name="space_view_access_userid",on_delete=models.CASCADE,null=True)
 
 
 class space_access_permission_user(common_table):
@@ -168,8 +169,10 @@ class sub_space_master(common_table):
     progress = models.CharField(max_length=50,choices=progress,null=True)
     priority = models.CharField(max_length=50,choices=priority,null=True)
     notes = models.TextField(null=True)
-    start_date = models.DateField(blank=True)
-    end_date = models.DateField(blank=True)
+    Planning_start_date = models.DateField(blank=True)
+    Planning_end_date = models.DateField(blank=True)
+    Actual_start_date = models.DateField(blank=True)
+    Actual_end_date= models.DateField(blank=True)
     invite_user_details_id = models.ManyToManyField(User_details,related_name="sub_space_userdetails")
     invite_user_auth_id = models.ManyToManyField(User,related_name="sub_space_auth")
 

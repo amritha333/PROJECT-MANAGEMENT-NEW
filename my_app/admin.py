@@ -17,6 +17,7 @@ admin.site.register(Create_meeting)
 admin.site.register(RoomMember)
 admin.site.register(sub_space_master)
 admin.site.register(sub_space_access_permission)
+admin.site.register(sub_space_checklist)
 
 admin.site.register(Add_task_master)
 admin.site.register(Add_task_access_user)

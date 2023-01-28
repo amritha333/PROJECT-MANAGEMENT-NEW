@@ -39,6 +39,7 @@ urlpatterns = [
     path('space_add_action',views.space_add_action,name='space_add_action'),
     path('get_bucket_details',views.get_bucket_details,name='get_bucket_details'),
     path('project_add_action',views.project_add_action,name='project_add_action'),
+    path('task_management_action',views.task_management_action,name='task_management_action'),
 
 
 
