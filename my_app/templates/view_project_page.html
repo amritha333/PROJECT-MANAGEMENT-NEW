@@ -37,23 +37,32 @@
 <div class="content-rigt">
     <div class="row">
     
+        
         <!-- Left sidebar -->
     
+        
+        
+
         <div class="col-lg-9">
+            <form action="update_project" method="POST">
+                {% csrf_token %}
+
+                <input type="hidden" name="sub_space_id" value="{{sub_space_id}}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="float-right mt-4">
+
                         <div class="btn-toolbar" role="toolbar">
                             <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
             
             <div class="card m-t-20">
                 <div class="card-body p-t-30">
                     
-                    <form>
                         <div class="form-group">
                             
                         </div>
@@ -62,7 +71,7 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Project Name</label>
-                                    <input type="email" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
+                                    <input type="email" name="edit_project_name" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
                                 </div>
                               
                                 <div class="col-md-6 ">
@@ -70,7 +79,7 @@
                                     color: #0000008a;">
 
                                 Start Date</label>
-                                  <input type="date" value="{{sub_space_data.start_date|safe}}" class="form-control">
+                                  <input type="date" name="edit_start_date" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control">
                                 </div>
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
@@ -82,24 +91,61 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">End Date</label>
-                                  <input value="{{sub_space_data.end_date|safe}}" type="date" class="form-control">
+                                  <input value="{{sub_space_data.Planning_end_date|safe}}" name="edit_end_date" type="date" class="form-control">
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Progress</label>
-                                  <input value="{{sub_space_data.progress}}" type="text" class="form-control">
+
+                                <select class="form-control progress_change" name="edit_progress" data-id="{{i.id}}">
+                                    <option selected value="{{sub_space_data.progress}}">{{sub_space_data.progress}}</option>
+
+                                    {% for p in progress %}
+                                    
+                                    {% if sub_space_data.progress == p.0 %}
+                                    {% else %}
+                                        <option>{{p.0}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Priority</label>
-                                  <input value="{{sub_space_data.priority}}" type="text" class="form-control">
+                                    <select class="form-control progress_change" name="edit_priority" data-id="{{i.id}}">
+                                        <option selected value="{{sub_space_data.priority}}">{{sub_space_data.priority}}</option>
+
+                                        {% if sub_space_data.priority == "Urgent" %}
+                                        {% else %}
+                                        <option value="Urgent" selected="">Urgent</option>
+
+                                        {% endif %}
+
+                                        {% if sub_space_data.priority == "Important" %}
+                                        {% else %}
+                                        <option value="Important">Important</option>
+                                        {% endif %}
+
+                                        {% if sub_space_data.priority == "Medium" %}
+                                        {% else %}
+                                        <option value="Medium">Medium</option>
+                                        {% endif %}
+
+                                        {% if sub_space_data.priority == "Low" %}
+
+                                        {% else %}
+                                        <option value="Low">Low</option>
+                                       
+                                        {% endif %}
+    
+                                    </select>
                                 </div> 
 
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Checklist</label>
                                     {% for c in sub_space_data.sub_space_checklist.all %}
-                                  <input value="{{c.milestone}}" type="text" class="form-control">
+                                  <input name="edit_checklist" value="{{c.milestone}}" type="text" class="form-control">
                                     {% endfor %}
                                 </div>
                               
@@ -134,7 +180,7 @@
                                             {% for i in task_data %}
                                             <tr>
                                                 <td>
-                                                            {{i.task_name}}
+                                                    {{i.task_name}}
                                                 </td>
                                                 <td>
                                                     <div class="profile-image d-flex align-items-center">
@@ -151,17 +197,31 @@
                                                 </td>
                                                 <td>
 
+                                                    {% if i.priority == "Urgent" %}
+                                                    <img src="../static/assets/images/bell.png" class="img-fluid danger-icon">
+
+                                                    {% elif i.priority == "Important" %}
                                                     <img src="../static/assets/images/danger.png" class="img-fluid danger-icon">
+
+                                                    {% elif i.priority == "Medium" %}
+                                                    <img src="../static/assets/images/greendot.png" class="img-fluid danger-icon">
+
+                                                    {% elif i.priority == "Low" %}
+                                                    <img src="../static/assets/images/bluearrow.png" class="img-fluid danger-icon">
+
+                                                    {% endif %}
+
+
                                                     {{i.priority}}</td>
-                                                <td>01/12/2023</td>
-                                                <td>To Do</td>
+                                                <td>{{i.end_date|safe}}</td>
+                                                <td>{{i.bucket_mapping_id}}</td>
                                                 <td>
 
                                                     <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
                                                     <i class="md-more-vert"></i>
                                                     </button>
                                                     <ul class="dropdown-menu">
-                                                        <li><a href="view_project_page.html" class="dropdown-item">View</a></li>
+                                                        <li><a href="view_task_page?task_id={{i.id}}" class="dropdown-item">View</a></li>
                                                       
                                                     </ul>
 
@@ -244,7 +304,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Start date</label> 
-                         <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
+                            <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
@@ -275,7 +335,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Note</label> 
-                         <input type="text" class="form-control">
+                         <input type="text" name="notes" class="form-control">
                         </div> 
                     </div> 
                    

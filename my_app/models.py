@@ -150,14 +150,14 @@ buckets = (
 
 progress = (
     ("Not Started","Not Started"),
-    ("Inprogress","Inprogress"),
+    ("In progress","In progress"),
     ("Completed","Completed"),
 )
 priority = (
-    ("urgent","Urgent"),
-    ("important","Important"),
-    ("medium","Medium"),
-    ("low","Low")
+    ("Urgent","Urgent"),
+    ("Important","Important"),
+    ("Medium","Medium"),
+    ("Low","Low")
 )
 
 class sub_space_master(common_table):
@@ -298,8 +298,12 @@ class Notification(models.Model):
 
 
 class Sub_tasks(models.Model):
+    group_id = models.ForeignKey(space_master,related_name="subtask_group_id",on_delete=models.CASCADE,null=True)
+    project_id = models.ForeignKey(sub_space_master,related_name="sub_task_projectid",on_delete=models.CASCADE,null=True)
+    task_id = models.ForeignKey(Add_task_master,related_name="sub_task_taskid",on_delete=models.CASCADE,null=True)
     parent_id = models.IntegerField(null=True)
     child_id = models.IntegerField(null=True)
+    dynamic_status = models.CharField(max_length=50,null=True)
     sub_task_name = models.CharField(max_length=100,null=True)
     bucket_mapping_id = models.ForeignKey(status_name_master,related_name="sub_task_bucket_id",on_delete=models.CASCADE,null=True)
     progress = models.CharField(max_length=50,choices=progress,null=True)

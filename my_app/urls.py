@@ -30,7 +30,6 @@ urlpatterns = [
     path('base',views.base,name='base'),
     path('logout',auth_views.LogoutView.as_view(),name="logout"),
 
-
     path('login_action',views.login_action,name='login_action'),
     path('company_add_action',views.company_add_action,name='company_add_action'),
     path('user_management_action',views.user_management_action,name='user_management_action'),
@@ -40,7 +39,9 @@ urlpatterns = [
     path('get_bucket_details',views.get_bucket_details,name='get_bucket_details'),
     path('project_add_action',views.project_add_action,name='project_add_action'),
     path('task_management_action',views.task_management_action,name='task_management_action'),
-
-
+    path('view_task_page',views.view_task_page,name='view_task_page'),
+    path('sub_task_action',views.sub_task_action,name='sub_task_action'),
+    path('view_sub_task',views.view_sub_task,name='view_sub_task'),
+    path('sub_task_dynamic_action',views.sub_task_dynamic_action,name='sub_task_dynamic_action'),
 
 ]
