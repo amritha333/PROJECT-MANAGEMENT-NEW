@@ -43,5 +43,6 @@ urlpatterns = [
     path('sub_task_action',views.sub_task_action,name='sub_task_action'),
     path('view_sub_task',views.view_sub_task,name='view_sub_task'),
     path('sub_task_dynamic_action',views.sub_task_dynamic_action,name='sub_task_dynamic_action'),
+    path('update_project',views.update_project,name='update_project'),
 
 ]

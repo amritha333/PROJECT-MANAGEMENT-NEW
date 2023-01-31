@@ -40,9 +40,6 @@
         
         <!-- Left sidebar -->
     
-        
-        
-
         <div class="col-lg-9">
             <form action="update_project" method="POST">
                 {% csrf_token %}
@@ -53,12 +50,12 @@
                     <div class="float-right mt-4">
 
                         <div class="btn-toolbar" role="toolbar">
-                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i></button>
+                            <button type="submit" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
-            </form>
+            
             
             <div class="card m-t-20">
                 <div class="card-body p-t-30">
@@ -71,14 +68,14 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Project Name</label>
-                                    <input type="email" name="edit_project_name" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
+                                    <input type="text" name="edit_project_name" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
                                 </div>
                               
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">
 
-                                Start Date</label>
+                                Planning Start Date</label>
                                   <input type="date" name="edit_start_date" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control">
                                 </div>
                                 <div class="col-md-6 ">
@@ -90,7 +87,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
-                                    color: #0000008a;">End Date</label>
+                                    color: #0000008a;">Planning End Date</label>
                                   <input value="{{sub_space_data.Planning_end_date|safe}}" name="edit_end_date" type="date" class="form-control">
                                 </div>
                                 <div class="col-md-6">
@@ -112,34 +109,41 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Priority</label>
-                                    <select class="form-control progress_change" name="edit_priority" data-id="{{i.id}}">
+                                    <select class="form-control progress_change" name="edit_priority" >
                                         <option selected value="{{sub_space_data.priority}}">{{sub_space_data.priority}}</option>
 
-                                        {% if sub_space_data.priority == "Urgent" %}
+                                        {% for p in priority %}
+                                    
+                                        {% if sub_space_data.priority == p.0 %}
                                         {% else %}
-                                        <option value="Urgent" selected="">Urgent</option>
-
+                                            <option>{{p.0}}</option>
                                         {% endif %}
+                                        {% endfor %}
 
-                                        {% if sub_space_data.priority == "Important" %}
-                                        {% else %}
-                                        <option value="Important">Important</option>
-                                        {% endif %}
-
-                                        {% if sub_space_data.priority == "Medium" %}
-                                        {% else %}
-                                        <option value="Medium">Medium</option>
-                                        {% endif %}
-
-                                        {% if sub_space_data.priority == "Low" %}
-
-                                        {% else %}
-                                        <option value="Low">Low</option>
-                                       
-                                        {% endif %}
-    
+                                        
                                     </select>
                                 </div> 
+
+                                
+                                <div class="col-md-6">
+                                    <label style="margin: 12px 2px;
+                                    color: #0000008a;">Bucket</label>
+
+                                <select class="form-control progress_change" name="edit_bucket" data-id="{{i.id}}">
+                                    <option selected value="{{sub_space_data.bucket_mapping_id.id}}">{{sub_space_data.bucket_mapping_id}}</option>
+
+                                    {% for b in bucket_data %}
+                                        {% if sub_space_data.bucket_mapping_id.status_name == b.status_name %}
+
+                                            {% else %}
+                                            <option  value="{{b.id}}">{{b.status_name}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </select>
+                                </div>
+
+
 
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
@@ -236,7 +240,7 @@
                             </div>
                         </div>
                        
-                    </form>
+            </form>
                 </div> <!-- card-body -->
             </div> <!-- card -->
         </div> <!-- End Rightsidebar -->
@@ -303,13 +307,13 @@
 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">Start date</label> 
+                            <label for="field-2" class="control-label"> Start date</label> 
                             <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label">End date</label> 
+                            <label for="field-2" class="control-label"> End date</label> 
                          <input type="date"  min="{{today_date}}" name="end_date" class="form-control">
                         </div> 
                     </div> 

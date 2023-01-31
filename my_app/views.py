@@ -875,7 +875,7 @@ def view_group(request):
 
 
 def view_project_page(request):
-    from.models import progress
+    from.models import progress,priority
     from datetime import datetime
     today_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -898,6 +898,7 @@ def view_project_page(request):
         "today_date":today_date,
         "bucket_data":space_data.task_status.all(),
         "progress":progress,
+        "priority":priority,
         "today_date":today_date,
         "task_data":task_data,
         "sub_space_id":sub_space_id
@@ -911,15 +912,23 @@ def update_project(request):
     if request.method == "POST":
         sub_space_id = request.POST.get("sub_space_id",False)
         edit_project_name = request.POST.get("edit_project_name",False)
+        print("edit_project_name:::::",edit_project_name)
         edit_start_date = request.POST.get("edit_start_date",False)
+        print("edit_start_date:::::",edit_start_date)
         edit_end_date = request.POST.get("edit_end_date",False)
+        print("edit_end_date:::::",edit_end_date)
         edit_progress = request.POST.get("edit_progress",False)
+        print("edit_progress:::::",edit_progress)
         edit_priority = request.POST.get("edit_priority",False)
+        print("edit_priority:::::",edit_priority)
+        edit_bucket = request.POST.get("edit_bucket",False)
+        print("edit_bucket:::::",edit_bucket)
         edit_checklist = request.POST.get("edit_checklist",False)
+        print("edit_checklist:::::",edit_checklist)
 
-        sub_space_master.objects.filter(id=sub_space_id).update(end_date=due_date)
+        sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = edit_project_name,bucket_mapping_id =edit_bucket,progress=edit_progress,priority=edit_priority,Planning_start_date=edit_start_date,Planning_end_date=edit_end_date)
 
-        messages.success(request,"Successfully updated Project")
+        messages.success(request,"Successfully updated Project details")
         return redirect(request.META['HTTP_REFERER'])
 
 
@@ -993,6 +1002,8 @@ def view_task_page(request):
 
     user_details_data = User_details.objects.get(auth_user=request.user)
 
+    parent_id = task_id
+
     context = {
         "task_member_data" : task_member_data,
         "space_data":space_data,
@@ -1002,7 +1013,8 @@ def view_task_page(request):
         "bucket_data":space_data.task_status.all(),
         "progress":progress,
         "today_date":today_date,
-        "sub_task_data":sub_task_data
+        "sub_task_data":sub_task_data,
+        'parent_id':parent_id
     }
     return render(request, 'view_task_page.html',context)
 
@@ -1048,56 +1060,53 @@ def sub_task_action(request):
 
 
 def view_sub_task(request):
-   
     from.models import progress
     from datetime import datetime
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    sub_task_id = request.GET.get("sub_task_id")
-    print("sub_task_id:",sub_task_id)
+    parent_id = request.GET.get("parent_id")
+    child_id = request.GET.get("child_id")
+
     space_id = request.GET.get("space_id")
-    print("space_id::::::",space_id)
-
-    sub_task_data = Sub_tasks.objects.get(id=sub_task_id)
+    space_data = space_master.objects.get(id=space_id)
+    sub_task_data = Sub_tasks.objects.get(id=child_id)
     sub_space_id = sub_task_data.project_id
-    print("sub_space_id:::::",sub_space_id)
-
     task_id = sub_task_data.task_id
 
-    # child_id = sub_task_data.child_id
+    sub_task_data = Sub_tasks.objects.get(id=child_id)
 
+    print("group_id::::",str(space_id))
+    print("project_id::::",str(sub_space_id.id))
+    print("tash_id:::::::::::::",str(task_id.id))
 
-    space_data = space_master.objects.get(id=space_id)
-
-    multiple_sub_task_data = Sub_tasks.objects.filter(child_id = sub_task_id)
-   
-    user_details_data = User_details.objects.get(auth_user=request.user)
+    multiple_sub_task_data = Sub_tasks.objects.filter(group_id_id=space_id,project_id_id=sub_space_id.id,task_id_id=task_id.id,parent_id=parent_id,child_id=child_id)
 
     context = {
-        "space_data":space_data,
-        "sub_task_data":sub_task_data,
+        'parent_id':parent_id,
+        'child_id':child_id,
+        "sub_space_id":sub_space_id.id,
+        "task_id":task_id.id,
+        "bucket_data":space_data.task_status.all(),
+        'multiple_sub_task_data':multiple_sub_task_data,
         "today_date":today_date,
         "progress":progress,
-        "today_date":today_date,
-        # "child_id":child_id,
-        "bucket_data":space_data.task_status.all(),
-        "multiple_sub_task_data":multiple_sub_task_data,
-        "sub_space_id":sub_space_id,
-        "task_id":task_id,
-        "sub_task_id":sub_task_id
+        "space_data":space_data,
+        "sub_task_data":sub_task_data,
     }
+
+
     return render(request, 'view_sub_task.html',context)
-
-
 
 def sub_task_dynamic_action(request):
     if request.method == "POST":
+        parent_id = request.POST.get("parent_id")
+        child_id = request.POST.get("child_id")
+        print("child_id::::::::::",str(child_id))
+        
         task_id = request.POST.get("task_id") #child_id
         space_id = request.POST.get("space_id")
+
         sub_space_id = request.POST.get("sub_space_id") #parent_id
-        print("parent_id:::::::::::",sub_space_id)
-        sub_task_id = request.POST.get(sub_task_id)
-        print("sub_task_id:::::",sub_task_id)
 
         member_checkbox = request.POST.getlist("member_checkbox")
         sub_task_name = request.POST.get("sub_task_name",False)
@@ -1109,10 +1118,12 @@ def sub_task_dynamic_action(request):
         end_date = request.POST.get("end_date",False)        
         comments = request.POST.get("comments",False)
 
-
-        task_master_save = Sub_tasks.objects.create(group_id_id=space_id,project_id_id = sub_space_id,task_id_id = task_id,
-        child_id = 1,
-        parent_id=sub_task_id,
+        task_master_save = Sub_tasks.objects.create(
+        group_id_id=space_id,
+        project_id_id = sub_space_id,
+        task_id_id = task_id,
+        parent_id=parent_id,
+        child_id = child_id,
         sub_task_name =sub_task_name,
         bucket_mapping_id_id=bucket,
         progress = progress,
@@ -1122,6 +1133,7 @@ def sub_task_dynamic_action(request):
         end_date = end_date,
         dynamic_status = True
         )
+
 
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
