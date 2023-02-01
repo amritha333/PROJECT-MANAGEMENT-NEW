@@ -88,12 +88,31 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Progress</label>
-                                  <input value="{{task_data.progress}}" type="text" class="form-control">
+                                    <select class="form-control progress_change" name="edit_progress" data-id="{{i.id}}">
+                                        <option selected value="{{task_data.progress}}">{{task_data.progress}}</option>
+    
+                                        {% for p in progress %}
+                                        
+                                        {% if task_data.progress == p.0 %}
+                                        {% else %}
+                                            <option>{{p.0}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Priority</label>
-                                  <input value="{{task_data.priority}}" type="text" class="form-control">
+                                    <select class="form-control progress_change" name="edit_priority" >
+                                        <option selected value="{{task_data.priority}}">{{task_data.priority}}</option>
+                                        {% for p in priority %}
+                                    
+                                        {% if task_data.priority == p.0 %}
+                                        {% else %}
+                                            <option>{{p.0}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div> 
 
                                 <div class="col-md-6 ">

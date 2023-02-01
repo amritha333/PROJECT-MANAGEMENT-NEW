@@ -28,14 +28,22 @@ def calendar(request):
 
 
 def chat(request):
-    return render(request, 'chat.html')
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    context = {
+        "user_details_data":user_details_data
+    }
+    return render(request, 'chat.html',context)
 
 
 def user_login(request):
     return render(request, 'user_login.html')
 
 def meeting(request):
-    return render(request, 'meeting.html')
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    context = {
+        "user_details_data":user_details_data
+    }
+    return render(request, 'meeting.html',context)
 
 
 
@@ -414,39 +422,15 @@ def new_member(request):
 
 
 # -----------------------------------------------------role_management-----------------------------------------------------------------
-
 def role_management(request):
     
-    user_data = User.objects.all().first()
-    member_data = User_details.objects.all().exclude(created_by = user_data)
-
-    space_master_data = ""
-    try:
-        userdetails_data = User_details.objects.get(auth_user=request.user)
-
-        # if user is company_admin (navab sir (all space of him))
-        if userdetails_data.user_type == "company_admin":
-            space_master_data = space_master.objects.filter(added_user_id=request.user)
-    
-        else:
-
-            # if user is company_user(their space only)
-            space_access_data = space_view_access_user.objects.filter(space_view_auth_id=request.user)
-            user_permission_space = list(space_access_data.values_list('space_id',flat=True))
-            space_master_data = space_master.objects.filter(id__in=user_permission_space)
-    except:
-        pass
-
-    status_name = status_name_master.objects.filter(company_id=userdetails_data.company_id)
+    userdetails_data = User_details.objects.get(auth_user = request.user)
 
     role_data = Role_master.objects.filter(company_id = userdetails_data.company_id.id)
 
     context = {
-        "member_data" : member_data,
         "role_data":role_data,
-        "space_master_data":space_master_data,
         "user_details_data":userdetails_data,
-        "status_name":status_name
     }
     return render(request,"role_management.html",context)
 
@@ -522,57 +506,14 @@ def role_management_action(request):
 # -----------------------------------------------------task_status_management-----------------------------------------------------------------
 
 def task_status_management(request):
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
-    user_data = User.objects.all().first()
+    
     user_details_data = User_details.objects.get(auth_user=request.user)
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
-    else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id) 
-            member_data1 = User_details.objects.filter(auth_user=request.user) 
-            member_data = list(chain(member_data1,member_data))
-
-        else:
-            member_data = User_details.objects.filter(created_by=request.user)
-
     status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)    
 
-    # space_datas
-    space_master_data = ""
-    try:
-        userdetails_data = User_details.objects.get(auth_user=request.user)
-
-        # if user is company_admin (navab sir (all space of him))
-        if userdetails_data.user_type == "company_admin":
-            space_master_data = space_master.objects.filter(added_user_id=request.user)
-
-        else:
-            # if user is company_user(their space only)
-            space_access_data = space_view_access_user.objects.filter(space_view_auth_id=request.user)
-            user_permission_space = list(space_access_data.values_list('space_id',flat=True))
-            space_master_data = space_master.objects.filter(id__in=user_permission_space)
-    except:
-        pass
-
-    
-
     context = {
-        "member_data" : member_data,
         
         "status_name":status_name,
-        "space_master_data":space_master_data,
-        "user_details_data":user_details_data,
+        "user_details_data":user_details_data
     }
     return render(request, 'task_status_management.html',context)
 
@@ -980,7 +921,7 @@ def task_management_action(request):
 
 def view_task_page(request):
    
-    from.models import progress
+    from.models import progress,priority
     from datetime import datetime
     today_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -1012,6 +953,7 @@ def view_task_page(request):
         "today_date":today_date,
         "bucket_data":space_data.task_status.all(),
         "progress":progress,
+        "priority":priority,
         "today_date":today_date,
         "sub_task_data":sub_task_data,
         'parent_id':parent_id
@@ -1025,7 +967,6 @@ def sub_task_action(request):
         task_id = request.POST.get("task_id") #child_id
         space_id = request.POST.get("space_id")
         sub_space_id = request.POST.get("sub_space_id") #parent_id
-        print("parent_id:::::::::::",sub_space_id)
 
         member_checkbox = request.POST.getlist("member_checkbox")
         sub_task_name = request.POST.get("sub_task_name",False)
@@ -1075,10 +1016,6 @@ def view_sub_task(request):
 
     sub_task_data = Sub_tasks.objects.get(id=child_id)
 
-    print("group_id::::",str(space_id))
-    print("project_id::::",str(sub_space_id.id))
-    print("tash_id:::::::::::::",str(task_id.id))
-
     multiple_sub_task_data = Sub_tasks.objects.filter(group_id_id=space_id,project_id_id=sub_space_id.id,task_id_id=task_id.id,parent_id=parent_id,child_id=child_id)
 
     context = {
@@ -1100,9 +1037,7 @@ def view_sub_task(request):
 def sub_task_dynamic_action(request):
     if request.method == "POST":
         parent_id = request.POST.get("parent_id")
-        child_id = request.POST.get("child_id")
-        print("child_id::::::::::",str(child_id))
-        
+        child_id = request.POST.get("child_id")        
         task_id = request.POST.get("task_id") #child_id
         space_id = request.POST.get("space_id")
 
@@ -1134,7 +1069,6 @@ def sub_task_dynamic_action(request):
         dynamic_status = True
         )
 
-
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
             task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
@@ -1142,3 +1076,50 @@ def sub_task_dynamic_action(request):
 
         messages.success(request,"Successfully added Sub Task")
         return redirect(request.META['HTTP_REFERER'])
+
+
+
+def demo(request):
+
+    sub_space_master_data = sub_space_master.objects.get(id=1)
+    space_id = space_master.objects.get(id=1)
+
+    task_data = Add_task_master.objects.filter(space_id = space_id.id,sub_space_id = sub_space_master_data.id)
+
+    for i in task_data:
+
+        sub_task_data = Sub_tasks.objects.filter(parent_id=i.id,dynamic_status = False)
+        print("sub_task_data::::::",sub_task_data)
+
+        
+    return render(request,'demo.html',context)
+
+
+# -----------------------------------------------------tags_management-----------------------------------------------------------------
+
+def tags_management(request):
+    
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id)    
+
+    context = {
+        
+        "tags_name":tags_name,
+        "user_details_data":user_details_data
+    }
+    return render(request, 'tags_management.html',context)
+
+
+@api_view(['POST'])
+def tags_add_action(request):
+    data = request.data
+    user_data = User_details.objects.get(auth_user = request.user)
+    tags_name_master.objects.create(active_user_id_id =user_data.id,
+    active_auth_user_id_id =request.user.id ,tags_name = data['tags_name'],created_by = request.user,status="True",
+    tags_color=data['tags_color'],company_id_id = user_data.company_id.id )
+    messages.success(request,"Successfully added Tags")
+    return redirect('tags_management')
+
+
+def new_tags(request):
+    return render(request, 'new_tags.html')

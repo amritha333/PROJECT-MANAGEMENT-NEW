@@ -185,7 +185,6 @@
                             <a href="meeting" class="waves-effect"><i class="md md-call"></i><span> Meeting </span></a>
                         </li>
 
-
                         <li>
                             <a href="calendar" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
                         </li>
@@ -204,7 +203,7 @@
 
                         {% if request.user.id|company_nav_perm_check:"Role" %}
                         <li>
-                            <a href="role_management" class="waves-effect"><i class="md md-crop-free"></i><span> Role Management  </span></a>
+                            <a href="role_management" class="waves-effect"><i class="md md-crop-free"></i><span> Role Management</span></a>
                         </li>
                         {% endif %}
 
@@ -218,6 +217,10 @@
                         {% if user_details_data.user_type == "company_admin" %}
                         <li>
                             <a href="task_status_management" class="waves-effect"><i class="md md-pages"></i><span> Task Status</span></a>
+                        </li>
+
+                        <li>
+                            <a href="tags_management" class="waves-effect"><i class="md md-pages"></i><span> Tags Management</span></a>
                         </li>
                         {% endif %}
 

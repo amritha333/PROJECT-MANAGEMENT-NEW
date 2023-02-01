@@ -121,6 +121,17 @@ class status_name_master(common_table):
     def __str__(self) -> str:
         return self.status_name
 
+
+class tags_name_master(common_table):
+    active_user_id = models.ForeignKey(User_details,related_name="tags_active_userid",on_delete=models.CASCADE,null=True)
+    active_auth_user_id = models.ForeignKey(User,related_name="tags_active_auth_id",on_delete=models.CASCADE,null=True)
+    tags_name = models.CharField(max_length=15,null=True)
+    tags_color = models.CharField(max_length=55,null=True)
+    company_id = models.ForeignKey(company_master, on_delete=models.CASCADE,related_name="tags_company_id", null=True)
+
+    def __str__(self) -> str:
+        return self.tags_name
+
 class space_master(common_table):
     space_name = models.CharField(max_length=50,null=True)
     manager_auth = models.ManyToManyField(User,related_name="space_manager")
@@ -313,6 +324,9 @@ class Sub_tasks(models.Model):
     end_date = models.DateField(blank=True)
     invite_user_details_id = models.ManyToManyField(User_details,related_name="sub_task_userdetail")
     invite_user_auth_id = models.ManyToManyField(User,related_name="sub_task_auth_user")
+
+    def __str__(self) -> str:
+        return self.sub_task_name
     
 # stopwatch table
 
