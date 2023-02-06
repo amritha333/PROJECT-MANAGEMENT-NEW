@@ -26,7 +26,7 @@
                     <i class="md-more-vert"></i>
             </button>
                 <ul class="dropdown-menu">
-                    <li><a href="view_group" class="dropdown-item">View</a></li>
+                    <!-- <li><a href="view_group" class="dropdown-item">View</a></li> -->
                     <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
                   
                 </ul>
@@ -43,7 +43,7 @@
                 <div class="d-flexl">
                     <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Progress Filter
-</button>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="dropdown-item">Not Started</a></li>
                         <li><a href="#" class="dropdown-item">In progress</a></li>
@@ -139,7 +139,7 @@
                                             <td>
                                                 <div class="files">
                                                     <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
-                                                    <i class="md-done"></i><span>0/{{i.sub_space_comments.count}}</span>
+                                                    <i class="md-done"></i><span>0/{{i.sub_space_checklist.count}}</span>
                                                 </div>
                                             </td>
                                             <td>{{i.priority}}</td>
@@ -162,7 +162,6 @@
                                        
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
@@ -185,7 +184,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div> 
-            <form name="task_form" method="POST" action="project_add_action" enctype="multipart/form-data">
+            <form name="project_form" class="project_class" method="POST" action="project_add_action" enctype="multipart/form-data">
                 {% csrf_token %}
             <div class="modal-body"> 
                
@@ -195,14 +194,14 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">Project name</label> 
-                            <input type="text" name="foldername" class="form-control" id="field-1" > 
+                            <input type="text" required name="foldername" class="form-control" id="field-1" > 
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label" >Stages</label> 
                             <div id="bucket_append">
-                                <select class="form-control" name="bucket">
+                                <select  class="form-control" name="bucket">
                                     {% for b in bucket_data %}
                                     <option  value="{{b.id}}">{{b.status_name}}</option>
                                     {% endfor %}
@@ -213,7 +212,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Progress</label> 
-                         <select class="form-control" name="progress">
+                         <select  class="form-control" name="progress">
                             <option value="Not Started" selected="">Not Started</option>
                             <option value="In progress">In progress</option>
                             <option value="Completed">Completed</option>
@@ -299,7 +298,9 @@
                     <div class="img-group mx-2" style="float: right;">
                         <a  data-toggle="modal" data-target="#con-close-modal1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
-                    </div>
+                    
+                            <div style="color: red; display:none ;" id="message"></div>
+                        </div>
                 </div> 
               
             </div> 
@@ -336,7 +337,7 @@
                                     </div>
                                    <div class="col-md-4" style="margin: 22px -52px;
                                    font-size: 12px;">
-                                    <input name="member_data" value="{{i.space_view_user_details.id}}" type="checkbox">&nbsp;&nbsp;
+                                    <input name="member_data" class="member_data" value="{{i.space_view_user_details.id}}" type="checkbox">&nbsp;&nbsp;
                                         {{i.space_view_user_details.name}}
                                    </div>
                                 </div>
@@ -393,16 +394,29 @@
         $("#new_checklist").show()
         $("#add_checklist").hide()
     })
-    </script>
-
-
-    <script>
+    
     $(".add_check_list").click(function(){
         
         $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
         
     })
     </script>
+
+    <script>
+        $(".project_class").submit(function () {
+            event.preventDefault()
+            if( $('.member_data').is(':checked') ) {
+                document.forms["project_form"].submit();
+        }
+        else {
+            document.getElementById("message").style.display = "block";
+            document.getElementById("message").innerHTML = "Please choose a employee!";
+        }
+        })
+    </script>
+
+
+
 
     
 {% endblock %}

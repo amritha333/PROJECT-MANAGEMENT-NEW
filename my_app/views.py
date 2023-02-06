@@ -9,6 +9,50 @@ from rest_framework.response import Response
 from datetime import datetime
 
 
+from django.views.generic.base import TemplateView
+
+class signup(TemplateView):
+
+    def post(self,request,*args,**kwargs):
+        companyname = self.request.POST.get("companyname")
+        Username = self.request.POST.get("Username")
+        email = self.request.POST.get("email")
+        Phone = self.request.POST.get("Phone")
+        password = self.request.POST.get("password")
+        Photo = None
+        try:
+            Photo = self.request.FILES['Photo']
+        except:
+            pass
+        if User.objects.filter(username=Username).exists():
+                messages.warning(request,str("An account with the given username already exists"))
+                return redirect(request.META['HTTP_REFERER'])
+        else:
+            if company_master.objects.filter(company_name = companyname).exists():
+                company_model_data =company_master.objects.get(company_name = companyname)
+                company_master_id = company_model_data.id
+            else:
+                company_save = company_master.objects.create(company_name =companyname,status="False")
+                company_master_id = company_save.id
+            user = User.objects.create_user(Username, password = password)
+            user.save()
+            user_data = User_details.objects.create(
+                    company_id_id = company_master_id,
+                    company_name =companyname,
+                    auth_user = user,
+                    photo = Photo,
+                    username = Username,
+                    email = email,
+                    phone = Phone,
+                    user_type = 'company_admin',
+                    user_level = 'Manager',
+                    status = "True"
+                    )
+            messages.success(request,"Successfully added User details")
+            return redirect('user_login')
+            pass
+
+    template_name = 'signup.html'
 
 
 def index(request):
@@ -48,7 +92,8 @@ def meeting(request):
 
 
 def new_company(request):
-    return render(request, 'new_company.html')
+    company_data = company_master.objects.all()
+    return render(request, 'new_company.html',{'company_data':company_data})
 
 def new_meeting(request):
     return render(request, 'new_meeting.html')
@@ -695,6 +740,8 @@ def project_add_action(request):
         space_id = request.POST.get("space_id")
         foldername = request.POST.get("foldername")
         member_data = request.POST.getlist("member_data",False)
+        print("member_data::::::::",member_data)
+        
         notes = request.POST.get("notes",False)
         bucket = request.POST.get("bucket",False)
         progress = request.POST.get("progress",False)
@@ -743,8 +790,12 @@ def project_add_action(request):
                 pass
 
             user_data = User_details.objects.get(auth_user=request.user)
-            sub_space_comments.objects.create(sub_space_id_id=data_save.id,
-            added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+            if comments == "":
+                print("nulll")
+            else:
+
+                sub_space_comments.objects.create(sub_space_id_id=data_save.id,
+                added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
 
         else:
             user_active = user_active_account.objects.get(user_id=user_data.id)
@@ -784,8 +835,11 @@ def project_add_action(request):
                 pass
 
             user_data = User_details.objects.get(auth_user=request.user)
-            sub_space_comments.objects.create(sub_space_id_id=data_save.id,
-            added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+            if comments == "":
+                print("nulll")
+            else:
+                sub_space_comments.objects.create(sub_space_id_id=data_save.id,
+                added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
 
         for sp in member_data:
             user_details = User_details.objects.get(id=sp)
@@ -880,6 +934,7 @@ def task_management_action(request):
         end_date = request.POST.get("end_date",False)
         checklist_item = request.POST.getlist("checklist",False)
         new_checklist_item = list(filter(None, checklist_item))
+        print("new_checklist_item:",new_checklist_item)
         comments = request.POST.get("comments",False)
 
         task_master_save = Add_task_master.objects.create(space_id_id = space_id,
@@ -890,7 +945,8 @@ def task_management_action(request):
         priority = priority,
         notes = notes,
         start_date = start_date,
-        end_date = end_date
+        end_date = end_date,
+        task_status = "Main_task"
         )
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
@@ -903,8 +959,13 @@ def task_management_action(request):
             item_name = i)
 
         user_data = User_details.objects.get(auth_user=request.user)
-        Add_task_comments.objects.create(add_task_id_id=task_master_save.id,
-        added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+        if comments == False:
+            pass
+
+        else:
+
+            Add_task_comments.objects.create(add_task_id_id=task_master_save.id,
+            added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
 
         messages.success(request,"Successfully added Task")
         return redirect(request.META['HTTP_REFERER'])
@@ -977,6 +1038,7 @@ def sub_task_action(request):
         notes = notes,
         start_date = start_date,
         end_date = end_date,
+        task_status = "sub_task"
         )
 
         for i in member_checkbox:

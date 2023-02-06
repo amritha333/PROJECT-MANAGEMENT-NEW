@@ -49,7 +49,13 @@
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Company Name</label>
-                                    <input type="text" required autocomplete="off" name="companyname" id="company_name"  onkeyup="CompanySearch()"  class="form-control" placeholder="Company Name">
+                                    <input type="text" required autocomplete="off" name="companyname" id="company_name" list="company_data"  class="form-control" placeholder="Company Name">
+
+                                    <datalist id="company_data">
+                                        {% for c in company_data %}
+                                            <option value="{{c.company_name}}"></option>
+                                        {% endfor %}
+                                    </datalist>
                                 </div>
                               
                                 <div class="col-md-6 ">

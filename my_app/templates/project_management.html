@@ -22,7 +22,7 @@
                     <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
                         {{request.user|index_f:sp.space_name}}
                     </div>
-                    <h3 style="padding: 9px 7px;">{{sp.space_name}}</h3>
+                    <h3 style="padding: 9px 7px; cursor: pointer;"><a style="text-decoration:none;  color:black;" href="view_group?space_id={{sp.id}}">{{sp.space_name}}</a></h3>
                    
                 </div>
 
@@ -126,7 +126,7 @@
                                         {% if request.user in i.invite_user_auth_id.all %}  
                                         <tr>
                                             <td>
-                                                        {{i.sub_space_name}}
+                                                {{i.sub_space_name}}
                                             </td>
                                             <td>
                                                 <div class="profile-image d-flex align-items-center">
@@ -230,13 +230,38 @@
                                                 {% endif %}
                                                {{i.priority}}
                                             </td>
-                                            <td>{{i.Planning_end_date|safe}}</td>
-                                            <td>{{i.bucket_mapping_id}}</td>
+                                            <td><span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i>&ensp;{{i.Planning_end_date|safe}}</span></td>
+                                            <td>
+                                                {% if i.bucket_mapping_id.status_color == "red" %}
+                                                
+                                                <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
+
+                                                {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
+                                                
+                                                <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
+
+                                                {% elif i.bucket_mapping_id.status_color == "green" %}
+                                                
+                                                <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
+
+                                                {% elif i.bucket_mapping_id.status_color == "blue" %}
+                                                
+                                                <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
+
+                                                {% elif i.bucket_mapping_id.status_color == "darkorange" %}
+                                                
+                                                <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
+
+                                                {% else %}
+
+                                                     <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
+                                                {% endif %}
+                                            </td>
                                             <td>
 
                                                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="md-more-vert"></i>
-                            </button>
+                                                <i class="md-more-vert"></i>
+                                                </button>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View Project</a></li>
                                                     <li><a href="#" class="dropdown-item">Another action</a></li>
@@ -285,7 +310,7 @@
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Team member</label> 
-                         <select multiple class="form-control jsSelect1" name="member_data">
+                         <select required multiple class="form-control jsSelect1" name="member_data">
                             {% for i in  member_data %}
                             <option value="{{i.id}}">{{i.username}}</option>
                             {% endfor %}
@@ -295,7 +320,7 @@
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Manager</label> 
-                         <select multiple class="form-control jsSelect1" name="manager_id">
+                         <select required multiple class="form-control jsSelect1" name="manager_id">
                             {% for i in  manager_data %}
                             <option value="{{i.id}}">{{i.username}}</option>
                             {% endfor %}
@@ -430,6 +455,7 @@
     $("#add_status").click(function(){
        
         $("#new_status").show()
+        $("#add_status").hide()
     })
     </script>
 

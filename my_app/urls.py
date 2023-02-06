@@ -46,5 +46,6 @@ urlpatterns = [
     path('new_tags',views.new_tags,name='new_tags'),
     path('tags_add_action',views.tags_add_action,name='tags_add_action'),
     path('demo',views.demo,name='demo'),
+    path('signup',views.signup.as_view(),name='signup'),
 
 ]

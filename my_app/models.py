@@ -223,6 +223,7 @@ class Add_task_master(common_table):
     notes = models.TextField(null=True)
     start_date = models.DateField(blank=True)
     end_date = models.DateField(blank=True)
+    task_status = models.CharField(max_length=50,null=True)
     def __str__(self) -> str:
         return self.task_name
 

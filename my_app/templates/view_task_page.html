@@ -18,14 +18,14 @@
                     <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
                         {{request.user|index_f:space_data.space_name}}
                     </div>
-                    <h3 style="padding: 9px 7px;">{{space_data.space_name}}</h3>
+                    <h3 style="padding: 9px 7px;"><a style="text-decoration:none;  color:black;" href="view_group?space_id={{space_data.id}}">{{space_data.space_name}}</a></h3>
                 </div>
 
                 <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
                     <i class="md-more-vert"></i>
             </button>
                 <ul class="dropdown-menu">
-                    <li><a href="view_group" class="dropdown-item">View</a></li>
+                    <li><a href="view_group?space_id={{space_data.id}}" class="dropdown-item">View</a></li>
                     <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
                   
                 </ul>
@@ -211,7 +211,7 @@
 
 
 
-<form name="sub_task_form" method="POST" action="sub_task_action">
+<form name="sub_task_form" class="sub_task_class" method="POST" action="sub_task_action">
     {% csrf_token %} 
 
 <div id="new_sub_task_create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
@@ -233,7 +233,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">SubTask Name</label> 
-                            <input type="text" name="sub_task_name" class="form-control" id="field-1" placeholder="SubTask Name"> 
+                            <input type="text" required name="sub_task_name" class="form-control" id="field-1" placeholder="SubTask Name"> 
                         </div> 
                     </div> 
                   
@@ -281,7 +281,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">End date</label> 
-                         <input type="date"  min="{{today_date}}" name="end_date" class="form-control">
+                         <input type="date" required  min="{{today_date}}" name="end_date" class="form-control">
                         </div> 
                     </div> 
                    
@@ -296,7 +296,9 @@
                     <div class="img-group mx-2" style="float: right;">
                         <a  data-toggle="modal" data-target="#sub_task_employee">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
-                    </div>
+                    
+                            <div style="color: red; display:none ;" id="message"></div>
+                        </div>
                 </div> 
             </div> 
             <div class="modal-footer"> 
@@ -332,7 +334,7 @@
                                     </div>
                                    <div class="col-md-4" style="margin: 22px -52px;
                                    font-size: 12px;">
-                                    <input name="member_checkbox" value="{{i.invite_user_details_id.id}}" type="checkbox">&nbsp;&nbsp;
+                                    <input  name="member_checkbox" class="member_data" value="{{i.invite_user_details_id.id}}" type="checkbox">&nbsp;&nbsp;
                                         {{i.invite_user_details_id.name}}
                                    </div>
                                 </div>
@@ -372,6 +374,20 @@
             $("#bucket_append").empty().append(data)
         }
      });
+    })
+</script>
+
+
+<script>
+    $(".sub_task_class").submit(function () {
+        event.preventDefault()
+        if( $('.member_data').is(':checked') ) {
+            document.forms["sub_task_form"].submit();
+    }
+    else {
+        document.getElementById("message").style.display = "block";
+        document.getElementById("message").innerHTML = "Please choose a employee!";
+    }
     })
 </script>
 

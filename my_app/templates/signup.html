@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="utf-8" />
+    <title>Veuz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link rel="shortcut icon" href="../static/login_static/assets/images/favicon_1.ico">
+
+    <!-- DataTables -->
+    <link href="../static/login_static/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/fixedHeader.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/scroller.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Custom Files -->
+    <link href="../static/login_static/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/6adc82e575.js" crossorigin="anonymous"></script>
+    <script src="../static/login_static/assets/js/modernizr.min.js"></script>
+
+
+</head>
+
+
+<body style="background: white;">
+
+    <!-- Begin page -->
+
+
+        <div class="bg-loginlight bg-height d-flex justify-content-center align-items-center">
+            <div class="row contact-form">
+                <div class="col-md-6 pl-0">
+                    <div class="bg-backgrnd bg-backgrnd1">
+                        <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_jcikwtux.json"  background="transparent"  speed="1"  style="width: 455px; height: 455px;"  loop  autoplay></lottie-player>
+                       
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="login-veuz signup-veuz">
+                        <div class="w-100">
+                            <img src="../static/login_static/assets/images/veuzlogo.png" alt="" class="img-fluid" width="150px">
+                                    <form name="register" class="form" action="" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+                                                    <input type="text" required name="companyname" placeholder="Company Name" id="companyname"
+                                                        class="form-input">
+                                                    <label for="companyname" class="form-label">Company Name</label>
+                                                    <span class="form-check">
+                                                        <i class="fa fa-building-o"></i>
+                                                    </span>
+                                     
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+                                                    <input type="text" name="Username" required placeholder="Username" id="Username"
+                                                        class="form-input">
+                                                    <label for="Username" class="form-label">Username</label>
+                                                    <span class="form-check">
+                                                        <i class="fa-regular fa-user"></i>
+                                                    </span>
+                                     
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+                                                    <input type="email" name="email" required placeholder="email" id="email"
+                                                        class="form-input">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <span class="form-check">
+                                                        <i class="fa-regular fa-at"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+                                                    <input type="tel" name="Phone" required placeholder="Phone" id="Phone"
+                                                        class="form-input">
+                                                    <label for="Phone" class="form-label">Phone</label>
+                                                    <span class="form-check">
+                                                        <i class="md md-phone-iphone"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                
+                                              
+                                                    <label class="uploadFile w-100">
+                                                      
+                                                        <span class="filename">Photo</span>
+                                                        <i class="fas fa-paperclip fa-md"></i>
+                                                        <input type="file" class="inputfile form-control" name="Photo" >
+                                                      </label>
+                                                   
+                                             
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-control mb-1">
+                                                    <input required type="password"  name="password" placeholder="password"
+                                                        id="password" class="form-input">
+                                                    <label for="password" class="form-label">Password</label>
+                                                    <span class="form-check">
+                                                        <i class="md md-lock-outline"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 d-flex justify-content-center">
+                                              
+                                                    <button type="submit" class="btn btn-darken">Sign Up</button>
+                                             
+                                            </div>
+                                        </div>
+                                    </form>
+                                
+                     
+                        </div>
+                        <div class="bottom-signup">
+                            <h6>Already have an account ? <a href="{% url '' %}">Log in</a></h6>
+                        </div>
+                      
+                    </div>
+                
+                </div>
+            </div>
+
+        </div>
+
+
+    <!-- END wrapper -->
+    <script>
+        var resizefunc = [];
+    </script>
+
+    <!-- jQuery  -->
+    <script src="../static/login_static/assets/js/jquery.min.js"></script>
+    <script src="../static/login_static/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/login_static/assets/js/detect.js"></script>
+    <script src="../static/login_static/assets/js/fastclick.js"></script>
+    <script src="../static/login_static/assets/js/jquery.slimscroll.js"></script>
+    <script src="../static/login_static/assets/js/jquery.blockUI.js"></script>
+    <script src="../static/login_static/assets/js/waves.js"></script>
+    <script src="../static/login_static/assets/js/wow.min.js"></script>
+    <script src="../static/login_static/assets/js/jquery.nicescroll.js"></script>
+    <script src="../static/login_static/assets/js/jquery.scrollTo.min.js"></script>
+
+    <script src="../static/login_static/assets/js/jquery.app.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#datatable').dataTable();
+            $('#datatable-keytable').DataTable({
+                keys: true
+            });
+            $('#datatable-responsive').DataTable();
+            $('#datatable-scroller').DataTable({
+                ajax: "../plugins/datatables/json/scroller-demo.json",
+                deferRender: true,
+                scrollY: 380,
+                scrollCollapse: true,
+                scroller: true
+            });
+            var table = $('#datatable-fixed-header').DataTable({
+                fixedHeader: true
+            });
+        });
+        TableManageButtons.init();
+    </script>
+
+    <script>
+        $("input[type=file]").change(function (e) {
+            $(this).parents(".uploadFile").find(".filename").text(e.target.files[0].name);
+        });
+    </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-title{
+        font-size: 12px!important;
+    }
+</style>
+
+{% if messages %}
+<script>
+    {% for message in messages %}
+ 
+
+    var toastMixin = Swal.mixin({
+    toast: true,
+    icon: '{{message.tags}}',
+    title: 'General Title',
+    animation: false,
+    position: 'top-right',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+    });
+    toastMixin.fire({
+    animation: true,
+    title: "{{message}}"
+    });
+    {% endfor %}
+
+</script>
+{% endif %}
+</body>
+
+</html>

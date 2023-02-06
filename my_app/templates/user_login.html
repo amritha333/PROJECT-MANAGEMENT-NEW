@@ -1,151 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
-    <head>
-        <meta charset="utf-8" />
-        <title>Veuz Concepts</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
-        <meta content="Coderthemes" name="author" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-     
+{% load static %}
 
-        <!-- Custom Files -->
-        <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
-        <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet" type="text/css" />
-        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css" />
+<head>
+    <meta charset="utf-8" />
+    <title>Veuz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-        <script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+    <link rel="shortcut icon" href="../static/login_static/assets/images/favicon_1.ico">
 
-        
-    </head>
-    <body>
-       
+    <!-- DataTables -->
+    <link href="../static/login_static/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/fixedHeader.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/plugins/datatables/scroller.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
-        <div class="wrapper-page">
-            <div class="card card-pages">
-                <div class="card-header bg-img"> 
-                    <div class="bg-overlay"></div>
-                    <h3 class="text-center m-t-10 text-white"> <strong>Veuz Concepts</strong> </h3>
-                </div> 
+    <!-- Custom Files -->
+    <link href="../static/login_static/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="../static/login_static/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/6adc82e575.js" crossorigin="anonymous"></script>
+    <script src="../static/login_static/assets/js/modernizr.min.js"></script>
 
 
-                <div class="card-body">
-                    <form class="form-horizontal m-t-20" action="login_action" method="POST">
-                        {% csrf_token %}
+</head>
+
+
+<body style="background: white;">
+
+    <!-- Begin page -->
+
+        <div class="bg-loginlight bg-height d-flex justify-content-center align-items-center">
+            <div class="row contact-form">
+                <div class="col-md-6 pl-0">
+                    <div class="bg-backgrnd">
+                      <!-- <img src="assets/images/login.png" alt="" class="img-fluid"> -->
+
+                      <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_jcikwtux.json"  background="transparent"  speed="1"  style="width: 455px; height: 455px;"  loop  autoplay></lottie-player>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="login-veuz">
+                        <div class="w-100">
+                            <img src="../static/login_static/assets/images/veuzlogo.png" alt="" class="img-fluid" width="150px">
+                                    <form name="register" class="form" action="login_action" method="POST">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-control">
+                                                    <input type="text" name="username" placeholder="username" id="email"
+                                                        class="form-input">
+                                                    <label for="email" class="form-label">Username</label>
+                                                    <span class="form-check">
+                                                        <i class="fa-regular fa-at"></i>
+                                                    </span>
+                                     
+                                                </div>
+                                                <div class="form-control mb-1">
+                                                    <input type="password" name="password" placeholder="password"
+                                                        id="password" class="form-input">
+                                                    <label for="password" class="form-label">Password</label>
+                                                    <span class="form-check">
+                                                        <i class="md md-lock-outline"></i>
+                                                    </span>
+                                             
+                                                </div>
+                                                <div class="checkbox">
+                                                    <input id="checkbox-signup" type="checkbox">
+                                                    <label for="checkbox-signup">
+                                                        Remember me
+                                                    </label>
+                                                </div>
+                                                <div class="">
+                                                    <button type="submit" class="btn btn-darken">Log in</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                
+                     
+                        </div>
+                        <div class="bottom-signup">
+                            <h6>Don't have an account yet ? <a href="{% url 'signup' %}">Sign Up</a></h6>
+                        </div>
+                      
+                    </div>
                 
-                    
-                    <div class="form-group">
-                        <div class="col-12 mt-4">
-                            <input class="form-control input-lg" type="text" name="username" id="username" required  placeholder="Username">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-12">
-                            <input class="form-control input-lg" name="password" id="userpassword" required type="password"  placeholder="Password">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <!-- <div class="col-12">
-                            <div class="checkbox checkbox-primary">
-                                <input id="checkbox-signup" type="checkbox">
-                                <label for="checkbox-signup">
-                                    Remember me
-                                </label>
-                            </div>
-                            
-                        </div> -->
-                    </div>
-                    
-                    <div class="form-group text-center m-t-40">
-                        <div class="col-12">
-                            
-                            <button class="btn btn-primary btn-lg w-lg waves-effect waves-light">Log In</button>
-                           
-                            
-                        </div>
-                    </div>
-
-                    <!-- <div class="form-group row m-t-30">
-                        <div class="col-sm-7">
-                            <a href="pages-recoverpw.html"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
-                        </div>
-                        <div class="col-sm-5 text-right">
-                            <a href="pages-register.html">Create an account</a>
-                        </div>
-                    </div> -->
-                </form> 
-                </div>                                 
-                
+                </div>
             </div>
+
         </div>
 
-        
 
-        
-    	<script>
-            var resizefunc = [];
-        </script>
+    <!-- END wrapper -->
+    <script>
+        var resizefunc = [];
+    </script>
 
-        <!-- Main  -->
-        <script src="{% static 'assets/js/jquery.min.js' %}"></script>
-        <script src="{% static 'assets/js/bootstrap.bundle.min.js"' %}></script>
-        <script src="{% static 'assets/js/detect.js' %}"></script>
-        <script src="{% static 'assets/js/fastclick.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.slimscroll.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.blockUI.js' %}"></script>
-        <script src="{% static 'assets/js/waves.js' %}"></script>
-        <script src="{% static 'assets/js/wow.min.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.nicescroll.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.scrollTo.min.js' %}"></script>
+    <!-- jQuery  -->
+    <script src="../static/login_static/assets/js/jquery.min.js"></script>
+    <script src="../static/login_static/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/login_static/assets/js/detect.js"></script>
+    <script src="../static/login_static/assets/js/fastclick.js"></script>
+    <script src="../static/login_static/assets/js/jquery.slimscroll.js"></script>
+    <script src="../static/login_static/assets/js/jquery.blockUI.js"></script>
+    <script src="../static/login_static/assets/js/waves.js"></script>
+    <script src="../static/login_static/assets/js/wow.min.js"></script>
+    <script src="../static/login_static/assets/js/jquery.nicescroll.js"></script>
+    <script src="../static/login_static/assets/js/jquery.scrollTo.min.js"></script>
 
-        <script src="{% static 'assets/js/jquery.app.js' %}"></script>
+    <script src="../static/login_static/assets/js/jquery.app.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style>
-            .swal2-title{
-                font-size: 12px!important;
-            }
-        </style>
-
-        {% if messages %}
-        <script>
-            {% for message in messages %}
-         
-        
-            var toastMixin = Swal.mixin({
-            toast: true,
-            icon: '{{message.tags}}',
-            title: 'General Title',
-            animation: false,
-            position: 'top-right',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+    <script>
+        $(document).ready(function() {
+            $('#datatable').dataTable();
+            $('#datatable-keytable').DataTable({
+                keys: true
             });
-            toastMixin.fire({
-            animation: true,
-            title: "{{message}}"
+            $('#datatable-responsive').DataTable();
+            $('#datatable-scroller').DataTable({
+                ajax: "../plugins/datatables/json/scroller-demo.json",
+                deferRender: true,
+                scrollY: 380,
+                scrollCollapse: true,
+                scroller: true
             });
-            {% endfor %}
-        
-        </script>
-        {% endif %}
+            var table = $('#datatable-fixed-header').DataTable({
+                fixedHeader: true
+            });
+        });
+        TableManageButtons.init();
+    </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-title{
+        font-size: 12px!important;
+    }
+</style>
 
+{% if messages %}
+<script>
+    {% for message in messages %}
+ 
 
+    var toastMixin = Swal.mixin({
+    toast: true,
+    icon: '{{message.tags}}',
+    title: 'General Title',
+    animation: false,
+    position: 'top-right',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+    });
+    toastMixin.fire({
+    animation: true,
+    title: "{{message}}"
+    });
+    {% endfor %}
 
+</script>
+{% endif %}
 
-	
-	</body>
+</body>
+
 </html>
