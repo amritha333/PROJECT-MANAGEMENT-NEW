@@ -214,6 +214,7 @@ class sub_space_access_permission(common_table):
 class Add_task_master(common_table):
     space_id = models.ForeignKey(space_master,related_name="add_task_master_space",on_delete=models.CASCADE,null=True)
     sub_space_id = models.ForeignKey(sub_space_master,related_name="add_sub_space",on_delete=models.CASCADE,null=True)
+    parent_id = models.ForeignKey('self',blank=True,null=True,related_name='sub_task',on_delete=models.CASCADE)
     task_name = models.CharField(max_length=50,null=True)
     buckets = models.CharField(max_length=50,choices=buckets,null=True)
     bucket_mapping_id = models.ForeignKey(status_name_master,related_name="Add_task_master_bucket_id",on_delete=models.CASCADE)
@@ -222,6 +223,8 @@ class Add_task_master(common_table):
     notes = models.TextField(null=True)
     start_date = models.DateField(blank=True)
     end_date = models.DateField(blank=True)
+    def __str__(self) -> str:
+        return self.task_name
 
 class Add_task_access_user(common_table):
     add_task = models.ForeignKey(Add_task_master,related_name="add_task_space",on_delete=models.CASCADE,null=True)
@@ -307,27 +310,6 @@ class Notification(models.Model):
     task_category = models.CharField(max_length=50,null=True,choices=notification_category)
 
 
-
-class Sub_tasks(models.Model):
-    group_id = models.ForeignKey(space_master,related_name="subtask_group_id",on_delete=models.CASCADE,null=True)
-    project_id = models.ForeignKey(sub_space_master,related_name="sub_task_projectid",on_delete=models.CASCADE,null=True)
-    task_id = models.ForeignKey(Add_task_master,related_name="sub_task_taskid",on_delete=models.CASCADE,null=True)
-    parent_id = models.IntegerField(null=True)
-    child_id = models.IntegerField(null=True)
-    dynamic_status = models.CharField(max_length=50,null=True)
-    sub_task_name = models.CharField(max_length=100,null=True)
-    bucket_mapping_id = models.ForeignKey(status_name_master,related_name="sub_task_bucket_id",on_delete=models.CASCADE,null=True)
-    progress = models.CharField(max_length=50,choices=progress,null=True)
-    priority = models.CharField(max_length=50,choices=priority,null=True)
-    notes = models.TextField(null=True)
-    start_date = models.DateField(blank=True)
-    end_date = models.DateField(blank=True)
-    invite_user_details_id = models.ManyToManyField(User_details,related_name="sub_task_userdetail")
-    invite_user_auth_id = models.ManyToManyField(User,related_name="sub_task_auth_user")
-
-    def __str__(self) -> str:
-        return self.sub_task_name
-    
 # stopwatch table
 
 class Task_time_details(models.Model):

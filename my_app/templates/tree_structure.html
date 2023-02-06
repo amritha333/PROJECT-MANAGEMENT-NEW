@@ -1,0 +1,14 @@
+
+{% load permissions %}
+
+<ul>
+    {% for sub in subs %}
+        <li>
+            
+     <i>{{ sub.task_name }}</i> 
+          
+                {% tree_structure sub %}
+         
+        </li>
+    {% endfor %}
+</ul>

@@ -41,6 +41,7 @@
         <!-- Left sidebar -->
     
         <div class="col-lg-9">
+            
             <form action="update_project" method="POST">
                 {% csrf_token %}
 
@@ -239,9 +240,26 @@
                        
             </form>
                 </div> <!-- card-body -->
+
+
+               
+
             </div> <!-- card -->
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    
+                </div>
+            </div>
+            
+            
+
         </div> <!-- End Rightsidebar -->
+        
 </div>
+
+
 
 <form name="task_form" method="POST" action="task_management_action" enctype="multipart/form-data">
     {% csrf_token %} 

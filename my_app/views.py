@@ -828,7 +828,7 @@ def view_project_page(request):
 
     sub_space_member_data = sub_space_master.objects.get(id=sub_space_id)
 
-    task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id )
+    task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None )
 
     user_details_data = User_details.objects.get(auth_user=request.user)
 
@@ -853,26 +853,17 @@ def update_project(request):
     if request.method == "POST":
         sub_space_id = request.POST.get("sub_space_id",False)
         edit_project_name = request.POST.get("edit_project_name",False)
-        print("edit_project_name:::::",edit_project_name)
         edit_start_date = request.POST.get("edit_start_date",False)
-        print("edit_start_date:::::",edit_start_date)
         edit_end_date = request.POST.get("edit_end_date",False)
-        print("edit_end_date:::::",edit_end_date)
         edit_progress = request.POST.get("edit_progress",False)
-        print("edit_progress:::::",edit_progress)
         edit_priority = request.POST.get("edit_priority",False)
-        print("edit_priority:::::",edit_priority)
         edit_bucket = request.POST.get("edit_bucket",False)
-        print("edit_bucket:::::",edit_bucket)
         edit_checklist = request.POST.get("edit_checklist",False)
-        print("edit_checklist:::::",edit_checklist)
 
         sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = edit_project_name,bucket_mapping_id =edit_bucket,progress=edit_progress,priority=edit_priority,Planning_start_date=edit_start_date,Planning_end_date=edit_end_date)
 
         messages.success(request,"Successfully updated Project details")
         return redirect(request.META['HTTP_REFERER'])
-
-
 
 
 def task_management_action(request):
@@ -931,9 +922,9 @@ def view_task_page(request):
     space_id = task_data.space_id
     sub_space_id = task_data.sub_space_id.id
 
-    # sub_task_data = Sub_tasks.objects.filter(parent_id=sub_space_id,child_id=task_id)
-    sub_task_data = Sub_tasks.objects.filter(parent_id=task_id,dynamic_status = False)
-    print("sub task data ::::::::::",sub_task_data)
+
+    sub_task_data = Add_task_master.objects.filter(parent_id = task_id)
+   
 
     space_data = space_master.objects.get(id=space_id.id)
 
@@ -961,7 +952,6 @@ def view_task_page(request):
     return render(request, 'view_task_page.html',context)
 
 
-
 def sub_task_action(request):
     if request.method == "POST":
         task_id = request.POST.get("task_id") #child_id
@@ -979,103 +969,28 @@ def sub_task_action(request):
         comments = request.POST.get("comments",False)
 
 
-        task_master_save = Sub_tasks.objects.create(group_id_id=space_id,project_id_id = sub_space_id,task_id_id = task_id,
-        parent_id=task_id,
-        sub_task_name =sub_task_name,
+        task_master_save = Add_task_master.objects.create(space_id_id = space_id,sub_space_id_id = sub_space_id,parent_id_id = task_id,
+        task_name =sub_task_name,
         bucket_mapping_id_id=bucket,
         progress = progress,
         priority = priority,
         notes = notes,
         start_date = start_date,
         end_date = end_date,
-        dynamic_status = False
         )
 
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
-            task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
-            task_master_save.invite_user_details_id.add(i)
+            task_access_user_save = Add_task_access_user.objects.create(add_task_id=task_master_save.id,
+            invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id
+            )
 
         messages.success(request,"Successfully added Sub Task")
         return redirect(request.META['HTTP_REFERER'])
 
 
-def view_sub_task(request):
-    from.models import progress
-    from datetime import datetime
-    today_date = datetime.today().strftime('%Y-%m-%d')
-
-    parent_id = request.GET.get("parent_id")
-    child_id = request.GET.get("child_id")
-
-    space_id = request.GET.get("space_id")
-    space_data = space_master.objects.get(id=space_id)
-    sub_task_data = Sub_tasks.objects.get(id=child_id)
-    sub_space_id = sub_task_data.project_id
-    task_id = sub_task_data.task_id
-
-    sub_task_data = Sub_tasks.objects.get(id=child_id)
-
-    multiple_sub_task_data = Sub_tasks.objects.filter(group_id_id=space_id,project_id_id=sub_space_id.id,task_id_id=task_id.id,parent_id=parent_id,child_id=child_id)
-
-    context = {
-        'parent_id':parent_id,
-        'child_id':child_id,
-        "sub_space_id":sub_space_id.id,
-        "task_id":task_id.id,
-        "bucket_data":space_data.task_status.all(),
-        'multiple_sub_task_data':multiple_sub_task_data,
-        "today_date":today_date,
-        "progress":progress,
-        "space_data":space_data,
-        "sub_task_data":sub_task_data,
-    }
 
 
-    return render(request, 'view_sub_task.html',context)
-
-def sub_task_dynamic_action(request):
-    if request.method == "POST":
-        parent_id = request.POST.get("parent_id")
-        child_id = request.POST.get("child_id")        
-        task_id = request.POST.get("task_id") #child_id
-        space_id = request.POST.get("space_id")
-
-        sub_space_id = request.POST.get("sub_space_id") #parent_id
-
-        member_checkbox = request.POST.getlist("member_checkbox")
-        sub_task_name = request.POST.get("sub_task_name",False)
-        notes = request.POST.get("notes",False)
-        bucket = request.POST.get("bucket",False)
-        progress = request.POST.get("progress",False)
-        priority = request.POST.get("priority",False)
-        start_date = request.POST.get("start_date",False)
-        end_date = request.POST.get("end_date",False)        
-        comments = request.POST.get("comments",False)
-
-        task_master_save = Sub_tasks.objects.create(
-        group_id_id=space_id,
-        project_id_id = sub_space_id,
-        task_id_id = task_id,
-        parent_id=parent_id,
-        child_id = child_id,
-        sub_task_name =sub_task_name,
-        bucket_mapping_id_id=bucket,
-        progress = progress,
-        priority = priority,
-        notes = notes,
-        start_date = start_date,
-        end_date = end_date,
-        dynamic_status = True
-        )
-
-        for i in member_checkbox:
-            user_details = User_details.objects.get(id=i)
-            task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
-            task_master_save.invite_user_details_id.add(i)
-
-        messages.success(request,"Successfully added Sub Task")
-        return redirect(request.META['HTTP_REFERER'])
 
 
 

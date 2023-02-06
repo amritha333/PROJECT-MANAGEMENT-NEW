@@ -88,3 +88,11 @@ def index_f(value, args):
             result = data[0][0]
             pass
     return result
+
+
+
+@register.inclusion_tag('tree_structure.html')
+def tree_structure(task):
+    print("------------------")
+    subs = task.sub_task.all()
+    return {"subs": subs}

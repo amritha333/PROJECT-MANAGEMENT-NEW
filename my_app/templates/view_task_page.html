@@ -147,18 +147,18 @@
                                             </tr>
                                         </thead>
 
-
                                         <tbody class="body-textcls">
 
                                             {% for i in sub_task_data %}
                                             <tr>
                                                 <td>
-                                                    {{i.sub_task_name}}
+                                                    {{i.task_name}}
                                                 </td>
                                                 <td>
                                                     <div class="profile-image d-flex align-items-center">
-                                                        {% for j in i.invite_user_details_id.all %}
-                                                        <img src="./media/{{j.photo}}">
+                                                        {% for j in i.add_task_space.all %}
+                                                        
+                                                        <img src="./media/{{j.invite_user_details_id.photo}}">
                                                         {% endfor %}
                                                     </div>
                                                 </td>
@@ -188,7 +188,7 @@
                                                     <i class="md-more-vert"></i>
                                                     </button>
                                                     <ul class="dropdown-menu">
-                                                        <li><a href="view_sub_task?parent_id={{parent_id}}&child_id={{i.id}}&space_id={{space_data.id}}" class="dropdown-item">View</a></li>
+                                                        <li><a href="view_task_page?task_id={{i.id}}" class="dropdown-item">View</a></li>
                                                       
                                                     </ul>
 
