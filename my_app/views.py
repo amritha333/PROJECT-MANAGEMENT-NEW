@@ -577,6 +577,7 @@ def task_status_action(request):
 # ----------------------------------------------------project_management-------------------------------------------------------------
 
 def project_management(request):
+    today_date = datetime.today().strftime('%Y-%m-%d')
     user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
     user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
     user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
@@ -595,11 +596,7 @@ def project_management(request):
             child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
             child_user_id.append(int(request.user.id))
             member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(user_level = "Manager")
-            # print("member_data:",member_data)
-            # member_data1 = User_details.objects.filter(auth_user=request.user) 
-            # print("member_data1:",member_data1)
-            # member_data = list(chain(member_data1,member_data))
-
+            
         else:
             member_data = User_details.objects.filter(manager_auth=request.user)
 
@@ -615,8 +612,13 @@ def project_management(request):
         if userdetails_data.user_type == "company_admin":
             space_master_data = space_master.objects.filter(added_user_id=request.user)
             space_list = list(space_master_data.values_list('id',flat=True))
+            print("space_list.first:",space_list[0])
+            space_dept = space_master.objects.get(id=space_list[0])
+            space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
 
-            sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
+
+            sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
+            
     
         else:
             # if user is company_user(their space only)
@@ -634,6 +636,9 @@ def project_management(request):
    
     if userdetails_data.user_type == "company_admin":
         space_data = space_master.objects.filter(added_user_id = request.user)
+
+
+
         
     
     context = {
@@ -643,7 +648,10 @@ def project_management(request):
     "status_name":status_name,
     "manager_data":manager_data,
     "space_master_data":space_master_data,
-    "sub_space_data":sub_space_data
+    "sub_space_data":sub_space_data,
+    "space_dept":space_dept,
+    "space_member_data":space_member_data,
+    "today_date":today_date
     }
     return render(request, 'project_management.html',context)
 
@@ -896,7 +904,8 @@ def view_project_page(request):
         "priority":priority,
         "today_date":today_date,
         "task_data":task_data,
-        "sub_space_id":sub_space_id
+        "sub_space_id":sub_space_id,
+        "user_details_data":user_details_data
     }
     return render(request, 'view_project_page.html',context)
 
@@ -1100,3 +1109,78 @@ def tags_add_action(request):
 
 def new_tags(request):
     return render(request, 'new_tags.html')
+
+
+def project_management_board(request):
+    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
+    if user_manage_all_permission:
+        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(active_user_id.active_auth_user_id.id))
+        member_data = User_details.objects.filter(created_by__in=child_user_id)
+    else:
+        if user_details_data.user_type == "company_admin":
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(request.user.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(user_level = "Manager")
+            
+        else:
+            member_data = User_details.objects.filter(manager_auth=request.user)
+
+    role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
+    status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
+
+    space_master_data = ""
+    sub_space_data =""
+    try:
+        userdetails_data = User_details.objects.get(auth_user=request.user)
+
+        # if user is company_admin (navab sir (all space of him))
+        if userdetails_data.user_type == "company_admin":
+            space_master_data = space_master.objects.filter(added_user_id=request.user)
+            space_list = list(space_master_data.values_list('id',flat=True))
+
+            sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
+    
+        else:
+            # if user is company_user(their space only)
+            space_access_data = space_view_access_user.objects.filter(space_view_auth_id=request.user)
+            user_permission_space = list(space_access_data.values_list('space_id',flat=True))
+            space_master_data = space_master.objects.filter(id__in=user_permission_space)
+
+
+            space_list = list(space_master_data.values_list('id',flat=True))
+            sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
+
+    except:
+        pass
+
+   
+    if userdetails_data.user_type == "company_admin":
+        space_data = space_master.objects.filter(added_user_id = request.user)
+        
+    
+    context = {
+    "member_data" : member_data,
+    "role_data":role_data,
+    "user_details_data":user_details_data,
+    "status_name":status_name,
+    "manager_data":manager_data,
+    "space_master_data":space_master_data,
+    "sub_space_data":sub_space_data
+    }
+    return render(request, 'project_management_board.html',context)
+
+
+def get_group_details(request):
+    space_id = request.GET.get("space_id")
+    space_dept = space_master.objects.get(id=space_id)
+    sub_space_data = sub_space_master.objects.filter(space_id=space_id)
+    return render(request,'get_group_details.html',{"sub_space_data":sub_space_data,"space_dept":space_dept})

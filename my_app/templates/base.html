@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
-{% load permissions %}
-<head>
+    {% load static %}
+    {% load permissions %}
 
+<head>
+    <meta charset="utf-8" />
+    <title>Veuz</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <link rel="shortcut icon" href="{% static 'veuz.png' %}">
+    <link rel="shortcut icon" href="veuz.png">
 
-    <link href="{% static 'plugins/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css">
-
+    <link href="../static//plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css">
     <link href="../static/plugins/select2/dist/css/select2.css" rel="stylesheet" type="text/css">
     <link href="../static/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet" type="text/css">
-    
-
     <!-- Custom Files -->
-    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css" />
+    <link href="../static/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="../static/assets/css/style.css" rel="stylesheet" type="text/css" />
 
-    <script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+    <script src="../static/assets/js/modernizr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
@@ -32,24 +31,26 @@
 <body class="fixed-left">
 
     <!-- Begin page -->
-    <div id="wrapper" >
+    <div id="wrapper">
 
         <!-- Top Bar Start -->
         <div class="topbar">
             <!-- LOGO -->
             <div class="topbar-left">
+                <div class="float-left">
+                    <a href="#" class="button-menu-mobile open-left">
+                        <i class=" md-apps"></i>
+                    </a>
+                </div>
                 <div class="text-center">
-                    <a href="index" class="logo">
-                        <img style="width: 31%;" src="{% static 'veuz.png' %}"> 
-                       <span>Veuz Concepts </span></a>
+                    <a href="index.html" class="logo"><img src="../static/assets/images/logo.svg"> <span>Veuz Concepts</span></a>
                 </div>
             </div>
             <!-- Button mobile view to collapse sidebar menu -->
 
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
-                    <!-- anakha -->
-                    <!-- <ul class="list-inline menu-left mb-0 d-flex align-items-center">
+                    <ul class="list-inline menu-left mb-0 d-flex align-items-center">
 
                         <li class="hide-phone float-left">
                             <form role="search" class="navbar-form">
@@ -57,27 +58,12 @@
                                 <a href="" class="btn btn-search"><i class="fa fa-search"></i></a>
                             </form>
                         </li>
-                    </ul> -->
-
-                    
-                    <ul class="list-inline menu-left mb-0">
-                        <li class="float-left">
-                            <a href="#" class="button-menu-mobile open-left">
-                                <i class="fa fa-bars"></i>
-                            </a>
-                        </li>
-                        <!-- <li class="hide-phone float-left">
-                            <form role="search" class="navbar-form">
-                                <input type="text" placeholder="Type here for search..." class="form-control search-bar">
-                                <a href="" class="btn btn-search"><i class="fa fa-search"></i></a>
-                            </form>
-                        </li> -->
                     </ul>
 
-                    <ul class="nav navbar-right float-right list-inline">
+                    <ul class="nav navbar-right float-right list-inline list-margin">
                         <li class="dropdown d-none d-sm-block">
                             <a href="#" data-target="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
-                                <i class="md md-notifications"></i> <span class="badge badge-pill badge-xs badge-danger">3</span>
+                                <i class="ion-ios7-bell"></i> <span class="badge badge-pill badge-xs badge-danger">5</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-lg">
                                 <li class="text-center notifi-title">Notification</li>
@@ -133,14 +119,19 @@
                             </ul>
                         </li>
                         <li class="d-none d-sm-block">
-                            <a href="#" id="btn-fullscreen" class="waves-effect waves-light"><i class="md md-crop-free"></i></a>
+                            <a href="#" class="right-bar-toggle waves-effect waves-light"><i class="ion-chatbubbles"></i></a>
                         </li>
                         <li class="d-none d-sm-block">
-                            <a href="#" class="right-bar-toggle waves-effect waves-light"><i class="md md-chat"></i></a>
+                            <a href="#" class="right-bar-toggle waves-effect waves-light"><i class="ion-ios7-calendar"></i></a>
                         </li>
+                        <li class="d-none d-sm-block">
+                            <a href="#" id="btn-fullscreen" class="waves-effect waves-light"><i class="ion-qr-scanner"></i></a>
+                        </li>
+
                         <li class="dropdown open">
-                            <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true"><img src="{% static 'assets/images/users/avatar-1.jpg' %}" alt="user-img" class="rounded-circle"> </a>
-                            <span class="ms-1 nav-user-name hidden-sm" style="color: rgb(79, 237, 79);">{{request.user}}</span>
+                            <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true"><img src="../static/assets/images/users/avatar-1.jpg" alt="user-img" class="rounded-circle"> </a>
+                            <span class="ms-1 nav-user-name hidden-sm" style="color: rgb(234, 246, 234);">{{request.user}}</span>
+
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-face-unlock mr-2"></i> Profile</a></li>
                                 <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-settings mr-2"></i> Settings</a></li>
@@ -158,31 +149,12 @@
 
         <div class="left side-menu">
             <div class="sidebar-inner slimscrollleft">
-                <div class="user-details">
-                    <div class="pull-left">
-                        <img src="{% static 'assets/images/users/avatar-1.jpg' %}" alt="" class="thumb-md rounded-circle">
-                    </div>
-                    <div class="user-info">
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                       SUPER ADMIN
-                                </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-face-unlock mr-2"></i> Profile<div class="ripple-wrapper"></div></a></li>
-                                <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-settings mr-2"></i> Settings</a></li>
-                                <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-lock mr-2"></i> Lock screen</a></li>
-                                <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-settings-power mr-2"></i> Logout</a></li>
-                            </ul>
-                        </div>
 
-                        <p class="text-muted m-0">Administrator</p>
-                    </div>
-                </div>
                 <!--- Divider -->
                 <div id="sidebar-menu">
                     <ul>
                         <li>
-                            <a href="index" class="waves-effect"><i class="md md-home"></i><span> Dashboard </span></a>
+                            <a href="index" class="waves-effect "><i class="md md-home "></i><span> Dashboard </span></a>
                         </li>
 
                         <li class="has_sub">
@@ -197,10 +169,10 @@
                             <a href="meeting" class="waves-effect"><i class="md md-call"></i><span> Meeting </span></a>
                         </li>
 
+
                         <li>
                             <a href="calendar" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
                         </li>
-
                         {% if request.user.id|company_nav_perm_check:"Company" %}
                         <li>
                             <a href="company_management" class="waves-effect"><i class="md md-face-unlock"></i><span> Company Management </span></a>
@@ -243,6 +215,9 @@
                         </li>
                         {% endif %}
                     </ul>
+
+
+                    
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
@@ -253,197 +228,265 @@
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
-        <div class="content-page">
+
+        <div class="mt-4">
             <!-- Start content -->
-            <div class="content">
-                
-                {% block content %}
+            <div class="content-page">
+                <!-- Start content -->
+                <div class="content">
+                    {% block content %}
 
-                {% endblock %}
+                    {% endblock %}
+
+                    </div>
+                <!-- content -->
+
+
 
             </div>
-            <!-- content -->
-
-            <footer class="footer text-right" style="padding: 12px 12px!important">
-                2016 - 2018 © Moltran.
-            </footer>
 
         </div>
-        <!-- ============================================================== -->
-        <!-- End Right content here -->
-        <!-- ============================================================== -->
+    </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- End Right content here -->
+    <!-- ============================================================== -->
 
 
-        <!-- Right Sidebar -->
-        <div class="side-bar right-bar nicescroll">
-            <h4 class="text-center">Chat</h4>
-            <div class="contact-list nicescroll">
-                <ul class="list-group contacts-list">
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-1.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Chadengle</span>
-                            <i class="fa fa-circle online"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-2.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Tomaslau</span>
-                            <i class="fa fa-circle online"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-3.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Stillnotdavid</span>
-                            <i class="fa fa-circle online"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-4.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Kurafire</span>
-                            <i class="fa fa-circle online"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-5.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Shahedk</span>
-                            <i class="fa fa-circle away"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-6.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Adhamdannaway</span>
-                            <i class="fa fa-circle away"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-7.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Ok</span>
-                            <i class="fa fa-circle away"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-8.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Arashasghari</span>
-                            <i class="fa fa-circle offline"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-9.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Joshaustin</span>
-                            <i class="fa fa-circle offline"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#">
-                            <div class="avatar">
-                                <img src="{% static 'assets/images/users/avatar-10.jpg' %}" alt="">
-                            </div>
-                            <span class="name">Sortino</span>
-                            <i class="fa fa-circle offline"></i>
-                        </a>
-                        <span class="clearfix"></span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- /Right-bar -->
+
+    <!-- /Right-bar -->
+
+
 
     </div>
     <!-- END wrapper -->
 
+
+
+
+
+
+
+
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mt-0">Create New Group</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Space name</label>
+                                <input type="text" class="form-control" id="field-1" placeholder="John">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Team member</label>
+                                <select class="jsSelect1" name="states[]" multiple="multiple">
+                                    <option value="example1">example1</option>
+                                    <option value="example2">example2</option>
+                                    <option value="example3">example3</option>
+                                    <option value="example4">example4</option>
+                                    <option value="example5">example5</option>
+                                    </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Manager</label>
+                                <select class="form-control">
+                                <option>Amarnath</option>
+                             </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">What task statuses do you want?</label>
+                                <i class="fa fa-plus-circle float-right"></i>
+                                <div class="status-boxes">
+                                    <span><input type="checkbox"> To Do</span>
+                                    <span><input type="checkbox"> In progress</span>
+                                    <span><input type="checkbox"> Testing</span>
+                                </div>
+
+                                <div class="added-status d-flex mt-4 mb-2">
+                                    <div class="col px-0">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="col-1 d-flex align-items-center justify-content-end">
+                                        <i class="ion-close"></i>
+                                    </div>
+                                </div>
+                                <a>Add <i class="fa fa-plus-circle ml-1"></i></a>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal -->
+
+
+
+    <div id="con-close-modal1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mt-0" style="color: #f9365f;
+                    font-weight: bold;">Edit Group</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Space name</label>
+                                <input type="text" class="form-control" id="field-1" placeholder="John">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <style>
+                                .select2-container.select2-container--default.select2-container--open {
+                                    z-index: 5000;
+                                }
+                                
+                                .select2-close-mask {
+                                    z-index: 2099;
+                                }
+                                
+                                .select2-dropdown {
+                                    z-index: 3051;
+                                }
+                            </style>
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Team member</label>
+                                <select class="form-control">
+                                <option>Amarnath</option>
+                             </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Manager</label>
+                                <select class="form-control">
+                                <option>Amarnath</option>
+                             </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">What task statuses do you want?</label>
+                                <a href="" style="float: right;
+                                font-size: 18px;
+                                font-weight: bold;">+</a>
+                                <br>
+                                <br>
+                                <input type="checkbox"> To Do &nbsp;&nbsp;
+                                <input type="checkbox"> In progress &nbsp;&nbsp;
+                                <input type="checkbox"> Testing
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal -->
     <script>
         var resizefunc = [];
     </script>
 
     <!-- jQuery  -->
-    <script src="{% static 'assets/js/jquery.min.js'%}"></script>
-    <script src="{% static 'assets/js/bootstrap.bundle.min.js'%}"></script>
-    <script src="{% static 'assets/js/detect.js'%}"></script>
-    <script src="{% static 'assets/js/fastclick.js'%}"></script>
-    <script src="{% static 'assets/js/jquery.slimscroll.js'%}"></script>
-    <script src="{% static 'assets/js/jquery.blockUI.js'%}"></script>
-    <script src="{% static 'assets/js/waves.js'%}"></script>
-    <script src="{% static 'assets/js/wow.min.js'%}"></script>
-    <script src="{% static 'assets/js/jquery.nicescroll.js'%}"></script>
-    <script src="{% static 'assets/js/jquery.scrollTo.min.js'%}"></script>
+    <script src="../static/assets/js/jquery.min.js"></script>
+    <script src="../static/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/assets/js/detect.js"></script>
+    <script src="../static/assets/js/fastclick.js"></script>
+    <script src="../static/assets/js/jquery.slimscroll.js"></script>
+    <script src="../static/assets/js/jquery.blockUI.js"></script>
+    <script src="../static/assets/js/waves.js"></script>
+    <script src="../static/assets/js/wow.min.js"></script>
+    <script src="../static/assets/js/jquery.nicescroll.js"></script>
+    <script src="../static/assets/js/jquery.scrollTo.min.js"></script>
 
+    <link href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css" />
+
+
+
+
+    <script>
+        $(document).ready(function() {
+
+            $('#con-close-modal').on('shown.bs.modal', function(e) {
+                $('.jsSelect1').select2({
+                    placeholder: 'Select an option'
+                });
+            });
+        });
+    </script>
     <!-- jQuery -->
-    <script src="{% static 'plugins/moment/moment.min.js'%}"></script>
+    <script src="../static/plugins/moment/moment.min.js"></script>
 
     <!-- Counter js  -->
-    <script src="{% static 'plugins/waypoints/lib/jquery.waypoints.js'%}"></script>
-    <script src="{% static 'plugins/counterup/jquery.counterup.min.js'%}"></script>
+    <script src="../static/plugins/waypoints/lib/jquery.waypoints.js"></script>
+    <script src="../static/plugins/counterup/jquery.counterup.min.js"></script>
 
     <!-- sweet alerts -->
-    <script src="{% static 'plugins/sweetalert2/sweetalert2.js'%}"></script>
+    <script src="../static/plugins/sweetalert2/sweetalert2.js"></script>
 
     <!-- flot Chart -->
-    <script src="{% static 'plugins/flot-chart/jquery.flot.min.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.time.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.tooltip.min.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.resize.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.pie.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.selection.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.stack.js'%}"></script>
-    <script src="{% static 'plugins/flot-chart/jquery.flot.crosshair.js'%}"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.min.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.time.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.tooltip.min.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.resize.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.pie.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.selection.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.stack.js"></script>
+    <script src="../static/plugins/flot-chart/jquery.flot.crosshair.js"></script>
 
     <!-- Todoapp -->
-    <script src="{% static 'assets/pages/jquery.todo.js'%}"></script>
+    <script src="../static/assets/pages/jquery.todo.js"></script>
 
     <!-- jQuery  -->
-    <script src="{% static 'assets/pages/jquery.chat.js'%}"></script>
+    <script src="../static/assets/pages/jquery.chat.js"></script>
 
     <!-- Dashboard js  -->
-    <script src="{% static 'assets/pages/jquery.dashboard.js'%}"></script>
+    <script src="../static/assets/pages/jquery.dashboard.js"></script>
 
     <!-- App js  -->
-    <script src="{% static 'assets/js/jquery.app.js'%}"></script>
-
-
+    <script src="../static/assets/js/jquery.app.js"></script>
     <script src="../static/plugins/select2/dist/js/select2.min.js"></script>
     <script src="../static/plugins/jquery-multi-select/jquery.multi-select.js"></script>
     <script src="../static/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
-   
     <script>
         /* ==============================================
-                    Counter Up
-                    =============================================== */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Counter Up
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    =============================================== */
         jQuery(document).ready(function($) {
             $('.counter').counterUp({
                 delay: 100,
@@ -451,8 +494,131 @@
             });
         });
     </script>
+    <script>
+        jQuery(document).ready(function() {
+
+            // Tags Input
+            jQuery('#tags').tagsInput({
+                width: 'auto'
+            });
+
+            // Time Picker
+            jQuery('#timepicker').timepicker({
+                defaultTIme: false
+            });
+            jQuery('#timepicker2').timepicker({
+                showMeridian: false
+            });
+            jQuery('#timepicker3').timepicker({
+                minuteStep: 15
+            });
+
+            // Date Picker
+            jQuery('#datepicker').datepicker();
+            jQuery('#datepicker-inline').datepicker();
+            jQuery('#datepicker-multiple').datepicker({
+                numberOfMonths: 3,
+                showButtonPanel: true
+            });
+            //colorpicker start
+
+            $('.colorpicker-default').colorpicker({
+                format: 'hex'
+            });
+            $('.colorpicker-rgba').colorpicker();
+
+            //multiselect start
+
+            $('#my_multi_select1').multiSelect();
+            $('#my_multi_select2').multiSelect({
+                selectableOptgroup: true
+            });
+
+            $('#my_multi_select3').multiSelect({
+                selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+                afterInit: function(ms) {
+                    var that = this,
+                        $selectableSearch = that.$selectableUl.prev(),
+                        $selectionSearch = that.$selectionUl.prev(),
+                        selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                        selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                        .on('keydown', function(e) {
+                            if (e.which === 40) {
+                                that.$selectableUl.focus();
+                                return false;
+                            }
+                        });
+
+                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                        .on('keydown', function(e) {
+                            if (e.which == 40) {
+                                that.$selectionUl.focus();
+                                return false;
+                            }
+                        });
+                },
+                afterSelect: function() {
+                    this.qs1.cache();
+                    this.qs2.cache();
+                },
+                afterDeselect: function() {
+                    this.qs1.cache();
+                    this.qs2.cache();
+                }
+            });
+
+            // Select2
+            jQuery(".select2").select2({
+                width: '100%'
+            });
+
+            //Bootstrap-TouchSpin
+            $(".vertical-spin").TouchSpin({
+                verticalbuttons: true,
+                verticalupclass: 'ion-plus-round',
+                verticaldownclass: 'ion-minus-round'
+            });
+            var vspinTrue = $(".vertical-spin").TouchSpin({
+                verticalbuttons: true
+            });
+            if (vspinTrue) {
+                $('.vertical-spin').prev('.bootstrap-touchspin-prefix').remove();
+            }
+
+            $("input[name='demo1']").TouchSpin({
+                min: 0,
+                max: 100,
+                step: 0.1,
+                decimals: 2,
+                boostat: 5,
+                maxboostedstep: 10,
+                postfix: '%'
+            });
+            $("input[name='demo2']").TouchSpin({
+                min: -1000000000,
+                max: 1000000000,
+                stepinterval: 50,
+                maxboostedstep: 10000000,
+                prefix: '$'
+            });
+            $("input[name='demo3']").TouchSpin();
+            $("input[name='demo3_21']").TouchSpin({
+                initval: 40
+            });
+            $("input[name='demo3_22']").TouchSpin({
+                initval: 40
+            });
+
+            $("input[name='demo0']").TouchSpin({});
+        });
+    </script>
 
 </body>
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

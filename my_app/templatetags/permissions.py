@@ -44,7 +44,7 @@ today = date.today()
 
 @register.filter(name='due_date_check_sub_space')
 def due_date_check_sub_space(value,args):
-    due_date_data = sub_space_master.objects.filter(end_date__lt=today,progress="inprogress") | sub_space_master.objects.filter(end_date__lt=today,progress="not_started")
+    due_date_data = sub_space_master.objects.filter(Planning_end_date__lt=today,progress="In progress") | sub_space_master.objects.filter(Planning_end_date__lt=today,progress="Not Started")
     for i in due_date_data :
         if i.id == args :
             return True
@@ -54,7 +54,7 @@ def due_date_check_sub_space(value,args):
 
 @register.filter(name='due_date_check_task')
 def due_date_check_task(value,args):
-    due_date_data = Add_task_master.objects.filter(end_date__lt=today,progress="inprogress") | Add_task_master.objects.filter(end_date__lt=today,progress="not_started")
+    due_date_data = Add_task_master.objects.filter(end_date__lt=today,progress="In progress") | Add_task_master.objects.filter(end_date__lt=today,progress="Not Started")
     for i in due_date_data :
         if i.id == args :
             return True
@@ -65,6 +65,7 @@ def due_date_check_task(value,args):
 @register.filter
 def index_f(value, args):
     s1 = "/" in args
+    s2 = " " in args
     if s1 == True:
         data = args.split("/")
    
@@ -78,16 +79,28 @@ def index_f(value, args):
             result = data[0][0]
             pass
         pass
-    else:
+        return result
 
+    
+    elif s2 == True:
         data = args.split(" ")
-   
         try:
             result = data[0][0]+data[1][0]
+            
         except:
             result = data[0][0]
             pass
-    return result
+    
+        return result
+
+    else:
+        result = args[0]+args[-1]
+        return result
+
+
+
+
+
 
 
 

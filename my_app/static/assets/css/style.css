@@ -6308,13 +6308,89 @@ File: Responsive
 }
 
 #output {
-    font-size: 8.0em;
-    width: 43%;
-    height: auto;
-    background-color: white;
-    border: 3px solid black;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 45px;
+    font-size: 15px;
+    padding: 5.2px 15px;
+    background-color: #f9fafe;
+    margin-right: 15px;
+    font-weight: 600;
+    border: 1px solid #f4f2f8;
+    display: none;
+  }
+
+  .stp-btn, .stp-btn:hover{
+    opacity: 0;
   }
   
+  .prjct-form textarea::placeholder{
+    color: #8fa0b8 !important;
+  }
+
+  .prjct-form label{
+    color: #212529;
+  }
+
+  .comment-sec span{
+    font-size: 12px;
+    float: right;
+  }
+
+  .comment-sec p{
+    padding-left: 38px;
+    font-size: 13px;
+    color: #666;
+    margin: 0px;
+  }
+
+  .comment-sec .pro-detail{
+    color: #212529;
+    font-weight: 500;
+  }
+
+  .comment-sec{
+    margin-top: 15px;
+  }
+
+  .project-detailpage{
+    padding: 30px;
+  }
+
+  .timesheet-tab{
+    padding-left: 40px;
+  }
+
+  .viewtasklink{
+    /* color: #797979; */
+    color: #2b314e;
+    font-weight: 600;
+    margin-right: 5px;
+  }
+
+  .viewtasklink:hover{
+    color: #ec407a;
+  }
+
+  .table-padd td a{
+    color: #797979;
+  }
+
+  .table-padd td .addline{
+    color: #333333;
+    font-weight: 600;
+  }
+
+  .table-padd td .addline:hover{
+    color: #ec407a;
+  }
+
+  .table-padd td .addline i{
+    margin-right: 5px;
+  }
+
+  .addlinetd{
+    padding: 9px 10px !important;
+  }
+
+  .save-btn{
+    background-color: #38BC9B!important;
+    border: 1px solid #38BC9B!important;
+  }

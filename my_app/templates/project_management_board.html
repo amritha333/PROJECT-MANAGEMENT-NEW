@@ -1,0 +1,1075 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions %}
+{% block content %}
+
+
+<div class="side-create">
+    <div class="create-section">
+        {% if user_details_data.user_type == "company_admin"%}
+        <div class="create-btn-box d-flex">
+            <img src="{% static 'assets/images/plus.svg' %}">
+        
+            <h4 style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal">Create Group</h4>
+        </div>
+        {% endif %}
+        <div class="created-group">
+            <h3>Created Groups</h3>
+
+            {% for sp in space_master_data %}
+
+            <div class="department-box d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
+                        {{request.user|index_f:sp.space_name}}
+                    </div>
+                    <h3 style="padding: 9px 7px; cursor: pointer;"><a style="text-decoration:none;  color:black;" href="view_group?space_id={{sp.id}}">{{sp.space_name}}</a></h3>
+                   
+                </div>
+
+                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                    <i class="md-more-vert"></i>
+            </button>
+                <ul class="dropdown-menu">
+                    <li><a href="view_group?space_id={{sp.id}}" class="dropdown-item">View</a></li>
+
+                    <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="content-rigt">
+    <div class="filter-box d-flex align-items-center">
+        <div class="container-fluid d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="d-flexl">
+                    <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Progress Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item">Not Started</a></li>
+                        <li><a href="#" class="dropdown-item">In progress</a></li>
+                        <li><a href="#" class="dropdown-item">Completed</a></li>
+
+                </div>
+
+                <div class="margin-class">
+                    <button type="button" class="btn btn-filter dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bucket   Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item">To Do</a></li>
+                        <li><a href="#" class="dropdown-item">In progress</a></li>
+                        <li><a href="#" class="dropdown-item">Testing</a></li>
+
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div>
+                    <a href="project_management.html"><button type="button" class="btn btn-filter">
+        <i class="md-view-list"></i>&ensp;List
+        </button></a>&ensp;
+                    <button type="button" class="btn btn-filter board-view">
+        <i class="ion-grid"></i>&ensp;Board
+        </button>
+                </div>
+
+                <div class="btn-group dropdown button-space">
+                    <!-- <button type="button" class="btn btn-meet waves-effect waves-light">Meet</button> -->
+                    <button type="button" class="btn btn-meet dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="sr-only">Toggle Dropdown</span>
+    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item">Action</a></li>
+                        <li><a href="#" class="dropdown-item">Another action</a></li>
+                        <li><a href="#" class="dropdown-item">Something else here</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="#" class="dropdown-item">Separated link</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class='app'>
+
+        <main class='project'>
+
+            <div class="drag-container">
+                <h2 class="main-heading-txt left-class">Odoo Development</h2>
+                <ul class="drag-list">
+                    <li class="drag-column drag-column-on-hold">
+                        <div class="drag-options" id="options1"></div>
+                        <h2>Backlog Tasks</h2>
+                        <div class="margin-box">
+                            <button class="create-task2" data-toggle="modal" data-target="#add-task">Add Task</button>
+
+                            <div id="add-task" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="field-1" placeholder="Enter Task Name">
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i class="md md-event"></i></span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <ul class="drag-inner-list" id="1">
+
+
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5> Mockup Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="../static/assets/images/users/avatar-7.jpg">
+                                                <img src="../static/assets/images/users/avatar-5.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="drag-column drag-column-in-progress">
+
+                        <div class="drag-options" id="options2"></div>
+                        <h2>To Do Tasks</h2>
+                        <div class="margin-box">
+                            <button class="create-task2">Add Task</button>
+
+                        </div>
+                        <ul class="drag-inner-list" id="2">
+
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5> ABAFT Website Html Conversion</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="../static/assets/images/users/avatar-7.jpg">
+                                                <img src="../static/assets/images/users/avatar-3.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5> RAFAL Website Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-4.jpg">
+                                                <img src="assets/images/users/avatar-8.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>SABA Website Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-3.jpg">
+                                                <img src="assets/images/avatar2.svg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>UI Learning</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-2.jpg">
+                                                <img src="assets/images/users/avatar-7.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+
+
+
+                        </ul>
+                    </li>
+                    <li class="drag-column drag-column-needs-review">
+
+
+                        <div class="drag-options" id="options3"></div>
+                        <h2>In Process</h2>
+                        <div class="margin-box">
+                            <button class="create-task2">Add Task</button>
+                        </div>
+                        <ul class="drag-inner-list" id="3">
+
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>Veuz Brochure Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="../static/assets/images/users/avatar-4.jpg">
+                                                <img src="../static/assets/images/users/avatar-5.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>RGS Website Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-6.jpg">
+                                                <img src="assets/images/users/avatar-1.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>RGS Website HTML Convertion</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-8.jpg">
+                                                <img src="assets/images/users/avatar-2.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>Odoo Development</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-6.jpg">
+                                                <img src="assets/images/users/avatar-4.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="drag-column drag-column-approved">
+
+                        <div class="drag-options" id="options4"></div>
+                        <h2>Completed</h2>
+                        <div class="margin-box">
+                            <button class="create-task2">Add Task</button>
+                        </div>
+                        <ul class="drag-inner-list" id="4">
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5>Brochure Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="../static/assets/images/users/avatar-2.jpg">
+                                                <img src="../static/assets/images/users/avatar-3.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5> Truck Mobile App UI Design</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-10.jpg">
+                                                <img src="assets/images/avatar2.svg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                            <li class="drag-item">
+                                <div class='task' draggable='true' data-toggle="modal" data-target="#task-details">
+                                    <div class="task-head">
+                                        <div class="d-flex justify-content-between align-items-center mb-15">
+                                            <h5> Truck Mobail App Development</h5>
+                                            <button type="button" class="btn btn-more-data waves-effect waves-light threedot" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="md-more-vert"></i>
+                                        </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">Action</a></li>
+                                                <li><a href="#" class="dropdown-item">Another action</a>
+                                                </li>
+                                                <li><a href="#" class="dropdown-item">Something else
+                                                    here</a></li>
+                                                <li><a href="#" class="dropdown-item">Separated link</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="assets/images/users/avatar-3.jpg">
+                                                <img src="assets/images/users/avatar-8.jpg">
+                                                <div class="circle-user">
+                                                    <i class="ion-plus"></i>5
+                                                </div>
+
+                                                <div class="circle-plus-brdr">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="files">
+                                                <i class="md-attach-file"></i><span>01</span> &ensp;
+                                                <i class="ion-checkmark-circled"></i> <span>0/5</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <div class="d-flex align-items-center justify-content-between task-bottm">
+                                        <div class="task-status">
+                                            <i class="fa fa-exclamation"></i> Important
+                                        </div>
+                                        <div class="task-due">
+                                            <span class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i> 01/12/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <script>
+        dragula([
+            document.getElementById('1'),
+            document.getElementById('2'),
+            document.getElementById('3'),
+            document.getElementById('4'),
+            document.getElementById('5')
+        ])
+
+        .on('drag', function(el) {
+
+                // add 'is-moving' class to element being dragged
+                el.classList.add('is-moving');
+            })
+            .on('dragend', function(el) {
+
+                // remove 'is-moving' class from element after dragging has stopped
+                el.classList.remove('is-moving');
+
+                // add the 'is-moved' class for 600ms then remove it
+                window.setTimeout(function() {
+                    el.classList.add('is-moved');
+                    window.setTimeout(function() {
+                        el.classList.remove('is-moved');
+                    }, 600);
+                }, 100);
+            });
+
+
+        var createOptions = (function() {
+            var dragOptions = document.querySelectorAll('.drag-options');
+
+            // these strings are used for the checkbox labels
+            var options = ['Research', 'Strategy', 'Inspiration', 'Execution'];
+
+            // create the checkbox and labels here, just to keep the html clean. append the <label> to '.drag-options'
+            function create() {
+                for (var i = 0; i < dragOptions.length; i++) {
+
+                    options.forEach(function(item) {
+                        var checkbox = document.createElement('input');
+                        var label = document.createElement('label');
+                        var span = document.createElement('span');
+                        checkbox.setAttribute('type', 'checkbox');
+                        span.innerHTML = item;
+                        label.appendChild(span);
+                        label.insertBefore(checkbox, label.firstChild);
+                        label.classList.add('drag-options-label');
+                        dragOptions[i].appendChild(label);
+                    });
+
+                }
+            }
+
+            return {
+                create: create
+            }
+
+
+        }());
+
+        var showOptions = (function() {
+
+            // the 3 dot icon
+            var more = document.querySelectorAll('.drag-header-more');
+
+            function show() {
+                // show 'drag-options' div when the more icon is clicked
+                var target = this.getAttribute('data-target');
+                var options = document.getElementById(target);
+                options.classList.toggle('active');
+            }
+
+
+            function init() {
+                for (i = 0; i < more.length; i++) {
+                    more[i].addEventListener('click', show, false);
+                }
+            }
+
+            return {
+                init: init
+            }
+        }());
+
+        createOptions.create();
+        showOptions.init();
+    </script>
+
+</div>
+
+
+
+
+<!-- Modal start -->
+
+
+<div id="con-close-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog"> 
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <h4 class="modal-title mt-0" style="color: #f9365f;
+                font-weight: bold;">Create New Group</h4> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> 
+            <form name="space_form" method="POST" action="space_add_action">
+                {% csrf_token %}
+            <div class="modal-body"> 
+                <div class="row"> 
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-1" class="control-label">Space name</label> 
+                            <input required type="text" name="spacename" class="form-control" id="field-1"> 
+                        </div> 
+                    </div> 
+                   
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Team member</label> 
+                         <select required multiple class="form-control jsSelect1" name="member_data">
+                            {% for i in  member_data %}
+                            <option value="{{i.id}}">{{i.username}}</option>
+                            {% endfor %}
+                         </select>
+                        </div> 
+                    </div> 
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Manager</label> 
+                         <select required multiple class="form-control jsSelect1" name="manager_id">
+                            {% for i in  manager_data %}
+                            <option value="{{i.id}}">{{i.username}}</option>
+                            {% endfor %}
+                         </select>
+                        </div> 
+                    </div> 
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">What task statuses do you want?</label> 
+                            <a id="add_status" style="float: right;
+                            font-size: 18px; cursor: pointer;
+                            font-weight: bold;">+</a>
+                            <br>
+
+                            {% for s in status_name %}
+                            <div class="form-check form-check-inline">
+                                <div class="">
+                                    <input type="checkbox" name="task_status_name" id="radio1" value="{{s.id}}" checked=""
+                                        class="form-check-input">
+                                    <label for="radio1">
+                                       {{s.status_name}}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+                            <div class="" id="new_status" style="display:none;">
+                                <div class="status_add">
+                                    <input class="form-control"  type="text" name="task_status_add"> 
+                                </div>
+                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus">Add</i></a>
+                            </div>
+                            
+                        <!-- <input type="checkbox"> To Do &nbsp;&nbsp;
+                        <input type="checkbox"> In progress &nbsp;&nbsp;
+                        <input type="checkbox"> Testing -->
+
+                        </div> 
+                    </div> 
+                </div> 
+              
+            </div> 
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
+                <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save</button> 
+            </div> 
+            </form>
+        </div> 
+    </div>
+</div><!-- /.modal -->
+
+
+
+<div id="con-close-modal1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0" style="color: #f9365f;
+                font-weight: bold;">Edit Group</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="field-1" class="control-label">Space name</label>
+                            <input type="text" class="form-control" id="field-1" placeholder="John">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <style>
+                            .select2-container.select2-container--default.select2-container--open {
+                                z-index: 5000;
+                            }
+                            
+                            .select2-close-mask {
+                                z-index: 2099;
+                            }
+                            
+                            .select2-dropdown {
+                                z-index: 3051;
+                            }
+                        </style>
+                        <div class="form-group">
+                            <label for="field-2" class="control-label">Team member</label>
+                            <select class="form-control">
+                            <option>Amarnath</option>
+                         </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="field-2" class="control-label">Manager</label>
+                            <select class="form-control">
+                            <option>Amarnath</option>
+                         </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="field-2" class="control-label">What task statuses do you want?</label>
+                            <a href="" style="float: right;
+                            font-size: 18px;
+                            font-weight: bold;">+</a>
+                            <br>
+                            <br>
+                            <input type="checkbox"> To Do &nbsp;&nbsp;
+                            <input type="checkbox"> In progress &nbsp;&nbsp;
+                            <input type="checkbox"> Testing
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

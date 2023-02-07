@@ -47,5 +47,8 @@ urlpatterns = [
     path('tags_add_action',views.tags_add_action,name='tags_add_action'),
     path('demo',views.demo,name='demo'),
     path('signup',views.signup.as_view(),name='signup'),
+    path('project_management_board',views.project_management_board,name='project_management_board'),
+    path('get_group_details',views.get_group_details,name='get_group_details'),
+
 
 ]
