@@ -50,5 +50,8 @@ urlpatterns = [
     path('project_management_board',views.project_management_board,name='project_management_board'),
     path('get_group_details',views.get_group_details,name='get_group_details'),
 
+    path('start_timer_action',views.start_timer_action,name='start_timer_action'),
+
+
 
 ]

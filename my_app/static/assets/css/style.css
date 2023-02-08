@@ -5845,13 +5845,38 @@ File: Responsive
 .yellw::after {
     border-left: 14px solid #F89A4D !important;
 }
-
 .grn {
     background: #129556 !important;
 }
 
 .grn::after {
     border-left: 14px solid #129556 !important;
+}
+
+
+.blu{
+    background: #5379ea !important;
+}
+
+.blu::after {
+    border-left: 14px solid  #5379ea !important;
+}
+
+.redd{
+    background: #ea2121 !important;
+}
+
+.redd::after {
+    border-left: 14px solid  #ea2121 !important;
+}
+
+
+.orng{
+    background: #20c997 !important;
+}
+
+.orng::after {
+    border-left: 14px solid  #20c997 !important;
 }
 
 .assign-prjct i {

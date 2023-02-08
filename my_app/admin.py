@@ -18,6 +18,7 @@ admin.site.register(RoomMember)
 admin.site.register(sub_space_master)
 admin.site.register(sub_space_access_permission)
 admin.site.register(sub_space_checklist)
+admin.site.register(sub_space_attachment)
 admin.site.register(sub_space_comments)
 admin.site.register(tags_name_master)
 

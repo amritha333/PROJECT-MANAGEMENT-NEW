@@ -596,7 +596,6 @@ def project_management(request):
             child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
             child_user_id.append(int(request.user.id))
             member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(user_level = "Manager")
-            
         else:
             member_data = User_details.objects.filter(manager_auth=request.user)
 
@@ -615,11 +614,8 @@ def project_management(request):
             print("space_list.first:",space_list[0])
             space_dept = space_master.objects.get(id=space_list[0])
             space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
-
-
+            print("space_member_data:::",space_member_data)
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
-            
-    
         else:
             # if user is company_user(their space only)
             space_access_data = space_view_access_user.objects.filter(space_view_auth_id=request.user)
@@ -633,14 +629,9 @@ def project_management(request):
     except:
         pass
 
-   
     if userdetails_data.user_type == "company_admin":
         space_data = space_master.objects.filter(added_user_id = request.user)
 
-
-
-        
-    
     context = {
     "member_data" : member_data,
     "role_data":role_data,
@@ -742,7 +733,6 @@ def get_bucket_details(request):
     space_data = space_master.objects.get(id=space_id)
     return render(request,'get_bucket_details.html',{"bucket_data":space_data.task_status.all()})
 
-
 def project_add_action(request):
     if request.method == "POST":
         space_id = request.POST.get("space_id")
@@ -788,14 +778,22 @@ def project_add_action(request):
                 milestone = i)
 
             try:
-                file_name = request.POST.get("file_name",False)
-                attached_file =  request.FILES['attached_file']
-                import os
-                extension = os.path.splitext(str(attached_file))[1]
-                sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
-                file_name = file_name,file_type =extension ,attached_file = attached_file)
+                # file_name = request.POST.get("file_name",False)
+                attached_file =  request.FILES.getlist('attached_file')
+                print("attached_file:",attached_file)
+                for i in attached_file:
+
+                    import os
+                    filename = os.path.splitext(str(i))[0]
+                    print("nameeeee",filename)
+                    extension = os.path.splitext(str(i))[1]
+                    print("extension:",extension)
+                    sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
+                    file_name = filename,file_type =extension ,attached_file = i,added_by = request.user)
+
             except:
                 pass
+                
 
             user_data = User_details.objects.get(auth_user=request.user)
             if comments == "":
@@ -833,12 +831,18 @@ def project_add_action(request):
 
 
             try:
-                file_name = request.POST.get("file_name",False)
-                attached_file =  request.FILES['attached_file']
-                import os
-                extension = os.path.splitext(str(attached_file))[1]
-                sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
-                file_name = file_name,file_type =extension ,attached_file = attached_file)
+                # file_name = request.POST.get("file_name",False)
+                attached_file =  request.FILES.getlist('attached_file')
+                print("attached_file:",attached_file)
+                for i in attached_file:
+                    import os
+                    filename = os.path.splitext(str(i))[0]
+                    print("nameeeee",filename)
+                    extension = os.path.splitext(str(i))[1]
+                    print("extension:",extension)
+                    sub_space_attachment.objects.create(sub_space_id_id=data_save.id,
+                    file_name = filename,file_type =extension ,attached_file = i,added_by = request.user)
+
             except:
                 pass
 
@@ -893,6 +897,9 @@ def view_project_page(request):
     task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None )
 
     user_details_data = User_details.objects.get(auth_user=request.user)
+    dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
+    tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
+
 
     context = {
         "sub_space_member_data" : sub_space_member_data,
@@ -905,7 +912,9 @@ def view_project_page(request):
         "today_date":today_date,
         "task_data":task_data,
         "sub_space_id":sub_space_id,
-        "user_details_data":user_details_data
+        "user_details_data":user_details_data,
+        "dynamic_status":dynamic_status,
+        "tags_name":tags_name,
     }
     return render(request, 'view_project_page.html',context)
 
@@ -967,17 +976,49 @@ def task_management_action(request):
             Add_task_checklist.objects.create(add_task_id_id=task_master_save.id,
             item_name = i)
 
+        try:
+            # file_name = request.POST.get("file_name",False)
+            attached_file =  request.FILES.getlist('attached_file')
+            print("attached_file:",attached_file)
+            for i in attached_file:
+                import os
+                filename = os.path.splitext(str(i))[0]
+                print("nameeeee",filename)
+                extension = os.path.splitext(str(i))[1]
+                print("extension:",extension)
+                Add_task_attachment.objects.create(add_task_id_id=task_master_save.id,
+                file_name = filename,file_type =extension ,attached_file = i,added_by = request.user)
+
+        except:
+            pass
+
+
+
+
         user_data = User_details.objects.get(auth_user=request.user)
         if comments == False:
             pass
-
         else:
-
             Add_task_comments.objects.create(add_task_id_id=task_master_save.id,
             added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
 
         messages.success(request,"Successfully added Task")
         return redirect(request.META['HTTP_REFERER'])
+
+
+from django.db.models import Sum
+from datetime import datetime, timedelta
+
+def convert(seconds):
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    return "%d:%02d:%02d" % (hour, minutes, seconds)
+
+
+
 
 
 def view_task_page(request):
@@ -988,9 +1029,59 @@ def view_task_page(request):
 
     task_id = request.GET.get("task_id")
     print("task_id:",task_id)
+
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    current_status = ""
+    button_status = ""
+    refresh_time_diff = ""
+    try:
+        task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+        current_status = task_time_data.status 
+        button_status = task_time_data.button_status
+
+        format = '%H:%M:%S'
+        starting_time = task_time_data.starting_time
+        timer_start = str(starting_time.replace(microsecond=0))
+        after_refresh_time = str(datetime.now().time().replace(microsecond=0)) 
+        time_diff_delta1 = datetime.strptime(after_refresh_time, format) - datetime.strptime(timer_start, format)
+        time_diff_datetime = datetime.strptime(str(time_diff_delta1), '%H:%M:%S')
+        refresh_time_diff = time_diff_datetime.time()
+
+        if button_status == "Resume":
+            
+            previous_counter_data = task_time_data.counter
+            s9 = "00:00:00"
+            time9 = datetime.strptime(str(refresh_time_diff), format) - datetime.strptime(s9, format)
+            time8 = datetime.strptime(str(previous_counter_data), format) - datetime.strptime(s9, format)
+            total_counter = time8 + time9
+            time_counter1 = datetime.strptime(str(total_counter), '%H:%M:%S')
+            refresh_time_diff = time_counter1.time()
+
+        elif button_status == "Pause":
+            refresh_time_diff = task_time_data.counter
+        else:
+            pass
+    except:
+        pass
+
+
+
+
+    time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id = request.user)
+    total_hr = ""
+    try : 
+        total_price = sum(time_details.values_list('total_second', flat=True))
+        total_hr = convert(total_price)
+    except:
+        pass
+
+
+
+
+
     task_data = Add_task_master.objects.get(id=task_id)
     space_id = task_data.space_id
-    sub_space_id = task_data.sub_space_id.id
+    sub_space_data = task_data.sub_space_id
 
 
     sub_task_data = Add_task_master.objects.filter(parent_id = task_id)
@@ -1003,13 +1094,17 @@ def view_task_page(request):
     # task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id )
 
     user_details_data = User_details.objects.get(auth_user=request.user)
+    dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
+    tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
+
+
 
     parent_id = task_id
 
     context = {
         "task_member_data" : task_member_data,
         "space_data":space_data,
-        "sub_space_id":sub_space_id,
+        "sub_space_data":sub_space_data,
         "task_data":task_data,
         "today_date":today_date,
         "bucket_data":space_data.task_status.all(),
@@ -1017,9 +1112,132 @@ def view_task_page(request):
         "priority":priority,
         "today_date":today_date,
         "sub_task_data":sub_task_data,
-        'parent_id':parent_id
+        'parent_id':parent_id,
+        "dynamic_status":dynamic_status,
+        "tags_name":tags_name,
+
+        "current_status":current_status,
+        "button_status":button_status,
+        "refresh_time_diff":refresh_time_diff,
+        "time_details":time_details,
+        'total_hr':total_hr
     }
     return render(request, 'view_task_page.html',context)
+
+
+from datetime import datetime
+def start_timer_action(request):
+
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    task_id = request.GET.get("task_id")
+    status = request.GET.get("status")
+
+    # ------------------------stopwatch start----------------------------------------------------------
+
+    if status == "start":
+        start_time =datetime.now() 
+        c_user = request.user.id
+        user_data = User_details.objects.get(auth_user = c_user)
+        try:
+            task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+        except:
+            Task_time_details.objects.create(starting_time=start_time,current_date=current_date,
+            task_id_id = task_id,user_auth_id_id = c_user,user_details_id_id =user_data.id,status = "True",button_status="Start",end_status = "False")
+        pass
+
+    # ---------------------------------------stopwatch pause---------------------------------------
+
+    elif status == "pause":
+        pause_time = str(datetime.now().time().replace(microsecond=0))
+        format = '%H:%M:%S'
+        task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+        starting_time = task_time_data.starting_time
+        start_time = str(starting_time.replace(microsecond=0))
+        time_diff_delta = datetime.strptime(pause_time, format) - datetime.strptime(start_time, format)
+
+        time_diff1 = datetime.strptime(str(time_diff_delta), '%H:%M:%S')      
+        time_diff = time_diff1.time()
+        seconds = (time_diff.hour * 60 + time_diff.minute) * 60 + time_diff.second
+
+        if task_time_data.counter == None:
+            Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(counter = time_diff,total_second=seconds, status ="True",button_status ="Pause")
+        else:
+            previous_counter_data = task_time_data.counter
+            s9 = "00:00:00"
+            time9 = datetime.strptime(str(time_diff), format) - datetime.strptime(s9, format)
+            time8 = datetime.strptime(str(previous_counter_data), format) - datetime.strptime(s9, format)
+            total_counter = time8 + time9
+            time_counter1 = datetime.strptime(str(total_counter), '%H:%M:%S')
+            time_count = time_counter1.time()
+            seconds = (time_count.hour * 60 + time_count.minute) * 60 + time_count.second
+            Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(counter = time_count,total_second=seconds,status ="True",button_status ="Pause")
+        History_task_time.objects.create(task_time_id_id =task_time_data.id,starting_time = start_time,end_time = pause_time,counter = time_diff,
+        task_id_id = task_id,user_auth_id_id = request.user.id)
+
+    # --------------------------------------------stopwatch resume-----------------------------------------------------
+
+    elif status == "resume":
+        task_time_data = Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(starting_time =datetime.now(),status="True",button_status="Resume")
+
+    # ------------------------------------------stopwatch stop---------------------------------------------------
+
+    else:
+
+        task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+        status = task_time_data.status
+        button_status = task_time_data.button_status
+
+        # ----------------------------------------when user click start to stop---------------------------------------------
+
+        if status == "True" and button_status == "Start" :
+            
+            stop_time = str(datetime.now().time().replace(microsecond=0))
+            format = '%H:%M:%S'
+            task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+            starting_time = task_time_data.starting_time
+            end_status = task_time_data.end_status
+            start_time = str(starting_time.replace(microsecond=0))            
+            time_diff_delta = datetime.strptime(stop_time, format) - datetime.strptime(start_time, format)
+            time_diff1 = datetime.strptime(str(time_diff_delta), '%H:%M:%S')
+            time_diff = time_diff1.time()
+            seconds = (time_diff.hour * 60 + time_diff.minute) * 60 + time_diff.second
+            Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(counter = time_diff,total_second=seconds,status = False,button_status = "Stop",end_status = "True")
+            History_task_time.objects.create(task_time_id_id =task_time_data.id,starting_time = start_time,end_time = stop_time,counter = time_diff,
+            task_id_id = task_id,user_auth_id_id = request.user.id)
+
+        # ------------------------------------------when user click start to pause to stop---------------------------------------------
+
+        elif status == "True" and button_status == "Pause" :
+            Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(status = False,button_status = "Stop",end_status = "True")
+            
+        # ------------------------------------------when user click start to pause to resume to stop---------------------------------------------
+
+        elif status == "True" and button_status == "Resume" :            
+            stop_time = str(datetime.now().time().replace(microsecond=0))
+            format = '%H:%M:%S'
+            task_time_data = Task_time_details.objects.get(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False")
+            starting_time = task_time_data.starting_time
+            start_time = str(starting_time.replace(microsecond=0))            
+            time_diff_delta = datetime.strptime(stop_time, format) - datetime.strptime(start_time, format)
+           
+            time_diff1 = datetime.strptime(str(time_diff_delta), '%H:%M:%S')
+            time_diff = time_diff1.time()
+            previous_counter_data = task_time_data.counter
+            s9 = "00:00:00"
+            time9 = datetime.strptime(str(time_diff), format) - datetime.strptime(s9, format)
+            time8 = datetime.strptime(str(previous_counter_data), format) - datetime.strptime(s9, format)
+            total_counter = time8 + time9
+            time_counter1 = datetime.strptime(str(total_counter), '%H:%M:%S')
+            time_count = time_counter1.time()
+            seconds = (time_count.hour * 60 + time_count.minute) * 60 + time_count.second
+            Task_time_details.objects.filter(current_date=current_date,user_auth_id=request.user,task_id=task_id,end_status = "False").update(counter = time_count,total_second=seconds,status ="False",button_status ="Stop",end_status = "True")
+            History_task_time.objects.create(task_time_id_id =task_time_data.id,starting_time = start_time,end_time = stop_time,counter = time_diff,
+            task_id_id = task_id,user_auth_id_id = request.user.id)
+
+    return JsonResponse({"message":"success"})
+
+
+
 
 
 def sub_task_action(request):
@@ -1155,14 +1373,12 @@ def project_management_board(request):
             user_permission_space = list(space_access_data.values_list('space_id',flat=True))
             space_master_data = space_master.objects.filter(id__in=user_permission_space)
 
-
             space_list = list(space_master_data.values_list('id',flat=True))
             sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
 
     except:
         pass
 
-   
     if userdetails_data.user_type == "company_admin":
         space_data = space_master.objects.filter(added_user_id = request.user)
         

@@ -2,211 +2,507 @@
 {% load static %}
 {% load permissions %}
 {% block content %}
+<div class="content-right">
+                     
+    <div class="margin-class-this">
 
-<div class="side-create">
-    <div class="create-section">
-        <div class="create-btn-box d-flex">
-            <img src="../static/assets/images/plus.svg">
-        
-            <h4 style="cursor: pointer;"  class="create_subtask">Create New Sub Task</h4>
-        </div>
-        <div class="created-group">
-            <h3> Project</h3>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-shadow">
 
-            <div class="department-box d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <div class="img-fluid" style="padding: 4px 4px;background: #587ae9;color: white;border-radius: 6px;">
-                        {{request.user|index_f:space_data.space_name}}
-                    </div>
-                    <h3 style="padding: 9px 7px;"><a style="text-decoration:none;  color:black;" href="view_group?space_id={{space_data.id}}">{{space_data.space_name}}</a></h3>
-                </div>
+                    <div class="card-body body-change card-border project-detailpage">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="project-name">
+                                <h6>{{sub_space_data.sub_space_name}}</h6>
+                                <div class="checkbox checkbox-circle">
+                                    <input id="checkbox7" type="checkbox">
+                                    <label for="checkbox7">
+                                        {{task_data.task_name}}
+                                    </label>
+                                </div>
+                                <p>Last changed 30/01/2023 by you</p>
+                            </div>
+                            <div class="d-flex">
+                                <div class="stage1">
+                                    <ul class="demo-tags">
+                                        {% for i in dynamic_status %}
+                                        {% if i.status_color == "red" %}
+                                    
+                                        <li><a href="#" class="redd">{{i.status_name}}</a></li>
 
-                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                    <i class="md-more-vert"></i>
-            </button>
-                <ul class="dropdown-menu">
-                    <li><a href="view_group?space_id={{space_data.id}}" class="dropdown-item">View</a></li>
-                    <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#con-close-modal1">Edit</a></li>
-                  
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+                                        {% elif i.status_color == "yellowgreen" %}
+                                        
+                                        <li><a href="#" class="yellw">{{i.status_name}}</a></li>
 
-<div class="content-rigt">
-    <div class="row">
-    
-        <!-- Left sidebar -->
-    
-        <div class="col-lg-9">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="float-right mt-4">
-                        <div class="btn-toolbar" role="toolbar">
-                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> 
-                                <i class="fa fa-send m-l-10"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card m-t-20">
-                <div class="card-body p-t-30">
-                    
-                    <form>
-                        <div class="form-group">
+                                        {% elif i.status_color == "green" %}
+                                        
+                                        <li><a href="#" class="grn">{{i.status_name}}</a></li>
+
+                                        {% elif i.status_color == "blue" %}
+                                        
+                                        <li><a href="#" class="blu">{{i.status_name}}</a></li>
+
+                                        {% elif i.status_color == "darkorange" %}
+                                        
+                                        <li><a href="#" class="">{{i.status_name}}</a></li>
+
+                                        {% else %}
+                                        <li><a href="#" class="grn">{{i.status_name}}</a></li>
+                                        {% endif %}
+                                          {% endfor %}
+                                        
+                                    </ul>
+                                </div>
+                                <div class="d-flex">
+                                    <p id="output" class="text-center"></p>
+                                    <div id="controls" class="text-center">
+                                        
+                                        {% if current_status == "False" or current_status == "" %}
+                                        <button id ="new_start" class="btn btn-pink waves-effect waves-light w-md m-b-5 start_click" type="button"><i class="ion-android-clock mr-1"></i>Start</button>
+
+                                        {% elif current_status == "True" and button_status == "Start" %}
+
+                                        <button id="new_stop"  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button  class="btn btn-secondary pause_click" type="button">Pause</button>
+
+                                        {% elif current_status == "True" and button_status == "Pause" %}
+                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 resume_click" type="button">Resume</button>
+
+                                        {% elif current_status == "True" and button_status == "Resume" %}
+                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 pause_click" type="button">Pause</button>
+
+                                        {% endif %}
+
+
+
+                                        <!-- -----------------------------Javascript buttons----------------------------------------- -->
+
+                                        <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 start_click" type="button"><i class="ion-android-clock mr-1"></i>Start</button>
+
+                                        {% if current_status == "True" and button_status == "Pause" %}
+                                        {% elif current_status == "True" and button_status == "Start" %}
+                                        {% elif current_status == "True" and button_status == "Resume" %}
+
+                                        {% else %}
+                                        <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        {% endif %}
+
+
+                                        {% if current_status == "True" and button_status == "Start" %}
+                                        {% elif current_status == "True" and button_status == "Resume" %}
+                                        {% else %}
+                                        <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 pause_click" type="button">Pause</button>
+                                        {% endif %}
+
+
+                                        {% if current_status == "True" and button_status == "Pause" %}
+                                        {% else %}
+                                        <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 resume_click" type="button">Resume</button>
+                                        {% endif %}
+
+                                        <button type="button" class="btn btn-pink waves-effect waves-light m-b-5 save-btn">SAVE</button>
+                                        
+                                    </div>
+                                    
+                                </div>
+                               
+                            </div>
                             
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Task Name</label>
-                                    <input type="email" value="{{task_data.task_name}}"  class="form-control" placeholder="">
-                                </div>
-                              
-                                <div class="col-md-6 ">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">
 
-                                Start Date</label>
-                                  <input type="date" value="{{task_data.start_date|safe}}" class="form-control">
-                                </div>
-                                <div class="col-md-6 ">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Assignees</label>
-                                    {% for m in task_member_data %}
-                                    <input type="text"  value="{{m.invite_user_details_id.name}}" class="form-control">
-                                    {% endfor %}
-                                </div>
-                                <div class="col-md-6">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">End Date</label>
-                                  <input value="{{task_data.end_date|safe}}" type="date" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Progress</label>
-                                    <select class="form-control progress_change" name="edit_progress" data-id="{{i.id}}">
-                                        <option selected value="{{task_data.progress}}">{{task_data.progress}}</option>
+                        <!-- stopwatch counter -->
     
-                                        {% for p in progress %}
-                                        
-                                        {% if task_data.progress == p.0 %}
-                                        {% else %}
-                                            <option>{{p.0}}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
+                        <div class="stopwatch" style="float:right; margin-top: -100px;">
+                            <div class="stopwatch__container">
+                                <div class="stopwatch__content">
+                                    <div class="stopwatch__time">
+                                        <span style="font-size: 20px; font-weight: 300px;" id="hour">00</span>:
+                                        <span style="font-size: 20px; font-weight: 300px;" id="minute">00</span>:
+                                        <span style="font-size: 20px; font-weight: 300px;" id="seconde">00</span>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Priority</label>
-                                    <select class="form-control progress_change" name="edit_priority" >
-                                        <option selected value="{{task_data.priority}}">{{task_data.priority}}</option>
-                                        {% for p in priority %}
-                                    
-                                        {% if task_data.priority == p.0 %}
-                                        {% else %}
-                                            <option>{{p.0}}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div> 
-
-                                <div class="col-md-6 ">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Checklist</label>
-                                    {% for c in task_data.add_task_checklist.all %}
-                                  <input value="{{c.item_name}}" type="text" class="form-control">
-                                    {% endfor %}
-                                </div>
-                              
-                               
-                                </div>
+                                <div class="stopwatch__history"></div>
                             </div>
                         </div>
+                        
 
-                        <p class="m-4">Sub Task</p>
-                        <div class="card-body body-change">
-                            <div class="row">
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                                <div class="d-flex align-items-center assign-prjct">
+                                    <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn">
+                                    <div class="profile-image d-flex align-items-center">
+                                        <img src="../static/assets/images/ma.png">                                                          
+                                    </div>
+                                    <span>Mohammed Arshad</span>
+                                </div>
 
-                                <div class="col-md-12 col-sm-12 col-12">
-                                    <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <div class="labeltag d-flex align-items-center mt-4">
+                                    <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
+                                    <select class="select2" multiple="multiple"  id="myList">
+                                        <option value="1">Add label</option>
+                                        {% for t in tags_name %}
 
-                                        <thead class="border-class">
+                                        <option value="">{{t.tags_name}}</option>
+                                        {% endfor %}
+                                      </select>
+                                </div>
 
-                                            <tr class="heading-text">
-                                                <th>Title</th>
-                                                <th>Assigned to</th>
-                                                <th>Priority</th>
-                                                <th>Due</th>
-                                                <th>Bucket</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody class="body-textcls">
-
-                                            {% for i in sub_task_data %}
-                                            <tr>
-                                                <td>
-                                                    {{i.task_name}}
-                                                </td>
-                                                <td>
-                                                    <div class="profile-image d-flex align-items-center">
-                                                        {% for j in i.add_task_space.all %}
-                                                        
-                                                        <img src="./media/{{j.invite_user_details_id.photo}}">
-                                                        {% endfor %}
-                                                    </div>
-                                                </td>
-                                               
-                                                <td>
-
-                                                    {% if i.priority == "Urgent" %}
-                                                    <img src="../static/assets/images/bell.png" class="img-fluid danger-icon">
-
-                                                    {% elif i.priority == "Important" %}
-                                                    <img src="../static/assets/images/danger.png" class="img-fluid danger-icon">
-
-                                                    {% elif i.priority == "Medium" %}
-                                                    <img src="../static/assets/images/greendot.png" class="img-fluid danger-icon">
-
-                                                    {% elif i.priority == "Low" %}
-                                                    <img src="../static/assets/images/bluearrow.png" class="img-fluid danger-icon">
-
-                                                    {% endif %}
-
-                                                    {{i.priority}}</td>
-                                                <td>{{i.end_date|safe}}</td>
-                                                <td>{{i.bucket_mapping_id}}</td>
-                                                <td>
-
-                                                    <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                                    <i class="md-more-vert"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="view_task_page?task_id={{i.id}}" class="dropdown-item">View</a></li>
-                                                      
-                                                    </ul>
-
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
+                                <div class="row mt-4 prjct-form">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label">Bucket</label>
+                                            <select class="ddl-select" id="list" name="list">
+                                                <option value="1">To Do</option>
+                                                <option value="2">In Progress</option>
+                                                <option value="3">Testing</option>
+                                                <option value="4">On Hold</option>
+                                              </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label">Progress</label>
+                                            <select class="ddl-select-1" id="list1" name="list1">
+                                                <option selected value="{{task_data.progress}}">{{task_data.progress}}</option>
+    
+                                                {% for p in progress %}
+                                                
+                                                {% if task_data.progress == p.0 %}
+                                                {% else %}
+                                                    <option>{{p.0}}</option>
+                                                {% endif %}
+                                                {% endfor %}                                                               
+                                            </select>                                                             
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label">Priority</label>
+                                            <select class="ddl-select-2" id="list2" name="list2">
+                                                <option selected value="{{task_data.priority}}">{{task_data.priority}}</option>
+                                                {% for p in priority %}
                                             
-                                        </tbody>
-                                    </table>
+                                                {% if task_data.priority == p.0 %}
+                                                {% else %}
+                                                    <option>{{p.0}}</option>
+                                                {% endif %}
+                                                {% endfor %}                                                               
+                                            </select>                                                             
+                                        </div>
+                                          
+                                    </div>
 
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-2"
+                                                class="control-label">Start Date</label>
+                                            <div class="input-group">
+                                                <input type="text" value="{{task_data.start_date|safe}}" class="form-control datepicker"
+                                                    placeholder="mm/dd/yyyy" id="datepicker">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i
+                                                            class="md md-event"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-2"
+                                                class="control-label">Due Date</label>
+                                            <div class="input-group">
+                                                <input type="text"  value="{{task_data.end_date|safe}}" class="form-control datepicker"
+                                                    placeholder="mm/dd/yyyy" id="datepicker1">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i
+                                                            class="md md-event"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label">Notes</label>
+                                            <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type a description or add notes here">{{task_data.notes}}</textarea>                              
+                                        </div>
+                                          
+                                    </div>
+
+                                   
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label mb-2">Checklist</label>
+                                            {% for ch in task_data.add_task_checklist.all %}
+                                            <div class="checkbox checkbox-circle ">
+                                                <input  id="checkbox7" type="checkbox">
+                                                <label for="checkbox7" >
+                                                    <input disabled  type="text" value="{{ch.item_name}}" placeholder="Add an item" class="form-control checkitem">
+                                                </label>
+                                                <a class="checklist_more" style="float: right;
+                                                font-size: 20px; cursor: pointer;
+                                                font-weight: bold;">+</a>
+                                                
+                                            </div>        
+                                            {% endfor %}   
+                                            
+                                                <div class="append_add">
+                                                    
+                                                </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label mb-2">Attachments</label>
+
+                                            {% for a in task_data.add_attachment.all %}
+                                                {% if a.attached_file  %}
+                                                    <a target="_blank" href="/media/{{a.attached_file}}" >
+                                                    <div class="add-attach mt-2">
+                                                        <p class="fa fa-eye">&ensp;{{a.file_name}}</p>
+                                                    </div> 
+                                                    </a>
+                                                {% endif %}
+                                                {% endfor %}
+
+
+                                            <div class="add-attach mt-4" data-toggle="dropdown" aria-expanded="false">
+                                                    Add attachment
+                                            </div> 
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" class="dropdown-item">From Computer</a></li>
+                                                <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#url-modal">A link to a URL</a></li>
+        
+                                            </ul>                            
+                                        </div>
+                                          
+                                    </div>
+                           
                                 </div>
+                                
+                            </div>
+
+                            <div class="col-md-6 timesheet-tab mt-3">
+
+                             
+                                    <ul class="nav nav-tabs tabs" role="tablist" style="width: 100%;">
+                                        <li class="nav-item tab">
+                                            <a class="nav-link active" id="home-tab-2" data-toggle="tab" href="#home-2" role="tab" aria-controls="home-2" aria-selected="false">
+                                                <span class="d-block d-sm-none"><i class="fa fa-home"></i></span>
+                                                <span class="d-none d-sm-block">Sub Task</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item tab">
+                                            <a class="nav-link" id="profile-tab-2" data-toggle="tab" href="#profile-2" role="tab" aria-controls="profile-2" aria-selected="true">
+                                                <span class="d-block d-sm-none"><i class="fa fa-user"></i></span>
+                                                <span class="d-none d-sm-block">Comments</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item tab">
+                                            <a class="nav-link" id="message-tab-2" data-toggle="tab" href="#message-2" role="tab" aria-controls="message-2" aria-selected="false">
+                                                <span class="d-block d-sm-none"><i class="fa fa-envelope-o"></i></span>
+                                                <span class="d-none d-sm-block">Time Sheet</span>
+                                            </a>
+                                        </li>
+                                        
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane show active" id="home-2" role="tabpanel" aria-labelledby="home-tab-2">
+                                            <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 107%;">
+
+                                                <thead class="border-class">
+
+                                                    <tr class="heading-text">
+                                                        <th>Title</th>
+                                                        <th>Assigned to</th>                                                                         
+                                                        <th>Due</th>
+                                                        <th>Bucket</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+
+
+                                                <tbody class="body-textcls vertcle-center">
+                                                    <tr>
+                                                        <td colspan="5" class="addlinetd">
+                                                            <a style="cursor: pointer;"  class="create_subtask" class="addline"><i class="md md-add-circle"></i> Add Sub Task</a>
+                                                        </td>
+                                                    </tr>
+                                                    {% for i in sub_task_data %}
+                                                    <tr>
+                                                        <td>
+                                                            <div class="checkbox margin-check checkbox-primary checkbox-circle">
+                                                                <input id="checkbox-9" type="checkbox" class="padd-radio">
+                                                                <label for="checkbox-9">
+                                                  
+                                                                </label>
+                                                                <p class="main-head">{{i.task_name}}</p>
+                                                            </div>
+
+                                                        </td>
+                                                        <td>
+                                                            <div class="profile-image d-flex align-items-center">
+                                                                {% for j in i.add_task_space.all %}
+                                                                <img src="./media/{{j.invite_user_details_id.photo}}">
+                                                                {% endfor %}
+                                                                <div class="circle-user">
+                                                                    <i class="ion-plus"></i>5
+                                                                </div>
+                                                              
+                                                            </div>
+                                                        </td>
+                                                       
+                                                        <td> 
+                                                            {% if request.user.id|due_date_check_task:i.id == True %}
+                                                            <span  class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i>&ensp;{{i.end_date|safe}}</span>
+
+                                                            {% else %}
+                                                            <i class="ion-calendar"></i>&ensp;{{i.end_date|safe}}
+
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if i.bucket_mapping_id.status_color == "red" %}
+                                    
+                                                            <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
+            
+                                                            {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
+                                                            
+                                                            <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
+            
+                                                            {% elif i.bucket_mapping_id.status_color == "green" %}
+                                                            
+                                                            <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
+            
+                                                            {% elif i.bucket_mapping_id.status_color == "blue" %}
+                                                            
+                                                            <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
+            
+                                                            {% elif i.bucket_mapping_id.status_color == "darkorange" %}
+                                                            
+                                                            <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
+            
+                                                            {% else %}
+                                                                 <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
+                                                            {% endif %}
+                                                        </td>
+                                             
+                                                        <td class="d-flex justify-content-end align-items-center text-right">
+
+                                                            <a href="view_task_page?task_id={{i.id}}" class="viewtasklink"><i class="fa fa-eye"></i> View Task</a>
+
+                                                            <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="md-more-vert"></i>
+                                        </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="#" class="dropdown-item">Edit</a></li>
+                                                                <li><a href="#" class="dropdown-item">Delete</a></li>
+                                                            </ul>
+
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                    
+                                                    
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                        <div class="tab-pane" id="profile-2" role="tabpanel" aria-labelledby="profile-tab-2" style="display: none;">
+                                            <div class="row prjct-form">
+                                                <div class="col-md-12">
+                                                    <div class="form-group mt-2">
+                                                        <!-- <label for="field-2" class="control-label">Comments</label> -->
+                                                        <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type your message here"></textarea>                              
+                                                    </div>
+                                                    <button type="button" class="btn btn-pink waves-effect waves-light w-sm m-b-5 float-right">Send</button>
+                                                </div>
+
+                                                        {% for c in task_data.task_comments.all %}
+                                                            <div class="col-md-12 comment-sec">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="col px-0 pro-detail">
+                                                                        <img src="./media/{{c.added_by.photo}}" alt=""style="border-radius: 5%;
+                                                                        width: 8%;" class="avatar lg rounded-circle">&ensp;
+                                                                      
+                                                                      {{c.added_by.name}}
+                                                                    </div>
+                                                                    <div class="col px-0">
+                                                                        <span>{{c.created_dt}} {{c.created_tm}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                {% if c.comments == "False" %}
+                                                                {% else %}
+                                                                <p>{{c.comments}}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                    {% endfor %}
+                                              
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="message-2" role="tabpanel" aria-labelledby="message-tab-2" style="display: none;">
+                                            <table id="datatable" class="table dt-responsive table-bordered nowrap table-padd time-sheet" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                                                <thead class="border-class">
+
+                                                    <tr class="heading-text">
+                                                        <th>Date</th>
+                                                        <th>Employee</th>
+                                                        <!-- <th>Description</th> -->
+                                                        <th>Hour Spent</th>                                                           
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+
+
+                                                <tbody class="body-textcls vertcle-center">
+                                                    {% for h in time_details %}
+                                                    {% if h.counter == None %}
+                                                        {% else %}
+                                                    <tr>
+                                                        <td>{{h.current_date|safe}}</td>
+                                                        <td>
+                                                            <div class="profile-image d-flex align-items-center">
+                                                               
+                                                                <img src="../static/assets/images/users/avatar-4.jpg">
+                                                                   <span>{{h.user_details_id.name}}</span> 
+                                                            </div>
+                                                        </td>
+                                                        <!-- <td></td> -->
+                                                        <td>{{h.counter|safe}}</td>                                                               
+                                                        <td><i class="fa-regular fa-trash-can"></i></td>
+                                                    </tr>
+                                                  
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                            <div class="d-flex hours-spent">
+                                                <div class="col-md-6 t-hr">
+                                                    <h5>Total hours spent : <span>{{total_hr}}</span></h5>
+                                                </div>
+                                                <div class="col-md-6 r-hr text-right">
+                                                    <h5>Remaining hours : <span>00:00</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                              
+                          
+
                             </div>
                         </div>
-                       
-                    </form>
-                </div> <!-- card-body -->
-            </div> <!-- card -->
-        </div> <!-- End Rightsidebar -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
@@ -226,7 +522,7 @@
             </div> 
             <div class="modal-body"> 
                 <input type="hidden" name="space_id" value="{{space_data.id}}">
-                <input type="hidden" name="sub_space_id" value="{{sub_space_id}}">
+                <input type="hidden" name="sub_space_id" value="{{sub_space_data.id}}">
                 <input type="hidden" id="task_id" name="task_id" value="{{task_data.id}}">
                 
                 <div class="row"> 
@@ -286,19 +582,25 @@
                     </div> 
                    
                  
-                    <div class="col-md-6"> 
+                    <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Note</label> 
                          <input type="text" name="notes" class="form-control">
                         </div> 
                     </div> 
                    
-                    <div class="img-group mx-2" style="float: right;">
-                        <a  data-toggle="modal" data-target="#sub_task_employee">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
+                            <label for="field-2" class="control-label">Assignees</label> 
+                            <select required multiple class="form-control jsSelect1" name="member_checkbox">
+                                <option value="1">select</option>
+                                {% for i in task_member_data %}
+                                <option value="{{i.invite_user_details_id.id}}"> {{i.invite_user_details_id.name}}</option>
+                                {% endfor %}
+                             </select>                        
+                        </div> 
+                    </div> 
                     
-                            <div style="color: red; display:none ;" id="message"></div>
-                        </div>
                 </div> 
             </div> 
             <div class="modal-footer"> 
@@ -358,7 +660,171 @@
 
 </form>
 
+
+
+
+
+{% block scripts %}
+
 <script>
+    var colors = ["red", "blue", "green", "orange", "yellow"];
+
+    $(document).ready(function () {
+        var checkList = [1];
+        $("#myList").select2({
+            width: "100%",
+            templateSelection: function (data, container) {
+                var selection = $('#myList').select2('data');
+                var idx = selection.indexOf(data);
+                console.log(">>Selection", data.text, data.idx, idx);
+                data.idx = idx;
+
+                // $(container).css("background-color", colors[data.idx]);
+                return data.text;
+            },
+        }).val(checkList).trigger("change");
+
+    })
+</script>
+
+<script>
+    $(function () {
+        $(".ddl-select, .ddl-select-1, .ddl-select-2, .ddl-select-3").each(function () {
+            $(this).hide();
+            var $select = $(this);
+            var _id = $(this).attr("id");
+            var wrapper = document.createElement("div");
+            wrapper.setAttribute("class", "ddl ddl_" + _id);
+
+            var input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("class", "ddl-input");
+            input.setAttribute("id", "ddl_" + _id);
+            input.setAttribute("readonly", "readonly");
+            input.setAttribute(
+                "placeholder",
+                $(this)[0].options[$(this)[0].selectedIndex].innerText
+            );
+
+            $(this).before(wrapper);
+            var $ddl = $(".ddl_" + _id);
+            $ddl.append(input);
+            $ddl.append("<div class='ddl-options ddl-options-" + _id + "'></div>");
+            var $ddl_input = $("#ddl_" + _id);
+            var $ops_list = $(".ddl-options-" + _id);
+            var $ops = $(this)[0].options;
+            for (var i = 0; i < $ops.length; i++) {
+                $ops_list.append(
+                    "<div data-value='" +
+                    $ops[i].value +
+                    "'>" +
+                    $ops[i].innerText +
+                    "</div>"
+                );
+            }
+
+            $ddl_input.click(function () {
+                $ddl.toggleClass("active");
+            });
+            $ddl_input.blur(function () {
+                $ddl.removeClass("active");
+            });
+            $ops_list.find("div").click(function () {
+                $select.val($(this).data("value")).trigger("change");
+                $ddl_input.val($(this).text());
+                $ddl.removeClass("active");
+            });
+        });
+    });
+</script>
+
+<script>
+jQuery(document).ready(function() {
+
+    // Tags Input
+    jQuery('#tags').tagsInput({
+        width: 'auto'
+    });
+
+    // Time Picker
+    jQuery('#timepicker').timepicker({
+        defaultTIme: false
+    });
+    jQuery('#timepicker2').timepicker({
+        showMeridian: false
+    });
+    jQuery('#timepicker3').timepicker({
+        minuteStep: 15
+    });
+
+    // Date Picker
+    jQuery('.datepicker').datepicker();
+    jQuery('#datepicker-inline').datepicker();
+    jQuery('#datepicker-multiple').datepicker({
+        numberOfMonths: 3,
+        showButtonPanel: true
+    });
+   
+});
+</script>
+<script>
+var time = 0;
+var running = 0;
+
+function startPause() {
+if (running == 0) {
+    running = 1;
+    increment();
+    document.getElementById("startPause").innerHTML = "STOP";
+} else {
+    running = 0;
+    document.getElementById("startPause").innerHTML = "START";
+}
+}
+
+function reset(){
+running = 0;
+time = 0;
+document.getElementById("startPause").innerHTML = "START";
+document.getElementById("output").innerHTML = "00:00:00";
+}
+
+function increment() {
+if (running == 1) {
+    setTimeout(function() {
+        time++;
+        var mins = Math.floor(time/10/60);
+        var secs = Math.floor(time/10 % 60);
+        var tenths = time % 10;
+        if (mins < 10) {
+          mins = "0" + mins;
+        } 
+        if (secs < 10) {
+          secs = "0" + secs;
+        }
+        document.getElementById("output").innerHTML = mins + ":" + secs + ":" + "0" + tenths;
+        increment();
+    },100);
+}
+}
+</script>
+
+<script>
+    $(".checklist_more").click(function(){
+    $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input  type="text" placeholder="Add an item" class="form-control checkitem"></label></div>`);
+    
+})
+</script>
+
+<script>
+
+
+$(document).ready(function() {
+            $('.jsSelect1').select2({
+            placeholder: 'Select an option'
+        });
+           
+    }); 
     $(".create_subtask").click(function(){
     
     $("#new_sub_task_create").modal("show")
@@ -378,18 +844,288 @@
 </script>
 
 
+
+
 <script>
-    $(".sub_task_class").submit(function () {
-        event.preventDefault()
-        if( $('.member_data').is(':checked') ) {
-            document.forms["sub_task_form"].submit();
-    }
-    else {
-        document.getElementById("message").style.display = "block";
-        document.getElementById("message").innerHTML = "Please choose a employee!";
-    }
+    $(".start_click").click(function(){
+
+        $(".stop_click").show()
+        $(".start_click").hide()
+        $(".pause_click").show()
+        // $("#new_stop").hide()
+        task_id = document.getElementById("task_id").value;
+        
+        $.ajax(
+        {
+        type:"GET",
+        url: "start_timer_action",
+        data:{
+            status: "start",
+            task_id: task_id,
+        },
+        success: function(data) 
+        {
+            console.log("successs")
+        }
+        })
     })
+
+
+
+    $(".pause_click").click(function(){
+
+        $(".resume_click").show()
+        $(".pause_click").hide()
+        task_id = document.getElementById("task_id").value;
+
+        $.ajax(
+        {
+        type:"GET",
+        url: "start_timer_action",
+        data:{
+            status: "pause",
+            task_id: task_id,
+        },
+        success: function(data) 
+        {
+            console.log("successs")
+        }
+    })
+    })
+
+
+
+    $(".resume_click").click(function(){
+
+        $(".resume_click").hide()
+        $(".pause_click").show()
+        task_id = document.getElementById("task_id").value;
+
+        $.ajax(
+        {
+        type:"GET",
+        url: "start_timer_action",
+        data:{
+            status: "resume",
+            task_id: task_id,
+        },
+        success: function(data) 
+        {
+            console.log("successs")
+        }
+    })
+    })
+
+
+
+    $(".stop_click").click(function(){
+
+        $(".resume_click").hide()
+        $(".pause_click").hide()
+        $(".stop_click").hide()
+        $(".start_click").show()
+        $("#new_start").hide()
+
+        task_id = document.getElementById("task_id").value;
+
+        $.ajax(
+        {
+        type:"GET",
+        url: "start_timer_action",
+        data:{
+            status: "stop",
+            task_id: task_id,
+        },
+        success: function(data) 
+        {
+            console.log("successs")
+        }
+    })
+    })
+
 </script>
 
+<!-- stopwatch design -->
+<script>
+    //Variables
+const startBtn = document.querySelector('.start_click');
+const stopBtn = document.querySelector('.pause_click');
+const resetBtn = document.querySelector('.stop_click');
+const resumeBtn = document.querySelector('.resume_click');
+const hourContent = document.getElementById("hour");
+const minuteContent = document.getElementById("minute");
+const secondeContent = document.getElementById("seconde");
+let watchInterval;
+
+//Events
+eventListners();
+function eventListners() {
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetWatch);
+    }
+    if (startBtn) {
+        startBtn.addEventListener('click', startWatch);
+    }
+
+    if (stopBtn) {
+        stopBtn.addEventListener('click', stopWatch);
+    }
+    if (resumeBtn) {
+        resumeBtn.addEventListener('click', resumeWatch);
+    }
+}
+
+
+ button_status = '{{button_status|escapejs}}'
+ time_diff = '{{refresh_time_diff|escapejs}}'
+ if(time_diff != ""){
+    x = time_diff.split(':')
+    r_hour = x[0];
+    r_minute = x[1];
+    r_second = x[2];
+    hourContent.innerHTML = r_hour;
+    minuteContent.innerHTML = r_minute;
+    secondeContent.innerHTML = r_second;
+    if(button_status == "Start"){
+        startWatch();
+    }
+    else if (button_status == "Resume")
+        resumeWatch();
+  
+    else if(button_status == "Pause"){
+        stopWatch();
+    }
+
+    else if(button_status == "Stop"){
+        resetWatch();
+    }
+ }
+
+
+//Functions
+function resetWatch() {
+    hourContent.innerHTML = '00';
+    minuteContent.innerHTML = '00';
+    secondeContent.innerHTML = '00';
+    stopWatch();
+}
+
+function startWatch() {
+    var seconde = parseInt(secondeContent.textContent.trim());
+    watchInterval = setInterval(() => {
+        seconde += 1;
+        if(seconde == 60){
+            seconde = 0;
+            var minute = parseInt(minuteContent.textContent.trim());
+            minute++;
+            if(minute == 60){
+                minute = 0;
+                var hour = parseInt(hourContent.textContent.trim());
+                hour++;
+                if(hour == 24){
+                    hour = 0;
+                }
+                if (hour < 10) {
+                    hourContent.innerHTML = "0" + hour;
+                }
+                else {
+                    hourContent.innerHTML = hour;
+                }    
+            }
+            if (minute < 10) {
+                minuteContent.innerHTML = "0" + minute;
+            }
+            else {
+                minuteContent.innerHTML = minute;
+            }    
+        }
+        if (seconde < 10) {
+            secondeContent.innerHTML = "0" + seconde;
+        }
+        else {
+            secondeContent.innerHTML = seconde;
+        }
+
+    }, 1000);
+}
+
+function resumeWatch() {
+    var seconde = parseInt(secondeContent.textContent.trim());
+    watchInterval = setInterval(() => {
+        seconde += 1;
+        if(seconde == 60){
+            seconde = 0;
+            var minute = parseInt(minuteContent.textContent.trim());
+            minute++;
+            if(minute == 60){
+                minute = 0;
+                var hour = parseInt(hourContent.textContent.trim());
+                hour++;
+                if(hour == 24){
+                    hour = 0;
+                }
+                if (hour < 10) {
+                    hourContent.innerHTML = "0" + hour;
+                }
+                else {
+                    hourContent.innerHTML = hour;
+                }    
+            }
+            if (minute < 10) {
+                minuteContent.innerHTML = "0" + minute;
+            }
+            else {
+                minuteContent.innerHTML = minute;
+            }    
+        }
+        if (seconde < 10) {
+            secondeContent.innerHTML = "0" + seconde;
+        }
+        else {
+            secondeContent.innerHTML = seconde;
+        }
+
+    }, 1000);
+}
+
+function stopWatch() {
+    if (watchInterval) {
+        clearInterval(watchInterval);
+    }
+}
+</script>
+
+<!-- total hours calculation -->
+
+<script>
+        var hour=0;
+        var minute=0;
+        var second=0;
+
+    array = []
+    array1 = []
+    var total = 0;
+    $(document).ready(function() {
+    // var counter_data = document.getElementById("counter_data").value;
+    
+    $(".counter_data").each(function () {
+        var b = $(this).val();
+        console.log(b)
+        array.push(b)
+    })
+    console.log(array)
+
+    for (var i = 0; i < array.length; i++) {
+        array1.push(array [i].split(":"));
+    }
+console.log(array1)
+
+console.log(array1[0])
+    
+})
+</script>
+
+
+{% endblock %}
 
 {% endblock %}

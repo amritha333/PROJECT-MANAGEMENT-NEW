@@ -196,6 +196,7 @@ class sub_space_attachment(common_table):
     file_name = models.CharField(max_length=50,null=True)
     file_type = models.CharField(max_length=30,null=True)
     attached_file = models.FileField(upload_to="sub_space_attachment", null=True)   
+    added_by = models.ForeignKey(User,related_name="sub_space_auth_id",on_delete=models.CASCADE,null=True)
 
 class sub_space_comments(common_table):
     sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_comments",on_delete=models.CASCADE,null=True)
@@ -241,6 +242,7 @@ class Add_task_attachment(common_table):
     file_name = models.CharField(max_length=50,null=True)
     file_type = models.CharField(max_length=30,null=True)
     attached_file = models.FileField(upload_to="task_attachment", null=True)   
+    added_by = models.ForeignKey(User,related_name="task_auth_id",on_delete=models.CASCADE,null=True)
 
 class Add_task_comments(common_table):
     add_task_id = models.ForeignKey(Add_task_master,related_name="task_comments",on_delete=models.CASCADE,null=True)

@@ -8,7 +8,7 @@
         <div class="create-btn-box d-flex">
             <img src="../static/assets/images/plus.svg">
         
-            <h4 style="cursor: pointer;" data-subspace-id="{{sub_space_data.id}}" data-space-id="{{space_data.id}}" class="create_task">Create New Task</h4>
+            <h4 style="cursor: pointer;"  class="create_subtask">Create New Sub Task</h4>
         </div>
         <div class="created-group">
             <h3> Project</h3>
@@ -37,30 +37,24 @@
 <div class="content-rigt">
     <div class="row">
     
-        
         <!-- Left sidebar -->
     
         <div class="col-lg-9">
-            
-            <form action="update_project" method="POST">
-                {% csrf_token %}
-
-                <input type="hidden" name="sub_space_id" value="{{sub_space_id}}">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="float-right mt-4">
-
                         <div class="btn-toolbar" role="toolbar">
-                            <button type="submit" class="btn btn-purple waves-effect waves-light"> <span>Save</span> <i class="fa fa-send m-l-10"></i></button>
+                            <button type="button" class="btn btn-purple waves-effect waves-light"> <span>Save</span> 
+                                <i class="fa fa-send m-l-10"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            
             <div class="card m-t-20">
                 <div class="card-body p-t-30">
                     
+                    <form>
                         <div class="form-group">
                             
                         </div>
@@ -68,53 +62,52 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
-                                    color: #0000008a;">Project Name</label>
-                                    <input type="text" name="edit_project_name" value="{{sub_space_data.sub_space_name}}"  class="form-control" placeholder="">
+                                    color: #0000008a;">Task Name</label>
+                                    <input type="email" value="{{task_data.task_name}}"  class="form-control" placeholder="">
                                 </div>
                               
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">
 
-                                Planning Start Date</label>
-                                  <input type="date" name="edit_start_date" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control">
+                                Start Date</label>
+                                  <input type="date" value="{{task_data.start_date|safe}}" class="form-control">
                                 </div>
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Assignees</label>
-                                    {% for m in sub_space_data.invite_user_details_id.all %}
-                                    <input type="text"  value="{{m.name}}" class="form-control">
+                                    {% for m in task_member_data %}
+                                    <input type="text"  value="{{m.invite_user_details_id.name}}" class="form-control">
                                     {% endfor %}
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
-                                    color: #0000008a;">Planning End Date</label>
-                                  <input value="{{sub_space_data.Planning_end_date|safe}}" name="edit_end_date" type="date" class="form-control">
+                                    color: #0000008a;">End Date</label>
+                                  <input value="{{task_data.end_date|safe}}" type="date" class="form-control">
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Progress</label>
-
-                                <select class="form-control progress_change" name="edit_progress" data-id="{{i.id}}">
-                                    <option selected value="{{sub_space_data.progress}}">{{sub_space_data.progress}}</option>
-
-                                    {% for p in progress %}
-                                    
-                                    {% if sub_space_data.progress == p.0 %}
-                                    {% else %}
-                                        <option>{{p.0}}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
+                                    <select class="form-control progress_change" name="edit_progress" data-id="{{i.id}}">
+                                        <option selected value="{{task_data.progress}}">{{task_data.progress}}</option>
+    
+                                        {% for p in progress %}
+                                        
+                                        {% if task_data.progress == p.0 %}
+                                        {% else %}
+                                            <option>{{p.0}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Priority</label>
                                     <select class="form-control progress_change" name="edit_priority" >
-                                        <option selected value="{{sub_space_data.priority}}">{{sub_space_data.priority}}</option>
+                                        <option selected value="{{task_data.priority}}">{{task_data.priority}}</option>
                                         {% for p in priority %}
                                     
-                                        {% if sub_space_data.priority == p.0 %}
+                                        {% if task_data.priority == p.0 %}
                                         {% else %}
                                             <option>{{p.0}}</option>
                                         {% endif %}
@@ -122,32 +115,11 @@
                                     </select>
                                 </div> 
 
-                                
-                                <div class="col-md-6">
-                                    <label style="margin: 12px 2px;
-                                    color: #0000008a;">Bucket</label>
-
-                                <select class="form-control progress_change" name="edit_bucket" data-id="{{i.id}}">
-                                    <option selected value="{{sub_space_data.bucket_mapping_id.id}}">{{sub_space_data.bucket_mapping_id}}</option>
-
-                                    {% for b in bucket_data %}
-                                        {% if sub_space_data.bucket_mapping_id.status_name == b.status_name %}
-
-                                            {% else %}
-                                            <option  value="{{b.id}}">{{b.status_name}}</option>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                </select>
-                                </div>
-
-
-
                                 <div class="col-md-6 ">
                                     <label style="margin: 12px 2px;
                                     color: #0000008a;">Checklist</label>
-                                    {% for c in sub_space_data.sub_space_checklist.all %}
-                                  <input name="edit_checklist" value="{{c.milestone}}" type="text" class="form-control">
+                                    {% for c in task_data.add_task_checklist.all %}
+                                  <input value="{{c.item_name}}" type="text" class="form-control">
                                     {% endfor %}
                                 </div>
                               
@@ -156,7 +128,7 @@
                             </div>
                         </div>
 
-                        <p class="m-4">Task</p>
+                        <p class="m-4">Sub Task</p>
                         <div class="card-body body-change">
                             <div class="row">
 
@@ -168,7 +140,6 @@
                                             <tr class="heading-text">
                                                 <th>Title</th>
                                                 <th>Assigned to</th>
-                                                <th>Checklist</th>
                                                 <th>Priority</th>
                                                 <th>Due</th>
                                                 <th>Bucket</th>
@@ -176,10 +147,9 @@
                                             </tr>
                                         </thead>
 
-
                                         <tbody class="body-textcls">
 
-                                            {% for i in task_data %}
+                                            {% for i in sub_task_data %}
                                             <tr>
                                                 <td>
                                                     {{i.task_name}}
@@ -187,16 +157,12 @@
                                                 <td>
                                                     <div class="profile-image d-flex align-items-center">
                                                         {% for j in i.add_task_space.all %}
+                                                        
                                                         <img src="./media/{{j.invite_user_details_id.photo}}">
                                                         {% endfor %}
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <div class="files">
-                                                        <!-- <i class="md-attach-file"></i><span>{{i.add_attachment.count}}</span> &ensp; -->
-                                                        <i class="md-done"></i><span>0/{{i.add_task_checklist.count}}</span>
-                                                    </div>
-                                                </td>
+                                               
                                                 <td>
 
                                                     {% if i.priority == "Urgent" %}
@@ -212,7 +178,6 @@
                                                     <img src="../static/assets/images/bluearrow.png" class="img-fluid danger-icon">
 
                                                     {% endif %}
-
 
                                                     {{i.priority}}</td>
                                                 <td>{{i.end_date|safe}}</td>
@@ -238,48 +203,37 @@
                             </div>
                         </div>
                        
-            </form>
+                    </form>
                 </div> <!-- card-body -->
-
-
             </div> <!-- card -->
-
-
-            <div class="row">
-                <div class="col-lg-12">
-                    
-                </div>
-            </div>
-            
-            
-
         </div> <!-- End Rightsidebar -->
-        
 </div>
 
 
 
-<form name="task_form" class="task_class" method="POST" action="task_management_action" enctype="multipart/form-data">
+<form name="sub_task_form" class="sub_task_class" method="POST" action="sub_task_action">
     {% csrf_token %} 
 
-<div id="new_task_create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-    <div class="modal-dialog  modal-lg"> 
+<div id="new_sub_task_create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content"> 
             <div class="modal-header">
                 <h4 class="modal-title mt-0" style="color: #f9365f;
-                font-weight: bold;">Create New Task</h4> 
+                font-weight: bold;">Create New Sub Task</h4> 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div> 
             <div class="modal-body"> 
-                <input type="hidden" id="sub_space_id1" name="sub_space_id">
-                <input type="hidden" id="space_id1" name="space_id">
+                <input type="hidden" name="space_id" value="{{space_data.id}}">
+                <input type="hidden" name="sub_space_id" value="{{sub_space_data.id}}">
+                <input type="hidden" id="task_id" name="task_id" value="{{task_data.id}}">
+                
                 <div class="row"> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-1" class="control-label">Task Name</label> 
-                            <input type="text" required name="task_name" class="form-control" id="field-1" placeholder="Task Name"> 
+                            <label for="field-1" class="control-label">SubTask Name</label> 
+                            <input type="text" required name="sub_task_name" class="form-control" id="field-1" placeholder="SubTask Name"> 
                         </div> 
                     </div> 
                   
@@ -320,34 +274,17 @@
 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label"> Start date</label> 
+                            <label for="field-2" class="control-label">Start date</label> 
                             <input type="date" name="start_date" value="{{today_date|safe}}" min="{{today_date}}" class="form-control">
                         </div> 
                     </div> 
                     <div class="col-md-6"> 
                         <div class="form-group"> 
-                            <label for="field-2" class="control-label"> End date</label> 
+                            <label for="field-2" class="control-label">End date</label> 
                          <input type="date" required  min="{{today_date}}" name="end_date" class="form-control">
                         </div> 
                     </div> 
-                    <div class="col-md-12"> 
-                        <div class="form-group"> 
-                            <label for="field-2" class="control-label">Checklist</label>
-
-                            <a id="add_checklist" style="float: right;
-                            font-size: 18px; cursor: pointer;
-                            font-weight: bold;">+</a>
-
-                            <input type="text" name="checklist" class="form-control">
-
-                            <div class="" id="new_checklist" style="display:none;">
-                                <div class="checklist_add">
-                                    <input class="form-control mt-2"   type="text" name="checklist"> 
-                                </div>
-                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus">Add</i></a>
-                            </div>
-                        </div> 
-                    </div>
+                   
                  
                     <div class="col-md-6"> 
                         <div class="form-group"> 
@@ -357,11 +294,10 @@
                     </div> 
                    
                     <div class="img-group mx-2" style="float: right;">
-                        <a  data-toggle="modal" data-target="#task_employee">
+                        <a  data-toggle="modal" data-target="#sub_task_employee">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus topbar-icon invt"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></a>
-                           
-                            <div style="color: red; display:none ;" id="message"></div>
                     
+                            <div style="color: red; display:none ;" id="message"></div>
                         </div>
                 </div> 
             </div> 
@@ -373,7 +309,7 @@
     </div>
 </div><!-- /.modal -->
 
-<div id="task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+<div id="sub_task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog"> 
         <div class="modal-content"> 
             <div class="modal-header">
@@ -389,17 +325,17 @@
                         <div class="form-group"> 
                            <div class="row">
 
-                            {% for i in sub_space_member_data.invite_user_details_id.all %}
+                            {% for i in task_member_data %}
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <img style="border-radius: 50%;
-                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.photo}}">  
+                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.invite_user_details_id.photo}}">  
                                     </div>
                                    <div class="col-md-4" style="margin: 22px -52px;
                                    font-size: 12px;">
-                                    <input name="member_checkbox" class="member_data"  value="{{i.id}}" type="checkbox">&nbsp;&nbsp;
-                                        {{i.name}}
+                                    <input  name="member_checkbox" class="member_data" value="{{i.invite_user_details_id.id}}" type="checkbox">&nbsp;&nbsp;
+                                        {{i.invite_user_details_id.name}}
                                    </div>
                                 </div>
                               
@@ -419,15 +355,13 @@
             </div>  -->
         </div> 
 </div>
+
 </form>
 
 <script>
-    $(".create_task").click(function(){
-    var sub_space_id = $(this).attr("data-subspace-id")
-    var space_id = $(this).attr("data-space-id")
-    $("#sub_space_id1").val(sub_space_id)
-    $("#space_id1").val(space_id)
-    $("#new_task_create").modal("show")
+    $(".create_subtask").click(function(){
+    
+    $("#new_sub_task_create").modal("show")
     $.ajax(
     {
         type:"GET",
@@ -445,25 +379,10 @@
 
 
 <script>
-    $("#add_checklist").click(function(){
-       
-        $("#new_checklist").show()
-        $("#add_checklist").hide()
-    })
-   
-    $(".add_check_list").click(function(){
-        
-        $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
-        
-    })
-    </script>
-
-
-<script>
-    $(".task_class").submit(function () {
+    $(".sub_task_class").submit(function () {
         event.preventDefault()
         if( $('.member_data').is(':checked') ) {
-            document.forms["task_form"].submit();
+            document.forms["sub_task_form"].submit();
     }
     else {
         document.getElementById("message").style.display = "block";
@@ -471,5 +390,6 @@
     }
     })
 </script>
+
 
 {% endblock %}
