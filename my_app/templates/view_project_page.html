@@ -20,6 +20,12 @@
                                                 <label for="checkbox7">
                                                     {{sub_space_data.sub_space_name}}
                                                 </label>
+
+                                                <div id="controls" class="text-center">
+                                                    <a href="project_tree_structure?project_id={{sub_space_data.id}}">
+                                                    <button type="button" style="top: -36px;left: 200px;" class="btn btn-primary waves-effect waves-light w-md m-b-5">Project Structure</button>
+                                                    </a>
+                                                </div>
                                             </div>
                                             <p>Last changed 30/01/2023 by you</p>
                                         </div>
@@ -27,38 +33,24 @@
                                             <div class="stage1">
                                                 <ul class="demo-tags">
                                                 {% for i in dynamic_status %}
-                                                {% if i.status_color == "red" %}
-                                            
-                                                <li><a href="#" class="redd">{{i.status_name}}</a></li>
-
-                                                {% elif i.status_color == "yellowgreen" %}
+                                                    {% if i.status_name == sub_space_data.bucket_mapping_id.status_name %}
                                                 
-                                                <li><a href="#" class="yellw">{{i.status_name}}</a></li>
+                                                    <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
+                                                    {% else %}
 
-                                                {% elif i.status_color == "green" %}
-                                                
-                                                <li><a href="#" class="grn">{{i.status_name}}</a></li>
-
-                                                {% elif i.status_color == "blue" %}
-                                                
-                                                <li><a href="#" class="blu">{{i.status_name}}</a></li>
-
-                                                {% elif i.status_color == "darkorange" %}
-                                                
-                                                <li><a href="#" class="">{{i.status_name}}</a></li>
-
-                                                {% else %}
-                                                <li><a href="#" class="grn">{{i.status_name}}</a></li>
+                                                <li><a href="#"class="">{{i.status_name}}</a></li>
                                                 {% endif %}
-                                                  {% endfor %}
+
+                                                {% endfor %}
+
                                                   <!-- <li><a href="#" class="yellw">In Progress</a></li>
                                                   <li><a href="#" class="grn">Done</a></li> -->
                                                 </ul>
                                             </div>
                                             <div class="d-flex">
                                                 <p id="output" class="text-center"></p>
+
                                                 <div id="controls" class="text-center">
-                                       
                                                     <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
                                                 </div>
                                             </div>
@@ -84,7 +76,7 @@
                                             <div class="labeltag d-flex align-items-center mt-4">
                                                 <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
                                                 <select class="select2" multiple="multiple"  id="myList">
-                                                    <option value="1">Add label</option>
+                                                    <option value="1">Add tag</option>
                                                     {% for t in tags_name %}
 
                                                     <option value="">{{t.tags_name}}</option>
@@ -95,10 +87,9 @@
                                             <div class="row mt-4 prjct-form">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="field-2" class="control-label">Bucket</label>
+                                                        <label for="field-2" class="control-label">Stage</label>
                                                         <select class="ddl-select" id="list" name="list">
                                                             <option selected value="{{sub_space_data.bucket_mapping_id.id}}">{{sub_space_data.bucket_mapping_id}}</option>
-
                                                                 {% for b in bucket_data %}
                                                                     {% if sub_space_data.bucket_mapping_id.status_name == b.status_name %}
 
@@ -107,7 +98,6 @@
                                                                     {% endif %}
                                                                 {% endfor %}
 
-                                                            
                                                           </select>
                                                     </div>
                                                 </div>
@@ -150,12 +140,9 @@
                                                         <label for="field-2"
                                                             class="control-label">Start Date</label>
                                                         <div class="input-group">
-                                                            <input type="text" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control datepicker"
-                                                                placeholder="" id="datepicker">
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text"><i
-                                                                        class="md md-event"></i></span>
-                                                            </div>
+                                                            <input type="date" min="{{today_date}}" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control"
+                                                                placeholder="" >
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -165,12 +152,15 @@
                                                         <label for="field-2"
                                                             class="control-label">Due Date</label>
                                                         <div class="input-group">
-                                                            <input type="text" value="{{sub_space_data.Planning_end_date|safe}}" class="form-control datepicker"
+                                                            <input type="date" min="{{today_date}}" value="{{sub_space_data.Planning_end_date|safe}}" class="form-control datepicker"
+                                                                placeholder="" >
+                                                            
+                                                            <!-- <input type="text" value="{{sub_space_data.Planning_end_date|safe}}" class="form-control datepicker"
                                                                 placeholder="" id="datepicker1">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text"><i
                                                                         class="md md-event"></i></span>
-                                                            </div>
+                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </div>
@@ -215,8 +205,8 @@
                                                             {% if a.attached_file  %}
 
                                                         <a target="_blank" href="/media/{{a.attached_file}}" >
-                                                        <div class="add-attach mt-2">
-                                                           <p class="fa fa-eye">&ensp;{{a.file_name}}</p>
+                                                        <div class="mt-2" >
+                                                            <i style="font-size: 20px;" class="fa fa-paperclip"></i>&ensp;{{a.file_name}}</p>
                                                         </div> 
                                                         </a>
                                                             {% endif %}
@@ -260,6 +250,7 @@
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div class="tab-pane show active" id="home-2" role="tabpanel" aria-labelledby="home-tab-2">
+
                                                         <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                                                             <thead class="border-class">
@@ -358,7 +349,8 @@
                                                                 
                                                                {% endfor %}
                                                     </tbody>
-                                                    </table>
+                                                        </table>
+
                                                     </div>
                                                     <div class="tab-pane" id="profile-2" role="tabpanel" aria-labelledby="profile-tab-2" style="display: none;">
                                                         <div class="row prjct-form">

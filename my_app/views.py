@@ -1400,3 +1400,56 @@ def get_group_details(request):
     space_dept = space_master.objects.get(id=space_id)
     sub_space_data = sub_space_master.objects.filter(space_id=space_id)
     return render(request,'get_group_details.html',{"sub_space_data":sub_space_data,"space_dept":space_dept})
+
+
+
+def project_tree_structure(request):
+
+    sub_space_id = request.GET.get("project_id")
+    sub_space_data = sub_space_master.objects.get(id=sub_space_id)
+    task_details = Add_task_master.objects.filter(sub_space_id=sub_space_id,parent_id = None)
+    print("task_details::::::",task_details)
+
+    context ={
+        "task_details":task_details,
+        "sub_space_data":sub_space_data,
+        "sub_space_id":sub_space_id
+    }
+
+    return render(request, "project_tree_structure.html",context)
+
+
+def print_project_structure(request):
+    sub_space_id = request.GET.get("sub_space_id")
+    sub_space_data = sub_space_master.objects.get(id=sub_space_id)
+    task_details = Add_task_master.objects.filter(sub_space_id=sub_space_id,parent_id = None)
+    print("task_details::::::",task_details)
+
+    context ={
+        "task_details":task_details,
+        "sub_space_data":sub_space_data
+    }
+
+    return render(request, "print_project_structure.html",context )
+
+
+
+from django.forms.models import model_to_dict
+
+def get_tree(task_details):
+    tree = model_to_dict(task_details, fields=['task_name', 'start_date', 'end_date'])
+    if task_details.sub_task.all().exists():
+        children = list()
+        for child in task_details.sub_task.all():
+            children.append(get_tree(child))
+        tree['subs'] = children  
+    return tree
+
+    
+from django.http import JsonResponse
+def get_tree_sub(request):
+    final_tree = list()
+    for task_details in Add_task_master.objects.filter(parent_id__isnull=True):
+        final_tree.append(get_tree(task_details))
+    print(final_tree)
+    return JsonResponse(final_tree,safe=False)

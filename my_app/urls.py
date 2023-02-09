@@ -52,6 +52,10 @@ urlpatterns = [
 
     path('start_timer_action',views.start_timer_action,name='start_timer_action'),
 
+    path('project_tree_structure',views.project_tree_structure,name='project_tree_structure'),
+    path('print_project_structure',views.print_project_structure,name='print_project_structure'),
+    path('get_tree_sub',views.get_tree_sub)
+
 
 
 ]

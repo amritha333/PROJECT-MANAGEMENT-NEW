@@ -26,30 +26,16 @@
                                 <div class="stage1">
                                     <ul class="demo-tags">
                                         {% for i in dynamic_status %}
-                                        {% if i.status_color == "red" %}
-                                    
-                                        <li><a href="#" class="redd">{{i.status_name}}</a></li>
 
-                                        {% elif i.status_color == "yellowgreen" %}
+                                            {% if i.status_name == task_data.bucket_mapping_id.status_name %}
                                         
-                                        <li><a href="#" class="yellw">{{i.status_name}}</a></li>
+                                            <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
+                                            {% else %}
 
-                                        {% elif i.status_color == "green" %}
-                                        
-                                        <li><a href="#" class="grn">{{i.status_name}}</a></li>
+                                            <li><a href="#"class="">{{i.status_name}}</a></li>
+                                            {% endif %}
 
-                                        {% elif i.status_color == "blue" %}
-                                        
-                                        <li><a href="#" class="blu">{{i.status_name}}</a></li>
-
-                                        {% elif i.status_color == "darkorange" %}
-                                        
-                                        <li><a href="#" class="">{{i.status_name}}</a></li>
-
-                                        {% else %}
-                                        <li><a href="#" class="grn">{{i.status_name}}</a></li>
-                                        {% endif %}
-                                          {% endfor %}
+                                        {% endfor %}
                                         
                                     </ul>
                                 </div>
@@ -132,10 +118,15 @@
                             <div class="col-md-6 mt-3">
                                 <div class="d-flex align-items-center assign-prjct">
                                     <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn">
-                                    <div class="profile-image d-flex align-items-center">
-                                        <img src="../static/assets/images/ma.png">                                                          
+
+                                    {% for m in task_data.add_task_space.all %}
+
+                                    <div class="profile-image d-flex align-items-center m-2">
+                                        <img src="./media/{{m.invite_user_details_id.photo}}">                                                      
                                     </div>
-                                    <span>Mohammed Arshad</span>
+                                    <span>{{m.invite_user_details_id.name}}</span>
+
+                                    {% endfor %}
                                 </div>
 
                                 <div class="labeltag d-flex align-items-center mt-4">
@@ -154,10 +145,14 @@
                                         <div class="form-group">
                                             <label for="field-2" class="control-label">Bucket</label>
                                             <select class="ddl-select" id="list" name="list">
-                                                <option value="1">To Do</option>
-                                                <option value="2">In Progress</option>
-                                                <option value="3">Testing</option>
-                                                <option value="4">On Hold</option>
+                                                <option selected value="{{task_data.bucket_mapping_id.id}}">{{task_data.bucket_mapping_id}}</option>
+                                                {% for b in bucket_data %}
+                                                    {% if task_data.bucket_mapping_id.status_name == b.status_name %}
+
+                                                        {% else %}
+                                                        <option  value="{{b.id}}">{{b.status_name}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
                                               </select>
                                         </div>
                                     </div>
@@ -198,14 +193,12 @@
                                         <div class="form-group">
                                             <label for="field-2"
                                                 class="control-label">Start Date</label>
-                                            <div class="input-group">
-                                                <input type="text" value="{{task_data.start_date|safe}}" class="form-control datepicker"
-                                                    placeholder="mm/dd/yyyy" id="datepicker">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text"><i
-                                                            class="md md-event"></i></span>
+                                                <div class="input-group">
+                                                    <input type="date" min="{{today_date}}" value="{{task_data.start_date|safe}}" class="form-control"
+                                                        placeholder="" >
+                                                    
                                                 </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
 
@@ -213,14 +206,11 @@
                                         <div class="form-group">
                                             <label for="field-2"
                                                 class="control-label">Due Date</label>
-                                            <div class="input-group">
-                                                <input type="text"  value="{{task_data.end_date|safe}}" class="form-control datepicker"
-                                                    placeholder="mm/dd/yyyy" id="datepicker1">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text"><i
-                                                            class="md md-event"></i></span>
+                                                <div class="input-group">
+                                                    <input type="date" min="{{today_date}}" value="{{task_data.end_date|safe}}" class="form-control"
+                                                        placeholder="" >
+                                                    
                                                 </div>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -482,12 +472,16 @@
                                             </table>
 
                                             <div class="d-flex hours-spent">
-                                                <div class="col-md-6 t-hr">
+                                                <!-- <div class="col-md-6 t-hr">
                                                     <h5>Total hours spent : <span>{{total_hr}}</span></h5>
-                                                </div>
+                                                </div> -->
+
                                                 <div class="col-md-6 r-hr text-right">
-                                                    <h5>Remaining hours : <span>00:00</span></h5>
+                                                    <h5>Remaining hours : <span>{{total_hr}}</span></h5>
                                                 </div>
+                                                <!-- <div class="col-md-6 r-hr text-right">
+                                                    <h5>Remaining hours : <span>00:00</span></h5>
+                                                </div> -->
                                             </div>
                                         </div>
                                        

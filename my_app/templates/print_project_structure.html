@@ -1,0 +1,16 @@
+{% load permissions %}
+
+<h4 style="padding-left:200px; margin-left: 200px;">
+    Project Structure of&nbsp; {{sub_space_data.sub_space_name}}
+</h4>
+
+<ul style="list-style-type:square">
+    {% for task in task_details %}
+        <li>
+            <b>{{ task.task_name }}</b>
+          
+            {% tree_structure task %}
+           
+        </li>
+    {% endfor %}
+</ul>

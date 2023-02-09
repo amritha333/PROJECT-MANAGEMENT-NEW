@@ -5846,11 +5846,11 @@ File: Responsive
     border-left: 14px solid #F89A4D !important;
 }
 .grn {
-    background: #129556 !important;
+    background: #ec407a !important;
 }
 
 .grn::after {
-    border-left: 14px solid #129556 !important;
+    border-left: 14px solid #ec407a !important;
 }
 
 
