@@ -3,7 +3,13 @@
 {% load permissions %}
 {% block content %}
 
-
+<style>
+.select2-selection__choice
+{ 
+    color: black!important;
+ 
+}
+</style>
 
             <div class="content-right">
                 <div class="margin-class-this">
@@ -21,13 +27,9 @@
                                                     {{sub_space_data.sub_space_name}}
                                                 </label>
 
-                                                <div id="controls" class="text-center">
-                                                    <a href="project_tree_structure?project_id={{sub_space_data.id}}">
-                                                    <button type="button" style="top: -36px;left: 200px;" class="btn btn-primary waves-effect waves-light w-md m-b-5">Project Structure</button>
-                                                    </a>
-                                                </div>
+                                                
                                             </div>
-                                            <p>Last changed 30/01/2023 by you</p>
+                                            <p>Last changed {{sub_space_data.created_dt|safe}} by you</p>
                                         </div>
                                         <div class="d-flex">
                                             <div class="stage1">
@@ -38,7 +40,7 @@
                                                     <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
                                                     {% else %}
 
-                                                <li><a href="#"class="">{{i.status_name}}</a></li>
+                                                <li><a href="update_project_status?project_id={{sub_space_data.id}}&status_id={{i.id}}"class="" >{{i.status_name}}</a></li>
                                                 {% endif %}
 
                                                 {% endfor %}
@@ -51,7 +53,11 @@
                                                 <p id="output" class="text-center"></p>
 
                                                 <div id="controls" class="text-center">
-                                                    <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
+                                                    <a href="project_tree_structure?project_id={{sub_space_data.id}}">
+                                                    <button style="background-color: #7e57c2 !important;
+                                                    border: 1px solid #7e57c2 !important;" type="button" class="btn btn-purple waves-effect waves-light m-b-5 save-btn"><i class="fa fa-indent mr-1"></i> Project Structure</button>&ensp;
+                                                   </a>
+                                                   <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
                                                 </div>
                                             </div>
                                            
@@ -75,7 +81,7 @@
 
                                             <div class="labeltag d-flex align-items-center mt-4">
                                                 <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
-                                                <select class="select2" multiple="multiple"  id="myList">
+                                                <select class="select2-selection__choice" multiple="multiple"  id="myList">
                                                     <option value="1">Add tag</option>
                                                     {% for t in tags_name %}
 
@@ -138,7 +144,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="field-2"
-                                                            class="control-label">Start Date</label>
+                                                            class="control-label">Planning Start Date</label>
                                                         <div class="input-group">
                                                             <input type="date" min="{{today_date}}" value="{{sub_space_data.Planning_start_date|safe}}" class="form-control"
                                                                 placeholder="" >
@@ -150,21 +156,45 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="field-2"
-                                                            class="control-label">Due Date</label>
+                                                            class="control-label">Planning Due Date</label>
                                                         <div class="input-group">
                                                             <input type="date" min="{{today_date}}" value="{{sub_space_data.Planning_end_date|safe}}" class="form-control datepicker"
                                                                 placeholder="" >
-                                                            
-                                                            <!-- <input type="text" value="{{sub_space_data.Planning_end_date|safe}}" class="form-control datepicker"
-                                                                placeholder="" id="datepicker1">
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text"><i
-                                                                        class="md md-event"></i></span>
-                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-4 ">
+                                                    <div class="form-group">
+                                                        
+                                                    </div>
+                                                </div>
+
+
+
+
+                                                <div class="col-md-4 ">
+                                                    <div class="form-group">
+                                                        <label for="field-2"
+                                                            class="control-label">Actual Start Date</label>
+                                                        <div class="input-group">
+                                                            <input type="date" min="{{today_date}}" value="{{sub_space_data.Actual_start_date|safe}}" class="form-control"
+                                                                placeholder="" >
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="field-2"
+                                                            class="control-label">Actual Due Date</label>
+                                                        <div class="input-group">
+                                                            <input type="date" min="{{today_date}}" value="{{sub_space_data.Actual_end_date|safe}}" class="form-control datepicker"
+                                                                placeholder="" >
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 
 
                                                 <div class="col-md-12">
@@ -290,9 +320,9 @@
                                                                             {% for j in i.add_task_space.all %}
                                                                             <img src="./media/{{j.invite_user_details_id.photo}}">
                                                                             {% endfor %}
-                                                                            <div class="circle-user">
+                                                                            <!-- <div class="circle-user">
                                                                                 <i class="ion-plus"></i>5
-                                                                            </div>
+                                                                            </div> -->
                                                                           
                                                                         </div>
                                                                     </td>
@@ -549,6 +579,8 @@
                          <input type="date" required  min="{{today_date}}" name="end_date" class="form-control">
                         </div> 
                     </div> 
+
+
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Checklist</label>

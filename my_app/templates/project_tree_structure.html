@@ -15,25 +15,47 @@
                         <div id="controls" class="">
                             
                             <button type="button" onclick="Export_to_pdf()"  class="btn btn-primary waves-effect waves-light">PDF</button>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button type="button"  class="btn btn-primary waves-effect waves-light">XLSX</button>
+                            <button type="button" onclick="Export_to_excel()" class="btn btn-primary waves-effect waves-light">XLSX</button>
                             
                         </div>
+
                         <div class="tree_class">
 
-                        <h4 style="padding-left:200px; margin-left: 200px;">
-                            Project Structure of&nbsp; {{sub_space_data.sub_space_name}}
-                        </h4>
-                        <ul style="list-style-type:square">
-                            {% for task in task_details %}
-                                <li>
-                                    <b>{{ task.task_name }}</b>
-                                  
-                                    {% tree_structure task %}
-                                   
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                            <div class="row" style="float: right;">
+                                <ul>
+                                    {% for i in space_task_status %}
+                                    <li>
+                                      
+                                        <span style="    padding: 1px 10px;
+                                        font-weight: bold;
+                                        font-size: 14px;color: {{i.status_color}};">{{i.status_name}}</span></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <h4 style="    padding: 12px 12px;
+                            text-align: center;
+                            align-items: center;
+                            font-weight: bold;
+                            font-size: 24px;color: {{sub_space_data.bucket_mapping_id.status_color}};">
+                                Project Structure of&nbsp; {{sub_space_data.sub_space_name}}
+                            </h4>
+                            <ul style="list-style-type:square">
+                                {% for task in task_details %}
+                                    <li>
+                                        <b style="color: {{task.bucket_mapping_id.status_color}};    padding: 14px 9px;
+                                        font-weight: bold;">{{ task.task_name|title }}</b>
+                                    
+                                        {% tree_structure task %}
+                                    
+                                    </li>
+                                    <br>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+
+
 
                     </div>
                 </div>
@@ -50,7 +72,7 @@
 
         sub_space_id = `{{sub_space_id}}`
     
-        var url = 'print_project_structure'
+        var url = 'export_pdf'
         $.ajax({
             url: url,
             data:{
@@ -62,7 +84,7 @@
 
                  if(data){
                     html2canvas( $('.tree_class'), {
-                onrendered: function (canvas) {
+                    onrendered: function (canvas) {
                     var data = canvas.toDataURL();
                     var docDefinition = {
                         content: [{
@@ -77,6 +99,12 @@
             }
         }
             });
+        }
+
+
+        function Export_to_excel() {
+            url = `{{sub_space_id}}`
+            window.location.href = "/export_excel/?sub_space_id="+url 
         }
     </script>
 

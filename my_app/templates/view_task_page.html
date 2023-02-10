@@ -2,6 +2,15 @@
 {% load static %}
 {% load permissions %}
 {% block content %}
+<style>
+    .select2-selection__choice
+    { 
+        color: black!important;
+     
+    }
+    </style>
+
+
 <div class="content-right">
                      
     <div class="margin-class-this">
@@ -20,7 +29,7 @@
                                         {{task_data.task_name}}
                                     </label>
                                 </div>
-                                <p>Last changed 30/01/2023 by you</p>
+                                <p>Last changed {{task_data.created_dt|safe}} by you</p>
                             </div>
                             <div class="d-flex">
                                 <div class="stage1">
@@ -131,7 +140,7 @@
 
                                 <div class="labeltag d-flex align-items-center mt-4">
                                     <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
-                                    <select class="select2" multiple="multiple"  id="myList">
+                                    <select class="select2-selection__choice" multiple="multiple"  id="myList">
                                         <option value="1">Add label</option>
                                         {% for t in tags_name %}
 
@@ -339,10 +348,10 @@
                                                                 {% for j in i.add_task_space.all %}
                                                                 <img src="./media/{{j.invite_user_details_id.photo}}">
                                                                 {% endfor %}
-                                                                <div class="circle-user">
+                                                                <!-- <div class="circle-user">
                                                                     <i class="ion-plus"></i>5
                                                                 </div>
-                                                              
+                                                               -->
                                                             </div>
                                                         </td>
                                                        
@@ -472,12 +481,12 @@
                                             </table>
 
                                             <div class="d-flex hours-spent">
-                                                <!-- <div class="col-md-6 t-hr">
-                                                    <h5>Total hours spent : <span>{{total_hr}}</span></h5>
-                                                </div> -->
+                                                <div class="col-md-6 t-hr">
+                                                    <!-- <h5>Total hours spent : <span>{{total_hr}}</span></h5> -->
+                                                </div>
 
                                                 <div class="col-md-6 r-hr text-right">
-                                                    <h5>Remaining hours : <span>{{total_hr}}</span></h5>
+                                                    <h5>Total hours spent :  <span>{{total_hr}}</span></h5>
                                                 </div>
                                                 <!-- <div class="col-md-6 r-hr text-right">
                                                     <h5>Remaining hours : <span>00:00</span></h5>

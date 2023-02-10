@@ -101,13 +101,25 @@ def new_meeting(request):
 
 
 def new_role(request):
-    return render(request, 'new_role.html')
+    user_details_data = User_details.objects.get(auth_user=request.user)
+
+    context={
+        "user_details_data":user_details_data
+    }
+    return render(request, 'new_role.html',context)
 
 def new_status(request):
-    return render(request, 'new_status.html')
+    user_details_data = User_details.objects.get(auth_user=request.user)
+
+    context={
+        "user_details_data":user_details_data,
+
+    }
+    return render(request, 'new_status.html',context)
 
 def new_user(request):
-    return render(request, 'new_user.html')
+    company_data = company_master.objects.all()
+    return render(request, 'new_user.html',{"company_data":company_data})
 
 
 
@@ -450,9 +462,9 @@ def new_member(request):
     manager_data = ""
     role_data = ""
     try:
-        userdetails_data = User_details.objects.get(auth_user=request.user)
-        role_data = Role_master.objects.filter(company_id = userdetails_data.company_id.id)
-        manager_data = User_details.objects.filter(user_level = "Manager",company_id = userdetails_data.company_id.id )
+        user_details_data = User_details.objects.get(auth_user=request.user)
+        role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
+        manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
     except:
         pass
     today_date = datetime.today().strftime('%Y-%m-%d')
@@ -460,7 +472,8 @@ def new_member(request):
     context = {
         "manager_data":manager_data,
         "role_data":role_data,
-        "today_date":today_date
+        "today_date":today_date,
+        "user_details_data":user_details_data
     }
     
     return render(request, 'new_member.html',context)
@@ -604,6 +617,8 @@ def project_management(request):
 
     space_master_data = ""
     sub_space_data =""
+    space_dept = ""
+    space_member_data =""
     try:
         userdetails_data = User_details.objects.get(auth_user=request.user)
 
@@ -614,7 +629,6 @@ def project_management(request):
             print("space_list.first:",space_list[0])
             space_dept = space_master.objects.get(id=space_list[0])
             space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
-            print("space_member_data:::",space_member_data)
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
         else:
             # if user is company_user(their space only)
@@ -717,9 +731,6 @@ def space_add_action(request):
             for k in new_status:
                 space_master_data.task_status.add(k)
        
-        # for i in member_data:
-        #     user_details = User_details.objects.get(auth_user=i)
-        #     space_access_permission_user.objects.create(space_id_id = space_master_data.id ,invite_user_details_id_id = user_details.id,invite_user_auth_id_id = i)
 
         for r in res:
             user_details = User_details.objects.get(id=r)
@@ -738,7 +749,6 @@ def project_add_action(request):
         space_id = request.POST.get("space_id")
         foldername = request.POST.get("foldername")
         member_data = request.POST.getlist("member_data",False)
-        print("member_data::::::::",member_data)
         
         notes = request.POST.get("notes",False)
         bucket = request.POST.get("bucket",False)
@@ -1326,7 +1336,11 @@ def tags_add_action(request):
 
 
 def new_tags(request):
-    return render(request, 'new_tags.html')
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    context={
+        "user_details_data":user_details_data,
+    }
+    return render(request, 'new_tags.html',context)
 
 
 def project_management_board(request):
@@ -1404,52 +1418,136 @@ def get_group_details(request):
 
 
 def project_tree_structure(request):
-
     sub_space_id = request.GET.get("project_id")
     sub_space_data = sub_space_master.objects.get(id=sub_space_id)
     task_details = Add_task_master.objects.filter(sub_space_id=sub_space_id,parent_id = None)
-    print("task_details::::::",task_details)
+    space_id = sub_space_data.space_id_id
+    data_space_model = space_master.objects.get(id=space_id)
+    space_task_status = data_space_model.task_status.all()
+    print("space_task_status:::::::::",str(space_task_status))
+    
+    context ={
+        "task_details":task_details,
+        "sub_space_data":sub_space_data,
+        "sub_space_id":sub_space_id,
+        'space_task_status':space_task_status
+        
+    }
+    return render(request, "project_tree_structure.html",context)
+
+
+
+
+def export_pdf(request):
+    sub_space_id = request.GET.get("sub_space_id")
+    sub_space_data = sub_space_master.objects.get(id=sub_space_id)
+    task_details = Add_task_master.objects.filter(sub_space_id=sub_space_id,parent_id = None)
+    space_id = sub_space_data.space_id_id
+    data_space_model = space_master.objects.get(id=space_id)
+    space_task_status = data_space_model.task_status.all()
 
     context ={
         "task_details":task_details,
         "sub_space_data":sub_space_data,
-        "sub_space_id":sub_space_id
+        "sub_space_id":sub_space_id,
+        'space_task_status':space_task_status
     }
-
-    return render(request, "project_tree_structure.html",context)
-
-
-def print_project_structure(request):
-    sub_space_id = request.GET.get("sub_space_id")
-    sub_space_data = sub_space_master.objects.get(id=sub_space_id)
-    task_details = Add_task_master.objects.filter(sub_space_id=sub_space_id,parent_id = None)
-    print("task_details::::::",task_details)
-
-    context ={
-        "task_details":task_details,
-        "sub_space_data":sub_space_data
-    }
-
-    return render(request, "print_project_structure.html",context )
+    return render(request, "export_pdf.html",context )
 
 
-
+from django.http import JsonResponse
 from django.forms.models import model_to_dict
 
-def get_tree(task_details):
-    tree = model_to_dict(task_details, fields=['task_name', 'start_date', 'end_date'])
-    if task_details.sub_task.all().exists():
-        children = list()
-        for child in task_details.sub_task.all():
-            children.append(get_tree(child))
-        tree['subs'] = children  
-    return tree
+import xlwt
+from django.http import HttpResponse
 
+def export_excel(request):
+    sub_space_id=request.GET.get('sub_space_id')
+    subspace_data = sub_space_master.objects.get(id=sub_space_id)
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="project_structure.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Project details',cell_overwrite_ok=True)  
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Name']
+   
     
-from django.http import JsonResponse
-def get_tree_sub(request):
+    for col_num in range(len(columns)):
+        style = xlwt.easyxf('pattern: pattern solid, fore_colour black;'
+                              'font: colour white, bold True;align: horiz center')
+        ws.write_merge(0, 0, 0, 5, subspace_data.sub_space_name,style)
+    
+    # for col_num in range(len(columns)):
+    #     print("heiiiiiii:::::::",str(columns[col_num]))
+        
+    #     ws.write(1, col_num, columns[col_num], font_style) 
+
+
+    font_style = xlwt.XFStyle()
+    
+
     final_tree = list()
-    for task_details in Add_task_master.objects.filter(parent_id__isnull=True):
-        final_tree.append(get_tree(task_details))
-    print(final_tree)
-    return JsonResponse(final_tree,safe=False)
+    i1 = 0
+    data_new_list = [{"name":"Name","i1":i1}]
+    
+
+    def get_tree12(task_details,i1):
+        tree = model_to_dict(task_details, fields=['task_name', 'start_date', 'end_date'])
+        if task_details.sub_task.all().exists():
+            children = list()
+            for child in task_details.sub_task.all():
+                i1 = i1+1
+                data_new_list.append({'name':child.task_name,"i1":i1})
+                children.append(get_tree12(child,i1))
+                i1 = i1-1
+            tree['subs'] = children
+            i1 = i1-1
+        return tree
+
+
+    for task_details in Add_task_master.objects.filter(parent_id__isnull=True,sub_space_id =sub_space_id):
+        data_new_list.append({'name':task_details.task_name,"i1":i1})
+        final_tree.append(get_tree12(task_details,i1))
+        i1 = 0
+
+    print("data_new_list:::::::",str(data_new_list))
+    
+        
+    ws.col(0).width = 20000
+    for row in data_new_list:
+
+        row_num += 1
+        count1 = row['i1']
+        name = "    "*int(count1)+"→"+row['name']
+        style = xlwt.easyxf('font: bold 1, color red;')
+        if row['name'] == "Name":
+            ws.write(row_num, col_num, row['name'], font_style) 
+        else:
+
+            ws.write(row_num, col_num, name, style)
+        
+    wb.save(response)
+    return response
+
+
+    # rows = intractive_map.objects.filter(id__in=sub_space_id).annotate(statusnew=Case(When(current_status='0',then=Value("Available")),When(current_status='1',then=Value("Price Quotation")),When(current_status='2',then=Value("Sold")),When(current_status='3',then=Value("Cancelled")))).values_list('Name', 'Phoneno', 'UnitNo', 'BlockNo','UnitArea','LandArea','UType','Price','statusnew')    
+    
+    # for row in rows:
+    #     row_num += 1
+    #     for col_num in range(len(row)):
+    #         ws.write(row_num, col_num, row[col_num], font_style)
+
+
+
+def update_project_status(request):
+    project_id = request.GET.get("project_id")
+    status_id = request.GET.get("status_id")
+    data_update = sub_space_master.objects.filter(id=project_id).update(bucket_mapping_id_id=status_id)
+    messages.success(request,str("Status updated"))
+    return redirect(request.META['HTTP_REFERER'])
+
+
+   
+

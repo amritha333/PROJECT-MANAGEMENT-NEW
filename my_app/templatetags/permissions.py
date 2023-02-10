@@ -106,6 +106,5 @@ def index_f(value, args):
 
 @register.inclusion_tag('tree_structure.html')
 def tree_structure(task):
-    print("------------------")
     subs = task.sub_task.all()
     return {"subs": subs}

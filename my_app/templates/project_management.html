@@ -152,12 +152,12 @@
                                                     {% for j in i.invite_user_details_id.all %}
                                                     <img src="./media/{{j.photo}}">
                                                     {% endfor %}
-                                                    <div class="circle-user">
+                                                    <!-- <div class="circle-user">
                                                         <i class="ion-plus"></i>5
                                                     </div>
                                                     <div class="circle-plus-brdr">
                                                         <i class="fa fa-plus"></i>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </td>
                                             <td>
@@ -249,12 +249,12 @@
                                                     {% for j in i.invite_user_details_id.all %}
                                                     <img src="./media/{{j.photo}}">
                                                     {% endfor %}
-                                                    <div class="circle-user">
+                                                    <!-- <div class="circle-user">
                                                         <i class="ion-plus"></i>5
                                                     </div>
                                                     <div class="circle-plus-brdr">
                                                         <i class="fa fa-plus"></i>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </td>
                                             <td>
@@ -346,12 +346,12 @@
                                                     {% for j in i.invite_user_details_id.all %}
                                                     <img src="./media/{{j.photo}}">
                                                     {% endfor %}
-                                                    <div class="circle-user">
+                                                    <!-- <div class="circle-user">
                                                         <i class="ion-plus"></i>5
                                                     </div>
                                                     <div class="circle-plus-brdr">
                                                         <i class="fa fa-plus"></i>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </td>
                                             <td>
@@ -777,7 +777,7 @@
                                         width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.space_view_user_details.photo}}">  
                                     </div>
                                    <div class="col-md-4" style="margin: 22px -52px;
-                                   font-size: 12px;">
+                                   font-size: 11px;">
                                     <input name="member_data" class="member_data" value="{{i.space_view_user_details.id}}" type="checkbox">&nbsp;&nbsp;
                                         {{i.space_view_user_details.name}}
                                    </div>
@@ -850,6 +850,7 @@
 
 <script>
     $(".space_class").click(function(){
+      
 
     var space_id = $(this).attr("data-space-id")
     $.ajax(
@@ -880,6 +881,7 @@
 
 <script>
     $(".new_project").click(function(){
+    
     var space_id = $(this).attr("data-space-id")
     $("#space_id").val(space_id)
     $(".project_modal").modal("show")

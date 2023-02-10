@@ -1,0 +1,33 @@
+{% load permissions %}
+
+<div class="row" style="float: right;">
+    <ul>
+        {% for i in space_task_status %}
+        <li>
+          
+            <span style="    padding: 1px 10px;
+            font-weight: bold;
+            font-size: 14px;color: {{i.status_color}};">{{i.status_name}}</span></li>
+        {% endfor %}
+    </ul>
+</div>
+
+                            <h4 style="    padding: 12px 12px;
+                            text-align: center;
+                            align-items: center;
+                            font-weight: bold;
+                            font-size: 24px;color: {{sub_space_data.bucket_mapping_id.status_color}};">
+                                Project Structure of&nbsp; {{sub_space_data.sub_space_name}}
+                            </h4>
+                            <ul style="list-style-type:square">
+                                {% for task in task_details %}
+                                    <li>
+                                        <b style="color: {{task.bucket_mapping_id.status_color}};    padding: 14px 9px;
+                                        font-weight: bold;">{{ task.task_name|title }}</b>
+                                    
+                                        {% tree_structure task %}
+                                    
+                                    </li>
+                                    <br>
+                                {% endfor %}
+                            </ul>

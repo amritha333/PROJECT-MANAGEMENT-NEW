@@ -7,7 +7,7 @@
         <div class="search-field-icon">
 
             <input type="search" class="search-class" placeholder="Search">
-            <button  data-space-id="{{space_dept.id}}" class="new_project create-task">Create New Project</button>
+            <button type="button" style="cursor: pointer;"  data-space-id="{{space_dept.id}}" class="new_project create-task">Create New Project</button>
         </div>
     </div>
 
@@ -329,11 +329,16 @@
 
 
 
+
+
+
 <script>
     $(".new_project").click(function(){
+      
     var space_id = $(this).attr("data-space-id")
     $("#space_id").val(space_id)
-    $("#project_modal").modal("show")
+    $(".project_modal").modal("show")
+  
     $.ajax(
     {
         type:"GET",
@@ -343,13 +348,14 @@
         },
         success: function( data ) 
         {
+            
             $("#bucket_append").empty().append(data)
         }
      });
     })
 </script>
 
-<script>
+<!-- <script>
     $(".project_class").submit(function () {
         event.preventDefault()
         if( $('.member_data').is(':checked') ) {
@@ -360,4 +366,4 @@
         document.getElementById("message").innerHTML = "Please choose a employee!";
     }
     })
-</script>
+</script> -->

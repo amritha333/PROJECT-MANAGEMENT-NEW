@@ -1,12 +1,11 @@
 
 {% load permissions %}
 
-
 <ul style="list-style-type:disc">
     {% for sub in subs %}
         <li style="margin-left: 50px;">
             
-            <i>{{ sub.task_name }}</i> 
+            <i style="color: {{sub.bucket_mapping_id.status_color}}; padding: 14px 9px; ">{{ sub.task_name|title }}</i> 
           
     {% tree_structure sub %}
          
