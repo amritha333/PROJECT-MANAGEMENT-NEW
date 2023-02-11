@@ -1,0 +1,38 @@
+{% load static %}
+
+{% for i in data %}
+
+<div class='project-column'>
+    <a href="customer_more_details?id={{i.id}}" style="text-decoration: none;color: black">
+    <div class="customer-bx">
+        {% if data.profile_pic == '' %}
+        <div class="cust-img"
+        style="background-image: url({% static 'adminicon.jpg' %});"></div>
+
+        {% elif data.profile_pic == None %}
+
+        <div class="cust-img"
+        style="background-image: url({% static 'adminicon.jpg' %});"></div>
+
+        {% else %}
+
+        <div class="cust-img"
+        style="background-image: url('../media/{{data.profile_pic}}');"></div>
+        {% endif %}
+
+         
+        <div class="customer-content">
+
+            <h5>{{i.name}}</h5>
+            <span class="d-flex"><h6>Phone : </h6> {{i.phone}}</span>
+            <span class="d-flex"><h6>Customer Id : </h6> {{i.customer_id}}</span>
+            <span class="d-flex"><h6>Bank : </h6> {{i.bank}}</span>
+            <span class="d-flex"><h6>Created at : </h6> {{i.dt}}</span>
+            <span class="d-flex"><h6>Created By : </h6> {{i.created_by}}</span>
+
+        </div>
+
+    </div>
+</a>
+</div>
+{% endfor %}

@@ -1,54 +1,181 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions %}
 {% block content %}
-<div class="card ">
-    <div class="card-body">
+
+
+
+
+<div class="content-right">
+                     
+    <div class="margin-class-this chat-section">
+
         <div class="row">
-            <div class="col-sm-6">
-                <div class="m-b-30">
-                    <a href="new_meeting.html">
-                        <button id="addToTable" class="btn btn-success waves-effect waves-light">+ New Meeting <i class="mdi mdi-plus-circle-outline"></i></button>
-                    </a>
-                    
+          <div class="col-md-12">
+            <div class="card card-shadow">
+
+                <div class="card-body body-change card-border">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="main-heading-txt">Meeting</h2>
+                        <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#meeting-modal"><i class="fa fa-plus"></i> New Meeting</button>
+                       
+                    </div>
+
+                    <div class="row mt-4">
+
+                        <div class="col-md-12 col-sm-12 col-12">
+                            <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                                <thead class="border-class">
+
+                                    <tr class="heading-text">
+                                        <th>Title</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Description</th>
+                                        <th>Created By</th>
+                                        <th></th>
+                                        <th></th>
+                                       
+                                    </tr>
+                                </thead>
+
+
+                                <tbody class="body-textcls vertcle-center">
+                                    {% for i in meeting_data %}
+                                    <tr>
+                                        <td>{{i.Title}}</td>
+                                        <td>{{i.meeting_dt}}</td>
+                                        <td>{{i.meeting_tm}}</td>
+                                        <td>{{i.Description}}</td>
+                                        <td>   
+                                            <div class="profile-image d-flex align-items-center">
+                                                <img src="../static/assets/images/users/avatar-4.jpg" class="mr-1"> {{i.created_by}}
+                                            </div>
+                                            
+                                        </td>
+
+                                        <td class="text-right">
+                                            {% if i.completed_status == "completed" %}
+                                            <button type="button" class="btn btn-pink btn-custom waves-effect waves-light m-b-5 joinnow">End Meeting</button>
+                                           
+                             
+                                            {% else %}
+                                            <a href="join_meeting?id={{i.id}}"><button type="button" class="btn btn-pink btn-custom waves-effect waves-light m-b-5 joinnow">Join Now</button></a>
+                                            {% endif %}
+
+                                         </td>
+                                        
+                                        <td>
+                                            <div class="action-tbl d-flex justify-content-end">
+                                                <i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i>
+                                                
+                                            </div>
+                                            
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                               
+                
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+          </div>
         </div>
-
-        <table class="table table-striped add-edit-table dt-responsive nowrap" id="datatable-editable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-            <thead>
-            <tr>
-                <th>
-                    Title</th>
-                <th>	Date</th>
-                <th>Time</th>
-                <th>	Description</th>
-                <th>Created By</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="gradeX">
-                <td>Trident</td>
-                <td>Internet
-                    Explorer 4.0
-                </td>
-                <td>Win 95+</td>
-                <td>ss</td>
-                <td>4</td>
-           
-                <td class="actions">
-                    <a href="#" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a href="#" class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash-o"></i></a>
-                    <a href="#" class="hidden on-editing save-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"><i class="fa fa-save"></i></a>
-                    <a href="#" class="hidden on-editing cancel-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"><i class="fa fa-times"></i></a>
-                </td>
-            </tr>
-          
-           
-            </tbody>
-        </table>
-
-    </div> <!-- end card-body -->
+    </div>
 </div>
 
+<form action="create_new_meeting" method="POST">
+    {% csrf_token %}
+
+<div id="meeting-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true" style="display: none">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Create New Meeting</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Title</label>
+                        <input type="text" name="Title" class="form-control" id="field-1" placeholder="Odoo">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Date</label>
+                        <input type="date"  name="meeting_dt" class="form-control" placeholder="Date">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Time</label>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <input type="time" class="form-control" placeholder="Time" style="width:45%"> -
+                            <input type="time" class="form-control" placeholder="Time" style="width:45%">
+                        </div>
+                        
+                    </div>
+                </div>
+              
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-2" class="control-label">Add required attendees</label>
+                        <select class="jsSelect1" name="states[]" multiple="multiple">
+                            <option value="example1">example1</option>
+                            <option value="example2">example2</option>
+                            <option value="example3">example3</option>
+                            <option value="example4">example4</option>
+                            <option value="example5">example5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Add channel</label>
+                        <input type="text" class="form-control" id="field-1" placeholder="Add channel">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Message body</label>
+                        <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type details for this new meeting"></textarea>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" style="background-color:#f9365f!important;border: none!important;"
+                class="btn btn-info waves-effect waves-light">Save </button>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('#meeting-modal').on('shown.bs.modal', function (e) {
+            $('.jsSelect1').select2({
+                placeholder: 'Add required attendees'
+            });
+        });
+    });
+</script>
 {% endblock %}

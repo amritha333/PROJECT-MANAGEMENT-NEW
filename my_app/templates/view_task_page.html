@@ -8,6 +8,18 @@
         color: black!important;
      
     }
+    .grn {
+    background: #ec407a !important;
+}
+
+.grn::after {
+    border-left: 14px solid #ec407a !important;
+}
+
+.capital 
+{
+    text-transform:capitalize;
+}
     </style>
 
 
@@ -34,14 +46,14 @@
                             <div class="d-flex">
                                 <div class="stage1">
                                     <ul class="demo-tags">
-                                        {% for i in dynamic_status %}
+                                        {% for i in bucket_data %}
 
-                                            {% if i.status_name == task_data.bucket_mapping_id.status_name %}
+                                        {% if i.status_name == task_data.bucket_mapping_id.status_name %}
                                         
                                             <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
                                             {% else %}
 
-                                            <li><a href="#"class="">{{i.status_name}}</a></li>
+                                            <li><a href="update_task_status?task_id={{task_data.id}}&status_id={{i.id}}"class="" >{{i.status_name}}</a></li>
                                             {% endif %}
 
                                         {% endfor %}
@@ -532,7 +544,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">SubTask Name</label> 
-                            <input type="text" required name="sub_task_name" class="form-control" id="field-1" placeholder="SubTask Name"> 
+                            <input type="text" required name="sub_task_name" class="form-control capital" id="field-1" placeholder="SubTask Name"> 
                         </div> 
                     </div> 
                   
@@ -941,7 +953,7 @@ $(document).ready(function() {
         },
         success: function(data) 
         {
-            console.log("successs")
+            window.location.reload();
         }
     })
     })

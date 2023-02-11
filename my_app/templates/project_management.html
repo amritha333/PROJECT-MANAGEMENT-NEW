@@ -2,6 +2,13 @@
 {% load static %}
 {% load permissions %}
 {% block content %}
+<style>
+    .capital 
+{
+    text-transform:capitalize;
+}
+</style> 
+
 <div class="side-create">
     <div class="create-section">
         {% if user_details_data.user_type == "company_admin"%}
@@ -39,7 +46,7 @@
     </div>
 </div>
 
-<div class="content-rigt">
+<div class="content-rigt append_card">
     <div class="filter-box d-flex align-items-center">
         <div class="container-fluid d-flex justify-content-between">
             <div class="d-flex align-items-center">
@@ -71,7 +78,7 @@
                     <button type="button" class="btn btn-filter">
         <i class="md-view-list"></i>&ensp;List
         </button>&ensp;
-                    <a href="project_management_board"><button type="button" class="btn btn-filter board-view">
+                    <a href="project_management_board?space_id={{space_dept.id}}"><button type="button" class="btn btn-filter board-view">
         <i class="ion-grid"></i>&ensp;Board
         </button></a>
                 </div>
@@ -99,7 +106,7 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="card card-shadow append_card">
+                <div class="card card-shadow">
 
                 <div class="card-body body-change card-border">
                         <div class="d-flex align-items-center justify-content-between">
@@ -467,6 +474,7 @@
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Team member</label> 
                          <select required multiple class="form-control jsSelect1" name="member_data">
+                            <option value="1">select</option>
                             {% for i in  member_data %}
                             <option value="{{i.id}}">{{i.username}}</option>
                             {% endfor %}
@@ -613,7 +621,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">Project name</label> 
-                            <input type="text" required name="foldername" class="form-control" id="field-1" > 
+                            <input type="text" required name="foldername" class="form-control capital" id="field-1" > 
                         </div> 
                     </div> 
                     <div class="col-md-6"> 

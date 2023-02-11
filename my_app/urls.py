@@ -58,6 +58,9 @@ urlpatterns = [
     path("export_excel/", views.export_excel, name="export_excel"),
     path('update_project_status',views.update_project_status,name='update_project_status'),
 
+    path('update_task_status',views.update_task_status,name='update_task_status'),
+
+
 
 
 ]

@@ -251,11 +251,14 @@ class Add_task_comments(common_table):
     comments=  models.TextField(null=True)
 
 
-class Create_meeting(common_table):
+
+
+class Add_meeting(common_table):
     invite_user_id = models.ManyToManyField(User_details,related_name="Create_meeting_user_id")
     Title = models.CharField(max_length=22,null=True)
     meeting_dt = models.DateField()
-    meeting_tm = models.TimeField()
+    meeting_start_tm = models.TimeField()
+    meeting_end_tm = models.TimeField()
     channel_name = models.CharField(max_length=255)
     Description = models.TextField(null=True)
     completed_status = models.CharField(max_length=25,null=True)

@@ -9,6 +9,19 @@
     color: black!important;
  
 }
+
+.grn {
+    background: #ec407a !important;
+}
+
+.grn::after {
+    border-left: 14px solid #ec407a !important;
+}
+
+.capital 
+{
+    text-transform:capitalize;
+}
 </style>
 
             <div class="content-right">
@@ -34,8 +47,9 @@
                                         <div class="d-flex">
                                             <div class="stage1">
                                                 <ul class="demo-tags">
-                                                {% for i in dynamic_status %}
+                                                {% for i in bucket_data %}
                                                     {% if i.status_name == sub_space_data.bucket_mapping_id.status_name %}
+                                                    
                                                 
                                                     <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
                                                     {% else %}
@@ -528,7 +542,7 @@
                     <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">Task Name</label> 
-                            <input type="text" required name="task_name" class="form-control" id="field-1" placeholder="Task Name"> 
+                            <input type="text" required name="task_name" class="form-control capital" id="field-1" placeholder="Task Name"> 
                         </div> 
                     </div> 
                   
@@ -713,16 +727,6 @@
         </div> 
 </div>
 </form>
-
-
-
-
-
-
-
-
-
-
 
 
 {% block scripts %}
