@@ -22,7 +22,7 @@ def company_nav_perm_check(value,args):
         else:
             return True
     if user_details.user_type == "company_admin":
-        if args == "Role" or args == "Team member":
+        if args == "Role" or args == "Team member" or args == "Tags" or args == "Status":
             return True
     else:
         today = date.today()

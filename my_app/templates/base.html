@@ -201,11 +201,14 @@
                         {% endif %}
 
 
-                        {% if user_details_data.user_type == "company_admin" %}
+                        {% if request.user.id|company_nav_perm_check:"Status" %}
                         <li>
                             <a href="task_status_management" class="waves-effect"><i class="md md-pages"></i><span> Task Status</span></a>
                         </li>
+                        {% endif %}
 
+
+                        {% if request.user.id|company_nav_perm_check:"Tags" %}
                         <li>
                             <a href="tags_management" class="waves-effect"><i class="fa fa-tag"></i><span> Tags Management</span></a>
                         </li>

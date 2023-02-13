@@ -83,7 +83,9 @@ navbar_name = (
     ("Company","Company"),
     ("User","User"),
     ("Role","Role"),
-    ("Team member","Team member")
+    ("Team member","Team member"),
+    ("Tags","Tags"),
+    ("Status","Status"),
 )
 
 class Role_mapping(common_table):
@@ -186,6 +188,7 @@ class sub_space_master(common_table):
     Actual_end_date= models.DateField(blank=True)
     invite_user_details_id = models.ManyToManyField(User_details,related_name="sub_space_userdetails")
     invite_user_auth_id = models.ManyToManyField(User,related_name="sub_space_auth")
+    tag_id = models.ManyToManyField(tags_name_master,related_name="sub_space_tag")
 
 class sub_space_checklist(common_table):
     sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_checklist",on_delete=models.CASCADE,null=True)

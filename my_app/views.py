@@ -278,10 +278,11 @@ def user_management(request):
 def user_management_action(request):
     data = request.data
     photo =  request.FILES['photo']
-    fixed_height = 400
+    fixed_height = 128
     image = Image.open(photo)
     print("image.size",image.size)
     width_size = int(fixed_height/image.height * image.width)
+
     resized_image = image.resize((width_size,fixed_height))
     print("resizeeeeeed:",resized_image.size)
     from django.conf import settings
@@ -316,7 +317,7 @@ def user_management_action(request):
                     company_id_id = company_master_id,
                     company_name =data['companyname'],
                     auth_user = user,
-                    photo = photo,
+                    photo = image_new1,
                     name = data['name'],
                     username = data['username'],
                     password_option = data['password_option'],
@@ -353,7 +354,7 @@ def user_management_action(request):
                     company_id_id = login_user_data.company_id.id,
                     company_name =login_user_data.company_id.company_name,
                     auth_user = user,
-                    photo = photo,
+                    photo = image_new1,
                     name = data['name'],
                     username = data['username'],
                     password_option = data['password_option'],
@@ -394,7 +395,7 @@ def user_management_action(request):
                     company_id_id = login_user_data.company_id.id,
                     company_name =login_user_data.company_id.company_name,
                     auth_user = user,
-                    photo = photo,
+                    photo = image_new1,
                     name = data['name'],
                     username = data['username'],
                     password_option = data['password_option'],
@@ -577,6 +578,33 @@ def role_management_action(request):
                 status = "True"
             )
 
+
+        Role_mapping.objects.create(
+                role_master_id_id = data_save_role.id,
+                navbar_name = "Tags",
+                read = request.POST.get('tag_read',False),
+                write = request.POST.get('tag_write',False),
+                edit = request.POST.get('tag_edit',False),
+                delete = request.POST.get('tag_delete',False),
+                view_all = request.POST.get('tag_view_all',False),
+                manage_all = request.POST.get('tag_manage_all',False),
+                created_by = request.user,
+                status = "True"
+            )
+
+        Role_mapping.objects.create(
+                role_master_id_id = data_save_role.id,
+                navbar_name = "Status",
+                read = request.POST.get('status_read',False),
+                write = request.POST.get('status_write',False),
+                edit = request.POST.get('status_edit',False),
+                delete = request.POST.get('status_delete',False),
+                view_all = request.POST.get('status_view_all',False),
+                manage_all = request.POST.get('status_manage_all',False),
+                created_by = request.user,
+                status = "True"
+            )
+
     messages.success(request,"Successfully added Role")
     return redirect('role_management')
 
@@ -600,6 +628,7 @@ def task_status_management(request):
 def task_status_action(request):
     data = request.data
     user_data = User_details.objects.get(auth_user = request.user)
+    print("data['status_color']:",data['status_color'])
     status_name_master.objects.create(active_user_id_id =user_data.id,
     active_auth_user_id_id =request.user.id ,status_name = data['status_name'],created_by = request.user,status="True",
     status_color=data['status_color'],company_id_id = user_data.company_id.id )
@@ -763,6 +792,7 @@ def get_bucket_details(request):
     space_data = space_master.objects.get(id=space_id)
     return render(request,'get_bucket_details.html',{"bucket_data":space_data.task_status.all()})
 
+
 def project_add_action(request):
     if request.method == "POST":
         space_id = request.POST.get("space_id")
@@ -845,7 +875,7 @@ def project_add_action(request):
             Planning_end_date = planning_end_date,
             Actual_start_date = actual_start_date,
             Actual_end_date = actual_end_date,
-            active_account_id_id=user_active.active_user_id.id,
+            active_account_id_id = user_active.active_user_id.id,
             added_user_id = request.user,
             created_by = request.user,status="True")
 
@@ -887,6 +917,61 @@ def project_add_action(request):
             sub_space_access_permission.objects.create(space_id_id = space_id ,sub_space_id_id=data_save.id,invite_user_details_id_id = sp,invite_user_auth_id_id = user_details.auth_user.id)
         messages.success(request,"Successfully added Project")
         return redirect(request.META['HTTP_REFERER'])
+
+
+def update_project_details(request):
+    if request.method == "POST":
+        sub_space_id = request.POST.get("sub_space_id",False)
+        project_name = request.POST.get("project_name",False)
+        print("project_name:::::",project_name)
+        tag_name = request.POST.getlist("tag_name",False)
+        print("tag_name::",tag_name)
+        tag_name.pop(0)
+        
+        print("tag_name:::::",tag_name)
+
+        status_name = request.POST.get("status_name",False)
+        print("status_name:::::",status_name)
+        progress = request.POST.get("progress",False)
+        print("progress:::::",progress)
+        priority = request.POST.get("priority",False)
+        print("priority:::::",priority)
+        planning_start_date = request.POST.get("planning_start_date",False)
+        print("planning_start_date:::::",planning_start_date)
+        planning_end_date = request.POST.get("planning_end_date",False)
+        print("planning_end_date:::::",planning_end_date)
+        actual_start_date = request.POST.get("actual_start_date",False)
+        print("actual_start_date:::::",actual_start_date)
+        actual_end_date = request.POST.get("actual_end_date",False)
+        print("actual_end_date:::::",actual_end_date)
+        notes = request.POST.get("notes",False)
+        print("notes:::::",notes)
+        checklist_new = request.POST.getlist("checklist_new",False)
+        print("checklist_new:::::",checklist_new)
+       
+        
+        sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = project_name,bucket_mapping_id =status_name,progress=progress,priority=priority,Planning_start_date=planning_start_date,Planning_end_date=planning_end_date,
+        Actual_start_date = actual_start_date,Actual_end_date = actual_end_date,notes = notes)
+
+        today_date = datetime.today().strftime('%Y-%m-%d')
+
+        try:
+            for k in checklist_new:
+                sub_space_checklist.objects.create(sub_space_id_id=sub_space_id,milestone=k,updated_by = request.user,updated_dt=today_date)
+        except:
+            pass
+               
+
+        sub_space = sub_space_master.objects.get(id=sub_space_id)
+        for t in tag_name:
+            sub_space.tag_id.add(t)
+
+        messages.success(request,"Successfully updated Project details")
+        return redirect(request.META['HTTP_REFERER'])
+
+
+
+
 
 
 def view_group(request):

@@ -200,29 +200,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {% if i.bucket_mapping_id.status_color == "red" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "green" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "blue" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "darkorange" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
-
-                                                {% else %}
-                                                     <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
-                                                {% endif %}
+                                                <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
                                             </td>
                                             <td>
 
@@ -297,29 +275,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {% if i.bucket_mapping_id.status_color == "red" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "green" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "blue" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "darkorange" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
-
-                                                {% else %}
-                                                     <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
-                                                {% endif %}
+                                                <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
                                             </td>
                                             <td>
 
@@ -394,29 +350,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {% if i.bucket_mapping_id.status_color == "red" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "green" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "blue" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
-
-                                                {% elif i.bucket_mapping_id.status_color == "darkorange" %}
-                                                
-                                                <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
-
-                                                {% else %}
-                                                     <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
-                                                {% endif %}
+                                                <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
                                             </td>
                                             <td>
 
@@ -466,7 +400,7 @@
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-1" class="control-label">Space name</label> 
-                            <input required type="text" name="spacename" class="form-control" id="field-1"> 
+                            <input required type="text" name="spacename" class="form-control capital" id="field-1"> 
                         </div> 
                     </div> 
                    

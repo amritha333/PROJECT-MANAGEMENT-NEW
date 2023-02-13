@@ -377,29 +377,8 @@
                                                             {% endif %}
                                                         </td>
                                                         <td>
-                                                            {% if i.bucket_mapping_id.status_color == "red" %}
-                                    
-                                                            <span class="badge badge-size badge-pill badge-red">{{i.bucket_mapping_id}}</span>
-            
-                                                            {% elif i.bucket_mapping_id.status_color == "yellowgreen" %}
+                                                            <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
                                                             
-                                                            <span class="badge badge-size badge-pill badge-yellow">{{i.bucket_mapping_id}}</span>
-            
-                                                            {% elif i.bucket_mapping_id.status_color == "green" %}
-                                                            
-                                                            <span class="badge badge-size badge-pill badge-green">{{i.bucket_mapping_id}}</span>
-            
-                                                            {% elif i.bucket_mapping_id.status_color == "blue" %}
-                                                            
-                                                            <span class="badge badge-size badge-pill badge-primary">{{i.bucket_mapping_id}}</span>
-            
-                                                            {% elif i.bucket_mapping_id.status_color == "darkorange" %}
-                                                            
-                                                            <span class="badge badge-size badge-pill badge-info">{{i.bucket_mapping_id}}</span>
-            
-                                                            {% else %}
-                                                                 <span class="badge badge-size badge-pill badge-secondary">{{i.bucket_mapping_id}}</span>
-                                                            {% endif %}
                                                         </td>
                                              
                                                         <td class="d-flex justify-content-end align-items-center text-right">
@@ -407,8 +386,8 @@
                                                             <a href="view_task_page?task_id={{i.id}}" class="viewtasklink"><i class="fa fa-eye"></i> View Task</a>
 
                                                             <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                                <i class="md-more-vert"></i>
-                                        </button>
+                                                                    <i class="md-more-vert"></i>
+                                                            </button>
                                                             <ul class="dropdown-menu">
                                                                 <li><a href="#" class="dropdown-item">Edit</a></li>
                                                                 <li><a href="#" class="dropdown-item">Delete</a></li>
