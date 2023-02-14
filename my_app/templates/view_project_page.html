@@ -26,8 +26,6 @@
     text-transform:capitalize;
 }
 </style>
-    
-
             <div class="content-right">
                 <div class="margin-class-this">
                     <div class="row">
@@ -35,10 +33,11 @@
                             <div class="card card-shadow">
 
                                 <div class="card-body body-change card-border project-detailpage">
-                                    <form action="update_project_details" method="POST">
+                                    <form action="update_project_details" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <input type="hidden" name="sub_space_id" value="{{sub_space_id}}">
-                                
+                                     
+    
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="project-name">
                                             <h6>{{space_data.space_name}}</h6>
@@ -54,7 +53,7 @@
 
                                                 
                                             </div>
-                                            <p>Last changed {{sub_space_data.created_dt|safe}} by you</p>
+                                            <p>Last changed {{sub_space_data.updated_dt|safe}} by you</p>
                                         </div>
                                         <div class="d-flex">
                                             <div class="stage1">
@@ -85,8 +84,6 @@
                                                    <button type="submit" class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
                                                 </div>
                                             </div>
-                                           
-                                           
                                         </div>
                                     </div>
 
@@ -94,39 +91,72 @@
                                         <div class="col-md-5 mt-3">
                                             <div class="d-flex align-items-center assign-prjct">
                                                 <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn" data-toggle="dropdown" aria-expanded="false">
+
+
                                                 <ul class="dropdown-menu">
                                                     <input type="text" class="form-control" placeholder="Type a name or email address">
                                                     <h6>Assigned</h6>
                                                     {% for m in sub_space_data.invite_user_details_id.all %}
-                                                    <li class="assgned-emp"><a href="#" class="dropdown-item"><div class="profile-image d-flex align-items-center">
-                                                        <img src="./media/{{m.photo}}">  <span>{{m.name}}</span>                                                     
-                                                    </div></a></li>
+                                                    <li class="assgned-emp remove_assigned_user{{m.id}}"><a  class="dropdown-item">
+                                                        <div id="remove_div{{m.id}}">
+                                                        <div  class="profile-image d-flex align-items-center">
+                                                        <img src="./media/{{m.photo}}"><span>{{m.name}}</span>    
+                                                        <span onclick="remove_function(`{{m.id}}`)" data-id="{{m.id}}" class="remove_icon"><i style="font-size: 14px;
+                                                        color: #eb3939;
+                                                        font-weight: bold; cursor: pointer;" class="fa fa-remove"></i></span>
+
+                                                        </div>
+                                                        </div></a>
+                                                </li>
                                                     {% endfor %}
                                                    
                                                     <h6>Suggestions</h6>
-                                                    {% for m in space_data.space_view_id.all %}
-                                                  
 
+                                                    {% for m in space_data.space_view_id.all %}
+                             
                                                     {% if m.space_view_user_details  in sub_space_data.invite_user_details_id.all %}
 
-                                                   
                                                     {% else %}
-                                                    <li><a href="#" class="dropdown-item"><div class="profile-image d-flex align-items-center">
-                                                        <img src="./media/{{m.space_view_user_details.photo}}">  <span>{{m.space_view_user_details.name}}</span>                                                     
-                                                    </div></a></li>
+                                                    <li class="delete_suggestion{{m.space_view_user_details.id}}"><a href="#" class="dropdown-item">
+                                                        <div id="add_div{{m.space_view_user_details.id}}">
+                                                        <div class="profile-image d-flex align-items-center">
+                                                        <img src="./media/{{m.space_view_user_details.photo}}"><span>{{m.space_view_user_details.name}}</span>   
+                                                        
+                                                        <span onclick="add_function(`{{m.space_view_user_details.id}}`,`{{m.space_view_user_details.name}}`,`./media/{{m.space_view_user_details.photo}}`)" data-id="{{m.space_view_user_details.id}}" class="add_icon"><i style="font-size: 14px;
+                                                            color: #17f573;
+                                                            font-weight: bold; cursor: pointer;" class="fa fa-check"></i></span>
+                                                        
+                                                        </div>
+                                                        </div>
+                                                            </a>
+                                                    </li>
                                                     {% endif %}
                                                         
                                                   
                                                     {% endfor %}
                                                 </ul> 
 
+
+
+
+                                               
+
+                                               
+                                                <div class="append_user">
                                                 {% for m in sub_space_data.invite_user_details_id.all %}
 
-                                                <div class="profile-image d-flex align-items-center m-2">
-                                                    <img src="./media/{{m.photo}}">                                                      
+                                                <div class="profile-image d-flex align-items-center m-2 save_member_data{{m.id}}">
+                                                    <img class="save_member_data{{m.id}}" src="./media/{{m.photo}}"> <span class="save_member_data{{m.id}}">{{m.name}}</span>                                                      
                                                 </div>
-                                                <span>{{m.name}}</span>
+                                               
                                                 {% endfor %}
+
+                                            </div>
+                                               
+                                              
+                                                  
+            
+
                                             </div>
 
                                             <div class="labeltag d-flex align-items-center mt-4">
@@ -284,14 +314,25 @@
                                                             <div class="col-4">
                                                                 {% for a in sub_space_data.sub_space_attachment.all %}
                                                                     {% if a.attached_file  %}
-                                                                    <a target="_blank" href="/media/{{a.attached_file}}" >
+                                                                        {% if a.file_type == "link" %}
+
+                                                                        <a href="{{a.attached_file}}" >
+                                                                           
+                                                                     
+                                                                        {% else %}
+
+                                                                        <a target="_blank" href="/media/{{a.attached_file}}" >
+                                                                            {% endif %}
                                                                 <div class="attach-bx d-flex">
                                                                     <div class="d-flex align-items-center">
                                                                         <i class="fa fa-link"></i>
                                                                     </div>
                                                                     <div class="attach-details">
-                                                                        <h5>{{a.file_name}}</h5>
-                                                                        <!-- <p>https://veuz.com.sa/web/abaft/</p> -->
+                                                                        {% if a.text_content == None %}
+                                                                        {% else %}
+                                                                        <h5>{{a.text_content}}</h5>
+                                                                        {% endif %}
+                                                                        <p>{{a.file_name}}</p>
                                                                     </div>
                                                                     <div class="d-flex align-items-center">
                                                                         <i class="md-more-vert" data-toggle="dropdown" aria-expanded="false"></i>
@@ -302,21 +343,28 @@
                                                                         </ul> 
                                                                     </div>
                                                                 </div>
+                                                                </a>
                                                                 {% endif %}
                                                                 {% endfor %}
         
                                                             </div>
                                                             
                                                         </div>
-                                                        <div class="add-attach mt-4"  data-toggle="dropdown" aria-expanded="false">
-                                                            
+
+                                                        <div class="dropright">
+                                                            <div class="add-attach mt-4" data-toggle="dropdown" aria-expanded="false">
                                                                 Add attachment
                                                         </div> 
+                                                       
                                                         <ul class="dropdown-menu">
-                                                            <li><a href="#" class="dropdown-item">From Computer</a></li>
+                                                            <li><a href="#" class="dropdown-item"><input style="padding:12px 12px ;" type="file" multiple name="attachment_new">From Computer</a></li>
+                                                            <li><a class="dropdown-item"><input class="form-control" type="text" name="attach_name"  ></a></li>
                                                             <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#url-modal">A link to a URL</a></li>
                     
-                                                        </ul>                            
+                                                        </ul>     
+                                                        </div>
+
+
                                                     </div>
                                                       
                                                 </div>
@@ -324,6 +372,52 @@
                                             </div>
                                             
                                         </div>
+
+
+                                        <div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title mt-0">Add a link</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group url-inpt">
+                                                                    <label for="field-1" class="control-label">Address</label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text">https://</span>
+                                                                        </div>
+                                                                        <input type="url" name="link_address" class="form-control" id="field-1" placeholder="Add your link here">
+                                                                       
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                           
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="field-1" class="control-label">Text to display</label>
+                                                                    <input type="text" name="text_content" class="form-control" id="field-1" placeholder="Give your link name here">
+                                                                </div>
+                                                            </div>
+                                        
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                        
+                                                        <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
 
                                     </form>
 
@@ -341,6 +435,13 @@
                                                         <a class="nav-link" id="profile-tab-2" data-toggle="tab" href="#profile-2" role="tab" aria-controls="profile-2" aria-selected="true">
                                                             <span class="d-block d-sm-none"><i class="fa fa-user"></i></span>
                                                             <span class="d-none d-sm-block">Comments</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="nav-item tab">
+                                                        <a class="nav-link" id="message-tab-2" data-toggle="tab" href="#message-2" role="tab" aria-controls="message-2" aria-selected="false">
+                                                            <span class="d-block d-sm-none"><i class="fa fa-envelope-o"></i></span>
+                                                            <span class="d-none d-sm-block">Time Sheet</span>
                                                         </a>
                                                     </li>
                                                     
@@ -435,9 +536,9 @@
                                                             <div class="col-md-12">
                                                                 <div class="form-group mt-2">
                                                                     <!-- <label for="field-2" class="control-label">Comments</label> -->
-                                                                    <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type your message here"></textarea>                              
+                                                                    <textarea class="form-control" rows="3" id="project_comment" placeholder="Type your message here"></textarea>                              
                                                                 </div>
-                                                                <button type="button" class="btn btn-pink waves-effect waves-light w-sm m-b-5 float-right">Send</button>
+                                                                <button type="button" id="commnt_snd" class="btn btn-pink waves-effect waves-light w-sm m-b-5 float-right">Send</button>
                                                             </div>
 
                                                             {% for c in sub_space_data.sub_space_comments.all %}
@@ -469,7 +570,6 @@
                                                                 <tr class="heading-text">
                                                                     <th>Date</th>
                                                                     <th>Employee</th>
-                                                                    <th>Description</th>
                                                                     <th>Hour Spent</th>                                                           
                                                                     <th></th>
                                                                 </tr>
@@ -477,68 +577,42 @@
     
     
                                                             <tbody class="body-textcls vertcle-center">
+                                                                {% for h in time_details %}
+                                                                {% if h.counter == None %}
+                                                                    {% else %}
                                                                 <tr>
-                                                                    <td>01/12/2023</td>
+                                                                    <td>{{h.current_date|safe}}</td>
                                                                     <td>
                                                                         <div class="profile-image d-flex align-items-center">
                                                                            
-                                                                            <img src="assets/images/users/avatar-4.jpg">
-                                                                               <span>Jhone Jacson</span> 
+                                                                            <img src="../static/assets/images/users/avatar-4.jpg">
+                                                                               <span>{{h.user_details_id.name}}</span> 
                                                                         </div>
                                                                     </td>
-                                                                    <td>Requirment Analysis</td>
-                                                                    <td>01:00</td>                                                               
+                                                                    <!-- <td></td> -->
+                                                                    <td>{{h.counter|safe}}</td>                                                               
                                                                     <td><i class="fa-regular fa-trash-can"></i></td>
                                                                 </tr>
-                                                                <tr>
-                                                                    <td>01/12/2023</td>
-                                                                    <td>
-                                                                        <div class="profile-image d-flex align-items-center">
-                                                                           
-                                                                            <img src="assets/images/users/avatar-4.jpg">
-                                                                               <span>Jhone Jacson</span> 
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>Requirment Analysis</td>
-                                                                    <td>01:00</td>                                                               
-                                                                    <td><i class="fa-regular fa-trash-can"></i></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>01/12/2023</td>
-                                                                    <td>
-                                                                        <div class="profile-image d-flex align-items-center">
-                                                                           
-                                                                            <img src="assets/images/users/avatar-4.jpg">
-                                                                               <span>Jhone Jacson</span> 
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>Requirment Analysis</td>
-                                                                    <td>01:00</td>                                                               
-                                                                    <td><i class="fa-regular fa-trash-can"></i></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>01/12/2023</td>
-                                                                    <td>
-                                                                        <div class="profile-image d-flex align-items-center">
-                                                                           
-                                                                            <img src="assets/images/users/avatar-4.jpg">
-                                                                               <span>Jhone Jacson</span> 
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>Requirment Analysis</td>
-                                                                    <td>01:00</td>                                                               
-                                                                    <td><i class="fa-regular fa-trash-can"></i></td>
-                                                                </tr>
+                                                              
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                               
+                                                               
+                                                             
                                                             </tbody>
                                                         </table>
 
                                                         <div class="d-flex hours-spent">
                                                             <div class="col-md-6 t-hr">
-                                                                <h5>Total hours spent : <span>48:30</span></h5>
+                                                                <!-- <h5>Total hours spent : <span>{{total_hr}}</span></h5> -->
                                                             </div>
+            
                                                             <div class="col-md-6 r-hr text-right">
-                                                                <h5>Remaining hours : <span>08:30</span></h5>
+                                                                <h5>Total hours spent :  <span>{{total_hr}}</span></h5>
                                                             </div>
+                                                            <!-- <div class="col-md-6 r-hr text-right">
+                                                                <h5>Remaining hours : <span>00:00</span></h5>
+                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </div>
@@ -709,12 +783,47 @@
                         </div> -->
                 </div> 
             </div> 
-            <div class="modal-footer"> 
-                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
-                <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save</button> 
-            </div> 
-        </div> 
-    </div>
+            <div class="modal-footer"> <div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title mt-0">Add a link</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group url-inpt">
+                                        <label for="field-1" class="control-label">Address</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">https://</span>
+                                            </div>
+                                            <input type="url" name="link_address" class="form-control" id="field-1" placeholder="Add your link here">
+                                           
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                               
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="field-1" class="control-label">Text to display</label>
+                                        <input type="text" name="text_content" class="form-control" id="field-1" placeholder="Give your link name here">
+                                    </div>
+                                </div>
+            
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+            
+                            <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 </div><!-- /.modal -->
 
 <div id="task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
@@ -763,6 +872,12 @@
             </div>  -->
         </div> 
 </div>
+
+
+
+
+
+
 </form>
 
 
@@ -987,8 +1102,48 @@ if (running == 1) {
             $('#name_show').hide();
             $('#old_name').show();
         }
+
+
     </script>
 
+    <script>
+
+$("#commnt_snd").click(function(){
+
+    comments = $('#project_comment').val()
+   
+    $.ajax(
+    {
+        type:"GET",
+        url: "get_project_comment",
+        data:{
+            sub_space_id: `{{sub_space_id}}`,
+            comments : comments
+        },
+        success: function( data ) 
+        {
+            window.location.reload();
+        }
+     });
+})
+
+
+function add_function(value,name,img){
+    $(".append_user").append(` <div class="profile-image d-flex align-items-center m-2">
+        <input type="hidden" name="add_new_memember_list" value=`+value+`>
+                                                    <img src=`+img+`> <span>`+name+`</span>                                                      
+                                                </div>`)
+    $(".delete_suggestion"+value).hide()
+}
+
+function remove_function(value){
+
+    $(".append_user").append(`<input type="hidden" name="remove_assign_user[]" value=`+value+`>`)
+    $(".remove_assigned_user"+value).hide()
+    $(".save_member_data"+value).hide()
+}
+
+    </script>
 
 
 {% endblock %}

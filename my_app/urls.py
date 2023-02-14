@@ -60,6 +60,8 @@ urlpatterns = [
 
     path('update_task_status',views.update_task_status,name='update_task_status'),
 
+    path('get_project_comment',views.get_project_comment,name='get_project_comment'),
+
 
 
 

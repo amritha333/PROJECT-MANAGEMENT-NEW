@@ -70,6 +70,8 @@ class User_details(common_table):
     phone = models.CharField(max_length=15, null=True)
     email = models.EmailField(null=True)
     manager_auth = models.ForeignKey(User,on_delete=models.CASCADE,related_name="%(app_label)s_%(class)s_owner1",null=True)
+    def __str__(self) -> str:
+        return self.name
 
 
 class Role_master(common_table):
@@ -198,7 +200,8 @@ class sub_space_attachment(common_table):
     sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_attachment",on_delete=models.CASCADE,null=True)
     file_name = models.CharField(max_length=50,null=True)
     file_type = models.CharField(max_length=30,null=True)
-    attached_file = models.FileField(upload_to="sub_space_attachment", null=True)   
+    attached_file = models.FileField(upload_to="sub_space_attachment", null=True)
+    text_content = models.CharField(max_length=200,null=True)
     added_by = models.ForeignKey(User,related_name="sub_space_auth_id",on_delete=models.CASCADE,null=True)
 
 class sub_space_comments(common_table):

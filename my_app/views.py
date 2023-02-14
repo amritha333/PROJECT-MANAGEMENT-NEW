@@ -925,11 +925,8 @@ def update_project_details(request):
         project_name = request.POST.get("project_name",False)
         print("project_name:::::",project_name)
         tag_name = request.POST.getlist("tag_name",False)
-        print("tag_name::",tag_name)
         tag_name.pop(0)
         
-        print("tag_name:::::",tag_name)
-
         status_name = request.POST.get("status_name",False)
         print("status_name:::::",status_name)
         progress = request.POST.get("progress",False)
@@ -948,8 +945,61 @@ def update_project_details(request):
         print("notes:::::",notes)
         checklist_new = request.POST.getlist("checklist_new",False)
         print("checklist_new:::::",checklist_new)
-       
-        
+
+
+        try:
+            removed_user = request.POST.getlist("remove_assign_user[]",False)
+            for i in removed_user:
+
+                user_details = User_details.objects.get(id=i)
+                data_save = sub_space_master.objects.get(id=sub_space_id)
+                data_save.invite_user_auth_id.remove(user_details.auth_user.id)
+                data_save.invite_user_details_id.remove(i)
+
+        except:
+            pass
+
+        try:
+            add_user = request.POST.getlist("add_new_memember_list",False)
+            for i in add_user:
+
+                user_details = User_details.objects.get(id=i)
+                data_save = sub_space_master.objects.get(id=sub_space_id)
+                data_save.invite_user_auth_id.add(user_details.auth_user.id)
+                data_save.invite_user_details_id.add(i)
+        except:
+            pass
+
+        try:
+
+            attachment_new =  request.FILES.getlist('attachment_new')
+            attach_name = request.POST.get("attach_name",False)
+            print("attachment_new:",attachment_new)
+            for i in attachment_new:
+
+                import os
+                filename = os.path.splitext(str(i))[0]
+                print("nameeeee",filename)
+                extension = os.path.splitext(str(i))[1]
+                print("extension:",extension)
+                file_type = "file"
+                sub_space_attachment.objects.create(sub_space_id_id=sub_space_id,text_content = attach_name,
+                file_name = filename,file_type =file_type ,attached_file = i,added_by = request.user)
+        except:
+            pass
+
+
+        try:
+            link_address = request.POST.get("link_address",False)
+            text_content = request.POST.get("text_content",False)
+            file_type = "link"
+            sub_space_attachment.objects.create(sub_space_id_id=sub_space_id,text_content = text_content,
+            file_name =link_address, file_type =file_type ,attached_file = link_address,added_by = request.user)
+        except:
+            pass
+
+
+
         sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = project_name,bucket_mapping_id =status_name,progress=progress,priority=priority,Planning_start_date=planning_start_date,Planning_end_date=planning_end_date,
         Actual_start_date = actual_start_date,Actual_end_date = actual_end_date,notes = notes)
 
@@ -961,7 +1011,6 @@ def update_project_details(request):
         except:
             pass
                
-
         sub_space = sub_space_master.objects.get(id=sub_space_id)
         for t in tag_name:
             sub_space.tag_id.add(t)
@@ -1015,6 +1064,18 @@ def view_project_page(request):
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
 
 
+    task_data = Add_task_master.objects.filter(sub_space_id = sub_space_id)
+    task_details = list(task_data.values_list('id',flat=True))
+    time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id = request.user)
+    print("time_details:::::",time_details)
+    total_hr = ""
+    try : 
+        total_price = sum(time_details.values_list('total_second', flat=True))
+        total_hr = convert(total_price)
+    except:
+        pass
+
+
     context = {
         "sub_space_member_data" : sub_space_member_data,
         "space_data":space_data,
@@ -1029,6 +1090,8 @@ def view_project_page(request):
         "user_details_data":user_details_data,
         "dynamic_status":dynamic_status,
         "tags_name":tags_name,
+        "time_details":time_details,
+        "total_hr":total_hr
     }
     return render(request, 'view_project_page.html',context)
 
@@ -1660,6 +1723,28 @@ def update_task_status(request):
     data_update = Add_task_master.objects.filter(id=task_id).update(bucket_mapping_id_id=status_id)
     messages.success(request,str("Status updated"))
     return redirect(request.META['HTTP_REFERER'])
+
+
+
+def get_project_comment(request):
+    sub_space_id = request.GET.get("sub_space_id")
+    print("sub_space_id:",sub_space_id)
+    comments = request.GET.get("comments")
+    print("comments:::::",comments)
+    if comments == "":
+        print("nulll")
+    else:
+        user_data = User_details.objects.get(auth_user=request.user)
+        data = sub_space_comments.objects.create(sub_space_id_id=sub_space_id,
+        added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+
+    return JsonResponse({"message":"success"},safe=False)
+    
+
+
+
+
+
 
 
 
