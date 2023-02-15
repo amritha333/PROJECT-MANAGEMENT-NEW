@@ -29,6 +29,9 @@
 
     <link href="../static/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
+    <script src="https://kit.fontawesome.com/6adc82e575.js" crossorigin="anonymous"></script>
+
+
 
 
 
@@ -203,6 +206,9 @@
                         </li>
                         {% endif %}
 
+                        {% if user.is_superuser %}
+                            
+                        {% else %}
 
                         {% if request.user.id|company_nav_perm_check:"Status" %}
                         <li>
@@ -215,6 +221,7 @@
                         <li>
                             <a href="tags_management" class="waves-effect"><i class="fa fa-tag"></i><span> Tags Management</span></a>
                         </li>
+                        {% endif %}
                         {% endif %}
 
                         {% if user.is_superuser %}

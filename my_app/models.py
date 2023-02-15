@@ -138,22 +138,10 @@ class tags_name_master(common_table):
 
 class space_master(common_table):
     space_name = models.CharField(max_length=50,null=True)
-    manager_auth = models.ManyToManyField(User,related_name="space_manager")
     task_status = models.ManyToManyField(status_name_master)
     active_account_id = models.ForeignKey(User_details,related_name="space_active_userid",on_delete=models.CASCADE,null=True)
     added_user_id = models.ForeignKey(User,related_name="space_auth_id",on_delete=models.CASCADE,null=True)
 
-
-class space_view_access_user(common_table):
-    space_id = models.ForeignKey(space_master,related_name="space_view_id",on_delete=models.CASCADE,null=True)
-    space_view_auth_id = models.ForeignKey(User,related_name="space_view_auth_id",on_delete=models.CASCADE,null=True)
-    space_view_user_details = models.ForeignKey(User_details,related_name="space_view_access_userid",on_delete=models.CASCADE,null=True)
-
-
-class space_access_permission_user(common_table):
-    space_id = models.ForeignKey(space_master,related_name="space_access_id",on_delete=models.CASCADE,null=True)
-    invite_user_details_id = models.ForeignKey(User_details,related_name="space_access_userid",on_delete=models.CASCADE,null=True)
-    invite_user_auth_id = models.ForeignKey(User,related_name="space_access_auth_id",on_delete=models.CASCADE,null=True)
 
 
 buckets = (
@@ -190,6 +178,7 @@ class sub_space_master(common_table):
     Actual_end_date= models.DateField(blank=True)
     invite_user_details_id = models.ManyToManyField(User_details,related_name="sub_space_userdetails")
     invite_user_auth_id = models.ManyToManyField(User,related_name="sub_space_auth")
+    sub_space_manager = models.ForeignKey(User,related_name="sub_space_master_manager",on_delete=models.CASCADE,null=True)
     tag_id = models.ManyToManyField(tags_name_master,related_name="sub_space_tag")
 
 class sub_space_checklist(common_table):
@@ -209,14 +198,6 @@ class sub_space_comments(common_table):
     added_by = models.ForeignKey(User_details,related_name="sub_space_comment_user",on_delete=models.CASCADE,null=True)
     user_auth_id = models.ForeignKey(User,related_name="sub_space_comment_auth",on_delete=models.CASCADE,null=True)
     comments=  models.TextField(null=True)
-
-
-class sub_space_access_permission(common_table):
-    space_id = models.ForeignKey(space_master,related_name="sub_space_access",on_delete=models.CASCADE,null=True)
-    sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_id",on_delete=models.CASCADE,null=True)
-    invite_user_details_id = models.ForeignKey(User_details,related_name="sup_space_access_userid",on_delete=models.CASCADE,null=True)
-    invite_user_auth_id = models.ForeignKey(User,related_name="sub_space_access_auth",on_delete=models.CASCADE,null=True)
-
 
 class Add_task_master(common_table):
     space_id = models.ForeignKey(space_master,related_name="add_task_master_space",on_delete=models.CASCADE,null=True)
@@ -364,3 +345,20 @@ class History_sub_space_time(models.Model):
     counter = models.TimeField(null=True)
     sub_space_id = models.ForeignKey(sub_space_master,related_name="history_time_sub_space_id",on_delete=models.CASCADE,null=True)
     user_auth_id = models.ForeignKey(User,related_name="history_sub_space_auth_user",on_delete=models.CASCADE,null=True)
+
+
+
+from django.utils.text import slugify
+class Project_user_access_link(models.Model):
+    project_id =  models.OneToOneField(sub_space_master,related_name="Project_user_access_link_project_id",on_delete=models.CASCADE,null=True)
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100)
+    def save(self, *args, **kwargs):        
+        if not self.slug:            
+            self.slug = slugify(rand_slug_model() + "-" + self.title)        
+        super(Project_user_access_link, self).save(*args, **kwargs)
+
+import string
+import random
+def rand_slug_model():    
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(1))

@@ -33,7 +33,7 @@
                             <div class="card card-shadow">
 
                                 <div class="card-body body-change card-border project-detailpage">
-                                    <form action="update_project_details" method="POST" enctype="multipart/form-data">
+                                    <form action="update_project_details" name="update_form" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <input type="hidden" name="sub_space_id" value="{{sub_space_id}}">
                                      
@@ -49,9 +49,7 @@
                                                 <label for="checkbox7" id="name_show"  style="display:none;">
                                                     <input type="text" name="project_name" class="form-control" value="{{sub_space_data.sub_space_name}}">
                                                 </label>
-                                               
-
-                                                
+                                       
                                             </div>
                                             <p>Last changed {{sub_space_data.updated_dt|safe}} by you</p>
                                         </div>
@@ -64,8 +62,9 @@
                                                     <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
                                                     {% else %}
 
-                                                <li><a href="update_project_status?project_id={{sub_space_data.id}}&status_id={{i.id}}"class="" >{{i.status_name}}</a></li>
+                                                <li><a style="cursor: pointer;"  data-status-id="{{i.id}}" class=" status_click" >{{i.status_name}}</a></li>
                                                 {% endif %}
+
 
                                                 {% endfor %}
 
@@ -73,6 +72,9 @@
                                                   <li><a href="#" class="grn">Done</a></li> -->
                                                 </ul>
                                             </div>
+
+
+
                                             <div class="d-flex">
                                                 <p id="output" class="text-center"></p>
 
@@ -81,11 +83,19 @@
                                                     <button style="background-color: #7e57c2 !important;
                                                     border: 1px solid #7e57c2 !important;" type="button" class="btn btn-purple waves-effect waves-light m-b-5 save-btn"><i class="fa fa-indent mr-1"></i> Project Structure</button>&ensp;
                                                    </a>
-                                                   <button type="submit" class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
+                                                   {% if user_access_generate %}
+                                                   <a target="_blank" href="{% url 'open_project' user_access_generate.slug  %}" style="padding: 12px 12px;
+                                                   font-weight: bold;">Client Access Link</a>
+                                                   {% else %}
+                                                   <a  class="btn btn-primary m-2" data-toggle="modal" data-target="#exampleModal" style="background: #2B314E!important;
+                                                   border: none!important;">Generate Client Access</a>
+                                                   {% endif %}
+                                                   <button type="button" data-toggle="modal" data-target="#updateModal"  class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
 
                                     <div class="row">
                                         <div class="col-md-5 mt-3">
@@ -112,36 +122,29 @@
                                                    
                                                     <h6>Suggestions</h6>
 
-                                                    {% for m in space_data.space_view_id.all %}
+                                                    {% for m in member_data %}
                              
-                                                    {% if m.space_view_user_details  in sub_space_data.invite_user_details_id.all %}
+                                                    {% if m  in sub_space_data.invite_user_details_id.all %}
 
                                                     {% else %}
-                                                    <li class="delete_suggestion{{m.space_view_user_details.id}}"><a href="#" class="dropdown-item">
-                                                        <div id="add_div{{m.space_view_user_details.id}}">
+                                                    <li class="delete_suggestion{{m.id}}"><a href="#" class="dropdown-item">
+                                                        <div id="add_div{{m.id}}">
                                                         <div class="profile-image d-flex align-items-center">
-                                                        <img src="./media/{{m.space_view_user_details.photo}}"><span>{{m.space_view_user_details.name}}</span>   
+                                                        <img src="./media/{{m.photo}}">  <span>{{m.name}}</span>   
                                                         
-                                                        <span onclick="add_function(`{{m.space_view_user_details.id}}`,`{{m.space_view_user_details.name}}`,`./media/{{m.space_view_user_details.photo}}`)" data-id="{{m.space_view_user_details.id}}" class="add_icon"><i style="font-size: 14px;
+                                                        <span onclick="add_function(`{{m.id}}`,`{{m.name}}`,`./media/{{m.photo}}`)" data-id="{{m.id}}" class="add_icon"><i style="font-size: 14px;
                                                             color: #17f573;
                                                             font-weight: bold; cursor: pointer;" class="fa fa-check"></i></span>
                                                         
                                                         </div>
                                                         </div>
-                                                            </a>
-                                                    </li>
+                                                            </a></li>
                                                     {% endif %}
                                                         
                                                   
                                                     {% endfor %}
                                                 </ul> 
 
-
-
-
-                                               
-
-                                               
                                                 <div class="append_user">
                                                 {% for m in sub_space_data.invite_user_details_id.all %}
 
@@ -153,10 +156,6 @@
 
                                             </div>
                                                
-                                              
-                                                  
-            
-
                                             </div>
 
                                             <div class="labeltag d-flex align-items-center mt-4">
@@ -311,31 +310,35 @@
                                                     <div class="form-group">
                                                         <label for="field-2" class="control-label mb-2">Attachments</label>
                                                         <div class="row">
-                                                            <div class="col-4">
+
+                                                            <div class="col-4 append_attach">
                                                                 {% for a in sub_space_data.sub_space_attachment.all %}
+
                                                                     {% if a.attached_file  %}
                                                                         {% if a.file_type == "link" %}
 
-                                                                        <a href="{{a.attached_file}}" >
+                                                                        <a target="_blank" href="{{a.attached_file}}" >
                                                                            
-                                                                     
                                                                         {% else %}
 
                                                                         <a target="_blank" href="/media/{{a.attached_file}}" >
-                                                                            {% endif %}
-                                                                <div class="attach-bx d-flex">
+                                                                        {% endif %}
+
+                                                                <div  class="attach-bx d-flex hide_attach{{a.id}}">
                                                                     <div class="d-flex align-items-center">
                                                                         <i class="fa fa-link"></i>
                                                                     </div>
-                                                                    <div class="attach-details">
+                                                                    <div class="attach-details" >
                                                                         {% if a.text_content == None %}
                                                                         {% else %}
                                                                         <h5>{{a.text_content}}</h5>
                                                                         {% endif %}
                                                                         <p>{{a.file_name}}</p>
                                                                     </div>
+                                                                </a>
                                                                     <div class="d-flex align-items-center">
-                                                                        <i class="md-more-vert" data-toggle="dropdown" aria-expanded="false"></i>
+                                                                        <i style="cursor: pointer;" onclick="attach_remove(`{{a.id}}`)" class="fa fa-remove"></i>
+
                                                                         <ul class="dropdown-menu">
                                                                             <li><a href="#" class="dropdown-item">Edit</a></li>
                                                                             <li><a href="#" class="dropdown-item">Remove</a></li>
@@ -343,7 +346,7 @@
                                                                         </ul> 
                                                                     </div>
                                                                 </div>
-                                                                </a>
+                            
                                                                 {% endif %}
                                                                 {% endfor %}
         
@@ -358,7 +361,7 @@
                                                        
                                                         <ul class="dropdown-menu">
                                                             <li><a href="#" class="dropdown-item"><input style="padding:12px 12px ;" type="file" multiple name="attachment_new">From Computer</a></li>
-                                                            <li><a class="dropdown-item"><input class="form-control" type="text" name="attach_name"  ></a></li>
+                                                            <li><a class="dropdown-item"><input class="form-control" type="text" name="attach_name"></a></li>
                                                             <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#url-modal">A link to a URL</a></li>
                     
                                                         </ul>     
@@ -415,9 +418,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
-
 
                                     </form>
 
@@ -783,47 +783,12 @@
                         </div> -->
                 </div> 
             </div> 
-            <div class="modal-footer"> <div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title mt-0">Add a link</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group url-inpt">
-                                        <label for="field-1" class="control-label">Address</label>
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">https://</span>
-                                            </div>
-                                            <input type="url" name="link_address" class="form-control" id="field-1" placeholder="Add your link here">
-                                           
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                               
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="field-1" class="control-label">Text to display</label>
-                                        <input type="text" name="text_content" class="form-control" id="field-1" placeholder="Give your link name here">
-                                    </div>
-                                </div>
-            
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-            
-                            <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
+                <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save</button> 
+            </div> 
+        </div> 
+    </div>
 </div><!-- /.modal -->
 
 <div id="task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
@@ -873,12 +838,132 @@
         </div> 
 </div>
 
+<div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0">Add a link</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group url-inpt">
+                            <label for="field-1" class="control-label">Address</label>
+                            <div class="input-group">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">https://</span>
+                                </div>
+                                <input type="url" class="form-control" id="field-1" placeholder="Add your link here">
+                               
+                            </div>
+                            
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="field-1" class="control-label">Text to display</label>
+                            <input type="text" class="form-control" id="field-1" placeholder="Give your link name here">
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 
 </form>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Generate Link</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        <form action="generate_client_access_link" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="access_id" value="{{sub_space_data.id}}">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Generate</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Are you sure you want to confirm?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        <form action="update_project_status" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="status_id" id="status_id" >
+            <input type="hidden" name="project_id" value="{{sub_space_data.id}}" >
+
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+        </form>
+    
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateModalLabel">Are you sure you want to update details?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary update_click">Confirm</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
 
 
 {% block scripts %}
@@ -1128,20 +1213,53 @@ $("#commnt_snd").click(function(){
 })
 
 
+
+$(".status_click").click(function(){
+
+    var status_id = $(this).attr("data-status-id")
+    $("#status_id").val(status_id)
+    $("#confirmModal").modal("show")
+
+})
+
+
+$(".update_click").click(function(){
+    document.forms["update_form"].submit();
+
+
+})
+
+
+
+
+
 function add_function(value,name,img){
     $(".append_user").append(` <div class="profile-image d-flex align-items-center m-2">
         <input type="hidden" name="add_new_memember_list" value=`+value+`>
                                                     <img src=`+img+`> <span>`+name+`</span>                                                      
                                                 </div>`)
+
+
     $(".delete_suggestion"+value).hide()
 }
+
 
 function remove_function(value){
 
     $(".append_user").append(`<input type="hidden" name="remove_assign_user[]" value=`+value+`>`)
     $(".remove_assigned_user"+value).hide()
     $(".save_member_data"+value).hide()
+    
 }
+
+
+function attach_remove(value){
+
+    $(".append_attach").append(`<input type="text" name="remove_attachment[]" value=`+value+`>`)
+    $(".hide_attach"+value).hide()
+
+}
+
 
     </script>
 

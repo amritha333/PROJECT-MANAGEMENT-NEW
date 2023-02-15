@@ -25,9 +25,11 @@
 
             <div class="department-box d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
+                    {% if space_master_data != "" %}
                     <div class="img-fluid df1" id="div-colour" style="padding: 4px 4px; background: red; color: white;border-radius: 6px; font-size: 12px!important;">
                         {{request.user|index_f:space_master_data.space_name}}
                     </div>
+                    {%endif%}
                     <h3 style="padding: 9px 7px; cursor: pointer;" data-space-id="{{space_master_data.id}}" class="space_class" >{{space_master_data.space_name}}</h3>
                 </div>
 

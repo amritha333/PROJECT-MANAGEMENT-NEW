@@ -62,6 +62,9 @@ urlpatterns = [
 
     path('get_project_comment',views.get_project_comment,name='get_project_comment'),
 
+    path('generate_client_access_link',views.generate_client_access_link,name='generate_client_access_link'),
+    path('open_project/<str:name>',views.open_project,name='open_project'),
+
 
 
 
