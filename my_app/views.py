@@ -800,6 +800,10 @@ def project_add_action(request):
         checklist_item = request.POST.getlist("checklist",False)
         new_checklist_item = list(filter(None, checklist_item))
         print("new_checklist_item::::",new_checklist_item)
+        checklist_end_date = request.POST.getlist("checklist_end_date",False)
+        print("checklist_end_date::;",checklist_end_date)
+        new_checklist_end_date = list(filter(None, checklist_end_date))
+        print("new_checklist_end_date:",new_checklist_end_date)
         
         user_data = User_details.objects.get(auth_user = request.user)
         if user_data.user_type == "company_admin":
@@ -823,10 +827,14 @@ def project_add_action(request):
                 data_save.invite_user_details_id.add(r)
 
 
-            for i in new_checklist_item:
-                sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
-                milestone = i)
+            zip_objects = zip(new_checklist_item,new_checklist_end_date)
 
+            for m,d in zip_objects:
+                check_data = sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
+                milestone = m,due_date = d)
+           
+
+               
             try:
 
                 attached_file =  request.FILES.getlist('attached_file')
@@ -874,9 +882,11 @@ def project_add_action(request):
                 data_save.invite_user_auth_id.add(user_details.auth_user.id)
                 data_save.invite_user_details_id.add(r)
 
-            for i in new_checklist_item:
-                sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
-                milestone = i)
+            zip_objects = zip(new_checklist_item,new_checklist_end_date)
+
+            for m,d in zip_objects:
+                check_data = sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
+                milestone = m,due_date = d)
 
             try:
 
@@ -929,6 +939,13 @@ def update_project_details(request):
         print("notes:::::",notes)
         checklist_new = request.POST.getlist("checklist_new",False)
         print("checklist_new:::::",checklist_new)
+        try :
+
+            checklist_new = list(filter(None, checklist_new))
+        except:
+            pass
+        checkbox_checklist = request.POST.get("checkbox_checklist",False)
+        print('checkbox_checklist:',checkbox_checklist)
 
 
         try:
@@ -991,7 +1008,7 @@ def update_project_details(request):
 
         try:
             for k in checklist_new:
-                sub_space_checklist.objects.create(sub_space_id_id=sub_space_id,milestone=k,updated_by = request.user,updated_dt=today_date)
+                sub_space_checklist.objects.create(sub_space_id_id=sub_space_id,milestone=k,status=checkbox_checklist,updated_by = request.user,updated_dt=today_date)
         except:
             pass
                
@@ -999,9 +1016,7 @@ def update_project_details(request):
         for t in tag_name:
             sub_space.tag_id.add(t)
 
-
         try:
-
 
             remove_attachment = request.POST.getlist("remove_attachment[]",False)
 
@@ -1014,6 +1029,132 @@ def update_project_details(request):
 
         messages.success(request,"Successfully updated Project details")
         return redirect(request.META['HTTP_REFERER'])
+
+
+
+
+def update_task_details(request):
+    if request.method == "POST":
+        task_id = request.POST.get("task_id",False)
+        task_name = request.POST.get("task_name",False)
+        print("task_name:::::",task_name)
+        tag_name = request.POST.getlist("tag_name",False)
+        tag_name.pop(0)
+        
+        status_name = request.POST.get("status_name",False)
+        print("status_name:::::",status_name)
+        progress = request.POST.get("progress",False)
+        print("progress:::::",progress)
+        priority = request.POST.get("priority",False)
+        print("priority:::::",priority)
+        start_date = request.POST.get("start_date",False)
+        print("start_date:::::",start_date)
+        end_date = request.POST.get("end_date",False)
+        print("end_date:::::",end_date)
+        notes = request.POST.get("notes",False)
+        print("notes:::::",notes)
+        checklist_new = request.POST.getlist("checklist_new",False)
+        print("checklist_new:::::",checklist_new)
+        checklist_new = list(filter(None, checklist_new))
+        checkbox_checklist = request.POST.get("checkbox_checklist",False)
+        print('checkbox_checklist:',checkbox_checklist)
+
+
+        try:
+            removed_user = request.POST.getlist("remove_assign_user[]",False)
+            for i in removed_user:
+
+                Add_task_access_user.objects.filter(add_task=task_id,invite_user_details_id=i).delete()
+                
+        except:
+            pass
+
+        try:
+            add_user = request.POST.getlist("add_new_memember_list",False)
+            
+            for i in add_user:
+
+                user_details = User_details.objects.get(id=i)
+                task_access_user_save = Add_task_access_user.objects.create(add_task_id=task_id,
+                invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id)
+                
+        except:
+            pass
+
+        try:
+
+            attachment_new =  request.FILES.getlist('attachment_new')
+            attach_name = request.POST.get("attach_name",False)
+            print("attachment_new:",attachment_new)
+            for i in attachment_new:
+
+                import os
+                filename = os.path.splitext(str(i))[0]
+                print("nameeeee",filename)
+                extension = os.path.splitext(str(i))[1]
+                print("extension:",extension)
+                file_type = "file"
+                Add_task_attachment.objects.create(add_task_id_id=task_id,text_content = attach_name,
+                file_name = filename,file_type =file_type ,attached_file = i,added_by = request.user)
+        except:
+            pass
+
+
+        try:
+            link_address = request.POST.get("link_address",False)
+            text_content = request.POST.get("text_content",False)
+            file_type = "link"
+            Add_task_attachment.objects.create(add_task_id_id=task_id,text_content = text_content,
+            file_name =link_address, file_type =file_type ,attached_file = link_address,added_by = request.user)
+        except:
+            pass
+
+
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        Add_task_master.objects.filter(id=task_id).update(task_name = task_name,bucket_mapping_id =status_name,progress=progress,priority=priority,start_date=start_date,end_date=end_date,
+        notes = notes,updated_dt = today_date)
+
+       
+
+        try:
+            for k in checklist_new:
+                Add_task_checklist.objects.create(add_task_id_id=task_id,item_name=k,updated_by = request.user,updated_dt=today_date)
+        except:
+            pass
+               
+        add_task = Add_task_master.objects.get(id=task_id)
+        for t in tag_name:
+            add_task.tag_id.add(t)
+
+        try:
+
+            remove_attachment = request.POST.getlist("remove_attachment[]",False)
+
+            for i in remove_attachment:
+                Add_task_attachment.objects.get(id=i).delete()
+        except:
+            pass
+
+
+
+        messages.success(request,"Successfully updated Task details")
+        return redirect(request.META['HTTP_REFERER'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1060,8 +1201,9 @@ def view_project_page(request):
     dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
 
-
-    task_details = list(task_data.values_list('id',flat=True))
+    task_data_time = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id)
+    print("task_data_time::::::",task_data_time)
+    task_details = list(task_data_time.values_list('id',flat=True))
     time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id = request.user)
     print("time_details:::::",time_details)
     total_hr = ""
@@ -1263,18 +1405,14 @@ def view_task_page(request):
         pass
 
 
-
-
     time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id = request.user)
+    print("time_details::::::::",time_details)
     total_hr = ""
     try : 
         total_price = sum(time_details.values_list('total_second', flat=True))
         total_hr = convert(total_price)
     except:
         pass
-
-
-
 
 
     task_data = Add_task_master.objects.get(id=task_id)
@@ -1294,6 +1432,28 @@ def view_task_page(request):
     user_details_data = User_details.objects.get(auth_user=request.user)
     dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
+
+
+
+    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    if user_manage_all_permission:
+        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(active_user_id.active_auth_user_id.id))
+        member_data = User_details.objects.filter(created_by__in=child_user_id)
+    else:
+        if user_details_data.user_type == "company_admin":
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(request.user.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id)
+        else:
+            member_data = User_details.objects.filter(manager_auth=request.user)
 
 
 
@@ -1318,7 +1478,8 @@ def view_task_page(request):
         "button_status":button_status,
         "refresh_time_diff":refresh_time_diff,
         "time_details":time_details,
-        'total_hr':total_hr
+        'total_hr':total_hr,
+        "member_data":member_data
     }
     return render(request, 'view_task_page.html',context)
 
@@ -1649,7 +1810,6 @@ def project_tree_structure(request):
     space_id = sub_space_data.space_id_id
     data_space_model = space_master.objects.get(id=space_id)
     space_task_status = data_space_model.task_status.all()
-    print("space_task_status:::::::::",str(space_task_status))
     
     context ={
         "task_details":task_details,
@@ -1779,11 +1939,15 @@ def update_project_status(request):
 
 
 def update_task_status(request):
-    task_id = request.GET.get("task_id")
-    status_id = request.GET.get("status_id")
-    data_update = Add_task_master.objects.filter(id=task_id).update(bucket_mapping_id_id=status_id)
-    messages.success(request,str("Status updated"))
-    return redirect(request.META['HTTP_REFERER'])
+    if request.method == "POST":
+
+        task_id = request.POST.get("task_id")
+        print("task_id:::::::",task_id)
+        status_id = request.POST.get("status_id")
+        print("status_id:::::",status_id)
+        data_update = Add_task_master.objects.filter(id=task_id).update(bucket_mapping_id_id=status_id)
+        messages.success(request,str("Status updated"))
+        return redirect(request.META['HTTP_REFERER'])
 
 
 

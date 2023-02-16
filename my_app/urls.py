@@ -65,6 +65,8 @@ urlpatterns = [
     path('generate_client_access_link',views.generate_client_access_link,name='generate_client_access_link'),
     path('open_project/<str:name>',views.open_project,name='open_project'),
 
+    path('update_task_details',views.update_task_details,name='update_task_details'),
+
 
 
 

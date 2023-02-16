@@ -70,8 +70,7 @@ class User_details(common_table):
     phone = models.CharField(max_length=15, null=True)
     email = models.EmailField(null=True)
     manager_auth = models.ForeignKey(User,on_delete=models.CASCADE,related_name="%(app_label)s_%(class)s_owner1",null=True)
-    def __str__(self) -> str:
-        return self.name
+   
 
 
 class Role_master(common_table):
@@ -184,6 +183,7 @@ class sub_space_master(common_table):
 class sub_space_checklist(common_table):
     sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_checklist",on_delete=models.CASCADE,null=True)
     milestone = models.CharField(max_length=50,null=True)
+    due_date = models.DateField(blank=True,null=True)
 
 class sub_space_attachment(common_table):
     sub_space_id = models.ForeignKey(sub_space_master,related_name="sub_space_attachment",on_delete=models.CASCADE,null=True)
@@ -212,8 +212,8 @@ class Add_task_master(common_table):
     start_date = models.DateField(blank=True)
     end_date = models.DateField(blank=True)
     task_status = models.CharField(max_length=50,null=True)
-    def __str__(self) -> str:
-        return self.task_name
+    tag_id = models.ManyToManyField(tags_name_master,related_name="Add_task_master_tag")
+    
 
 class Add_task_access_user(common_table):
     add_task = models.ForeignKey(Add_task_master,related_name="add_task_space",on_delete=models.CASCADE,null=True)
@@ -228,7 +228,8 @@ class Add_task_attachment(common_table):
     add_task_id = models.ForeignKey(Add_task_master,related_name="add_attachment",on_delete=models.CASCADE,null=True)
     file_name = models.CharField(max_length=50,null=True)
     file_type = models.CharField(max_length=30,null=True)
-    attached_file = models.FileField(upload_to="task_attachment", null=True)   
+    attached_file = models.FileField(upload_to="task_attachment", null=True)  
+    text_content = models.CharField(max_length=200,null=True)
     added_by = models.ForeignKey(User,related_name="task_auth_id",on_delete=models.CASCADE,null=True)
 
 class Add_task_comments(common_table):

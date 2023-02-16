@@ -32,16 +32,23 @@
                 <div class="card card-shadow">
 
                     <div class="card-body body-change card-border project-detailpage">
+                        <form action="update_task_details" name="update_form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{parent_id}}">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="project-name">
                                 <h6>{{sub_space_data.sub_space_name}}</h6>
                                 <div class="checkbox checkbox-circle">
                                     <input id="checkbox7" type="checkbox">
-                                    <label for="checkbox7">
+                                    <label for="checkbox7" id="old_name" onmouseover="prjct_name()">
                                         {{task_data.task_name}}
                                     </label>
+                                    <label for="checkbox7" id="name_show"  style="display:none;">
+                                        <input type="text" name="task_name" class="form-control" value="{{task_data.task_name}}">
+                                    </label>
+                                    
                                 </div>
-                                <p>Last changed {{task_data.created_dt|safe}} by you</p>
+                                <p>Last changed {{task_data.updated_dt|safe}} by you</p>
                             </div>
                             <div class="d-flex">
                                 <div class="stage1">
@@ -53,7 +60,9 @@
                                             <li><a href="#"  class="grn" >{{i.status_name}}</a></li>
                                             {% else %}
 
-                                            <li><a href="update_task_status?task_id={{task_data.id}}&status_id={{i.id}}"class="" >{{i.status_name}}</a></li>
+                                            <li><a style="cursor: pointer;"  data-status-id="{{i.id}}" class="status_click" >{{i.status_name}}</a></li>
+
+
                                             {% endif %}
 
                                         {% endfor %}
@@ -109,7 +118,7 @@
                                         <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 resume_click" type="button">Resume</button>
                                         {% endif %}
 
-                                        <button type="button" class="btn btn-pink waves-effect waves-light m-b-5 save-btn">SAVE</button>
+                                        <button type="button" data-toggle="modal" data-target="#updateModal"  class="btn btn-pink waves-effect waves-light w-md m-b-5">SAVE</button>
                                         
                                     </div>
                                     
@@ -138,25 +147,70 @@
                         <div class="row">
                             <div class="col-md-6 mt-3">
                                 <div class="d-flex align-items-center assign-prjct">
-                                    <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn">
+                                    <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn" data-toggle="dropdown" aria-expanded="false">
 
-                                    {% for m in task_data.add_task_space.all %}
 
-                                    <div class="profile-image d-flex align-items-center m-2">
-                                        <img src="./media/{{m.invite_user_details_id.photo}}">                                                      
+                                    <ul class="dropdown-menu">
+                                        <input type="text" class="form-control" placeholder="Type a name or email address">
+                                        <h6>Assigned</h6>
+                                        {% for m in task_data.add_task_space.all %}
+                                        <li class="assgned-emp remove_assigned_user{{m.invite_user_details_id.id}}"><a  class="dropdown-item">
+                                            <div id="remove_div{{m.invite_user_details_id.id}}">
+                                            <div  class="profile-image d-flex align-items-center">
+                                            <img src="./media/{{m.invite_user_details_id.photo}}"><span>{{m.invite_user_details_id.name}}</span>    
+                                            <span onclick="remove_function(`{{m.invite_user_details_id.id}}`)" data-id="{{m.invite_user_details_id.id}}" class="remove_icon"><i style="font-size: 14px;
+                                            color: #eb3939;
+                                            font-weight: bold; cursor: pointer;" class="fa fa-remove"></i></span>
+
+                                            </div>
+                                            </div></a>
+                                        </li>
+                                        {% endfor %}
+                                       
+                                        <h6>Suggestions</h6>
+
+                                        {% for m in member_data %}
+                 
+                                        {% if m  in sub_space_data.invite_user_details_id.all %}
+
+                                        {% else %}
+                                        <li class="delete_suggestion{{m.id}}"><a href="#" class="dropdown-item">
+                                            <div id="add_div{{m.id}}">
+                                            <div class="profile-image d-flex align-items-center">
+                                            <img src="./media/{{m.photo}}">  <span>{{m.name}}</span>   
+                                            
+                                            <span onclick="add_function(`{{m.id}}`,`{{m.name}}`,`./media/{{m.photo}}`)" data-id="{{m.id}}" class="add_icon"><i style="font-size: 14px;
+                                                color: #17f573;
+                                                font-weight: bold; cursor: pointer;" class="fa fa-check"></i></span>
+                                            
+                                            </div>
+                                            </div>
+                                                </a></li>
+                                        {% endif %}
+                                            
+                                      
+                                        {% endfor %}
+                                    </ul> 
+                                    <div class="append_user">
+                                        {% for m in task_data.add_task_space.all %}
+
+                                        <div class="profile-image d-flex align-items-center m-2 save_member_data{{m.invite_user_details_id.id}}">
+                                            <img class="save_member_data{{m.invite_user_details_id.id}}" src="./media/{{m.invite_user_details_id.photo}}"> <span class="save_member_data{{m.invite_user_details_id.id}}">{{m.invite_user_details_id.name}}</span>                                                      
+                                        </div>
+                                       
+                                        {% endfor %}
+
+                                    
                                     </div>
-                                    <span>{{m.invite_user_details_id.name}}</span>
-
-                                    {% endfor %}
                                 </div>
 
                                 <div class="labeltag d-flex align-items-center mt-4">
                                     <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
-                                    <select class="select2-selection__choice" multiple="multiple"  id="myList">
+                                    <select class="select2-selection__choice" multiple="multiple" name="tag_name"   id="myList">
                                         <option value="1">Add label</option>
                                         {% for t in tags_name %}
 
-                                        <option value="">{{t.tags_name}}</option>
+                                        <option value="{{t.id}}">{{t.tags_name}}</option>
                                         {% endfor %}
                                       </select>
                                 </div>
@@ -165,7 +219,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label">Bucket</label>
-                                            <select class="ddl-select" id="list" name="list">
+                                            <select class="ddl-select" id="list" name="status_name">
                                                 <option selected value="{{task_data.bucket_mapping_id.id}}">{{task_data.bucket_mapping_id}}</option>
                                                 {% for b in bucket_data %}
                                                     {% if task_data.bucket_mapping_id.status_name == b.status_name %}
@@ -180,7 +234,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label">Progress</label>
-                                            <select class="ddl-select-1" id="list1" name="list1">
+                                            <select class="ddl-select-1" id="list1" name="progress">
                                                 <option selected value="{{task_data.progress}}">{{task_data.progress}}</option>
     
                                                 {% for p in progress %}
@@ -196,7 +250,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label">Priority</label>
-                                            <select class="ddl-select-2" id="list2" name="list2">
+                                            <select class="ddl-select-2" id="list2" name="priority">
                                                 <option selected value="{{task_data.priority}}">{{task_data.priority}}</option>
                                                 {% for p in priority %}
                                             
@@ -215,7 +269,7 @@
                                             <label for="field-2"
                                                 class="control-label">Start Date</label>
                                                 <div class="input-group">
-                                                    <input type="date" min="{{today_date}}" value="{{task_data.start_date|safe}}" class="form-control"
+                                                    <input type="date" name="start_date" min="{{today_date}}" value="{{task_data.start_date|safe}}" class="form-control"
                                                         placeholder="" >
                                                     
                                                 </div>
@@ -228,7 +282,7 @@
                                             <label for="field-2"
                                                 class="control-label">Due Date</label>
                                                 <div class="input-group">
-                                                    <input type="date" min="{{today_date}}" value="{{task_data.end_date|safe}}" class="form-control"
+                                                    <input type="date" name="end_date" min="{{today_date}}" value="{{task_data.end_date|safe}}" class="form-control"
                                                         placeholder="" >
                                                     
                                                 </div>
@@ -238,7 +292,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label">Notes</label>
-                                            <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type a description or add notes here">{{task_data.notes}}</textarea>                              
+                                            <textarea class="form-control" name="notes" rows="3" id="example-textarea-input" placeholder="Type a description or add notes here">{{task_data.notes}}</textarea>                              
                                         </div>
                                           
                                     </div>
@@ -247,15 +301,16 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label mb-2">Checklist</label>
+                                            <a class="checklist_more" style="float: right;
+                                                font-size: 20px; cursor: pointer;
+                                                font-weight: bold;">+</a>
                                             {% for ch in task_data.add_task_checklist.all %}
                                             <div class="checkbox checkbox-circle ">
                                                 <input  id="checkbox7" type="checkbox">
                                                 <label for="checkbox7" >
-                                                    <input disabled  type="text" value="{{ch.item_name}}" placeholder="Add an item" class="form-control checkitem">
+                                                    <input disabled  type="text" name="checklist_new" value="{{ch.item_name}}" placeholder="Add an item" class="form-control checkitem">
                                                 </label>
-                                                <a class="checklist_more" style="float: right;
-                                                font-size: 20px; cursor: pointer;
-                                                font-weight: bold;">+</a>
+                                                
                                                 
                                             </div>        
                                             {% endfor %}   
@@ -266,36 +321,123 @@
                                         </div>
                                     </div>
                                     
+
+
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="field-2" class="control-label mb-2">Attachments</label>
+                                            <div class="row">
 
-                                            {% for a in task_data.add_attachment.all %}
-                                                {% if a.attached_file  %}
-                                                    <a target="_blank" href="/media/{{a.attached_file}}" >
-                                                    <div class="add-attach mt-2">
-                                                        <p class="fa fa-eye">&ensp;{{a.file_name}}</p>
-                                                    </div> 
+                                                <div class="col-4 append_attach">
+                                                    {% for a in task_data.add_attachment.all %}
+                                                    
+                                                   
+                                                        {% if a.attached_file  %}
+                                                            {% if a.file_type == "link" %}
+
+                                                            <a target="_blank" href="{{a.attached_file}}" >
+                                                               
+                                                            {% else %}
+
+                                                            <a target="_blank" href="/media/{{a.attached_file}}" >
+                                                            {% endif %}
+                                                            <div  class="attach-bx d-flex "  id="hide_attach{{a.id}}">
+                                                 
+                                                        <div class="d-flex align-items-center" id="atttachment{{a.id}}">
+                                                            <i class="fa fa-link" id="atttachment4{{a.id}}"></i>
+                                                        </div>
+                                                        <div class="attach-details" id="atttachment1{{a.id}}">
+                                                            {% if a.text_content == None %}
+                                                            {% else %}
+                                                            <h5>{{a.text_content}}</h5>
+                                                            {% endif %}
+                                                            <p>{{a.file_name}}</p>
+                                                        </div>
                                                     </a>
-                                                {% endif %}
-                                                {% endfor %}
+                                                        <div class="d-flex align-items-center" id="atttachment2{{a.id}}">
+                                                            <i style="cursor: pointer;" onclick="attach_remove(`{{a.id}}`)" class="fa fa-remove" id="atttachment3{{a.id}}"></i>
 
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="#" class="dropdown-item">Edit</a></li>
+                                                                <li><a href="#" class="dropdown-item">Remove</a></li>
+                        
+                                                            </ul> 
+                                                        </div>
+                                                    </div>
+                
+                                                    {% endif %}
+                                                    {% endfor %}
 
-                                            <div class="add-attach mt-4" data-toggle="dropdown" aria-expanded="false">
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="dropright">
+                                                <div class="add-attach mt-4" data-toggle="dropdown" aria-expanded="false">
                                                     Add attachment
                                             </div> 
+                                           
                                             <ul class="dropdown-menu">
-                                                <li><a href="#" class="dropdown-item">From Computer</a></li>
+                                                <li><a href="#" class="dropdown-item"><input style="padding:12px 12px ;" type="file" multiple name="attachment_new">From Computer</a></li>
+                                                <li><a class="dropdown-item"><input class="form-control" type="text" name="attach_name"></a></li>
                                                 <li><a href="#" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#url-modal">A link to a URL</a></li>
         
-                                            </ul>                            
+                                            </ul>     
+                                            </div>
+
+
                                         </div>
-                                          
-                                    </div>
+
+
+                                </div>
                            
                                 </div>
                                 
                             </div>
+
+
+                            <div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title mt-0">Add a link</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group url-inpt">
+                                                        <label for="field-1" class="control-label">Address</label>
+                                                        <div class="input-group">
+                                                           
+                                                            <input type="url" name="link_address" class="form-control" id="field-1" placeholder="Add your link here">
+                                                           
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                               
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="field-1" class="control-label">Text to display</label>
+                                                        <input type="text" name="text_content" class="form-control" id="field-1" placeholder="Give your link name here">
+                                                    </div>
+                                                </div>
+                            
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                            
+                                            <!-- <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+
 
                             <div class="col-md-6 timesheet-tab mt-3">
 
@@ -439,21 +581,22 @@
                                                 <thead class="border-class">
 
                                                     <tr class="heading-text">
+                                                       
                                                         <th>Date</th>
                                                         <th>Employee</th>
-                                                        <!-- <th>Description</th> -->
+                                                        <th>Task name</th>
                                                         <th>Hour Spent</th>                                                           
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-
 
                                                 <tbody class="body-textcls vertcle-center">
                                                     {% for h in time_details %}
                                                     {% if h.counter == None %}
                                                         {% else %}
                                                     <tr>
-                                                        <td>{{h.current_date|safe}}</td>
+                                                       
+                                                        <td > {{h.current_date|safe}}</td>
                                                         <td>
                                                             <div class="profile-image d-flex align-items-center">
                                                                
@@ -461,10 +604,73 @@
                                                                    <span>{{h.user_details_id.name}}</span> 
                                                             </div>
                                                         </td>
-                                                        <!-- <td></td> -->
+                                                        <td>{{h.task_id.task_name}}</td>
                                                         <td>{{h.counter|safe}}</td>                                                               
                                                         <td><i class="fa-regular fa-trash-can"></i></td>
                                                     </tr>
+                                                  <tr>
+                                                    <td colspan="4" style="border: none!important;    " >
+                                                        <a class=" " data-toggle="collapse" href="#collapseExample{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                                            <i style="    color: #2b314e;
+                                                            font-weight: bold;
+                                                            font-size: 12px;" class="fas fa-arrow-down"></i>
+                                                          </a>
+                                                    </td>
+                                                  </tr>
+                                                 
+                                                  <tr> 
+
+                                                    <td colspan="4">
+                                                        <div class="collapse" id="collapseExample{{forloop.counter}}">
+                                                            <div class="card card-body">
+                                                             <table id="datatable" class="table dt-responsive table-bordered nowrap table-padd time-sheet" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                                                <tr>
+                                                                    <td>
+                                                                        S/No
+                                                                    </td>
+                                                                    <td>
+                                                                        Start Time
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        End Time
+                                                                    </td>
+                                                                    <td>
+                                                                        Total
+                                                                    </td>
+                                                                </tr>
+                                                                {% for j in h.history_task_time_id.all %}
+
+                                                                <tr>
+                                                                    <td>
+                                                                        {{forloop.counter}}
+
+                                                                    </td>
+                                                                    <td>
+                                                                        {{j.starting_time}}
+                                                                    </td>
+                                                                    <td>
+                                                                        <i style="color: #ec407a;
+                                                                        font-weight: bold;" class="fa-solid fa-arrow-right"></i>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{j.end_time}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{j.counter|safe}}
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                             </table>
+                                                            </div>
+                                                    </td>
+                                                  </div>
+                                                   
+                                                  </tr>
+                                               
+                                                   
                                                   
                                                     {% endif %}
                                                     {% endfor %}
@@ -658,6 +864,64 @@
 
 
 
+
+
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Are you sure you want to confirm?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        <form action="update_task_status" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="status_id" id="status_id">
+            <input type="hidden" name="task_id" value="{{task_data.id}}">
+
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+        </form>
+    
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateModalLabel">Are you sure you want to update details?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary update_click">Confirm</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
 {% block scripts %}
 
 <script>
@@ -805,7 +1069,7 @@ if (running == 1) {
 
 <script>
     $(".checklist_more").click(function(){
-    $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input  type="text" placeholder="Add an item" class="form-control checkitem"></label></div>`);
+    $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input name="checklist_new" type="text" placeholder="Add an item" class="form-control checkitem"></label></div>`);
     
 })
 </script>
@@ -1117,6 +1381,72 @@ console.log(array1)
 console.log(array1[0])
     
 })
+</script>
+
+
+<script>
+    function prjct_name(){
+
+        $('#name_show').show();
+        $('#old_name').hide();
+
+    }
+    function old_prjct(){
+        $('#name_show').hide();
+        $('#old_name').show();
+    }
+
+
+
+    $(".status_click").click(function(){
+
+    var status_id = $(this).attr("data-status-id")
+    $("#status_id").val(status_id)
+    $("#confirmModal").modal("show")
+
+    })
+
+
+    $(".update_click").click(function(){
+    document.forms["update_form"].submit();
+
+
+    })
+
+
+
+
+    function add_function(value,name,img){
+    $(".append_user").append(` <div class="profile-image d-flex align-items-center m-2">
+        <input type="hidden" name="add_new_memember_list" value=`+value+`>
+                                                    <img src=`+img+`> <span>`+name+`</span>                                                      
+                                                </div>`)
+    $(".delete_suggestion"+value).hide()
+}
+
+
+function remove_function(value){
+
+    $(".append_user").append(`<input type="hidden" name="remove_assign_user[]" value=`+value+`>`)
+    $(".remove_assigned_user"+value).hide()
+    $(".save_member_data"+value).hide()
+    
+}
+
+function attach_remove(value){
+
+$(".append_attach").append(`<input type="hidden" name="remove_attachment[]" value=`+value+`>`)
+
+document.getElementById("hide_attach"+value).style.background = "#f000"; 
+document.getElementById("hide_attach"+value).style.border = "none"; 
+$("#atttachment"+value).hide()
+$("#atttachment1"+value).hide()
+$("#atttachment2"+value).hide()
+$("#atttachment3"+value).hide()
+$("#atttachment4"+value).hide()
+
+}
+
 </script>
 
 

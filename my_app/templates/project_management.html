@@ -593,7 +593,7 @@
                         </div> 
                     </div> 
 
-                    <div class="col-md-12"> 
+                    <div class="col-md-6"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Checklist</label>
                             <a id="add_checklist" style="float: right;
@@ -601,15 +601,23 @@
                             font-weight: bold;">+</a>
                             <input type="text" name="checklist" class="form-control">
 
+                            <label for="field-2" class="control-label mt-2">Checklist Duedate</label>
+                            <input type="date" min="{{today_date}}" name="checklist_end_date" required  class="form-control">
+
+                    
                             <div class="" id="new_checklist" style="display:none;">
                                 <div class="checklist_add">
-                                    <input class="form-control mt-2"   type="text" name="checklist"> 
+                                    <input class="form-control mt-4"   type="text" name="checklist"> 
+                                    <input type="date" min="{{today_date}}" name="checklist_end_date"   class="form-control mt-2">
+
+                                    
                                 </div>
-                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus">Add</i></a>
+                                <a href="#" class="add_check_list" style="text-decoration: none;"><i class="fa fa-plus"></i></a>
                             </div>
                         </div> 
                     </div> 
 
+                    
                     
                     <div class="col-md-12"> 
                         <div class="form-group"> 
@@ -641,6 +649,20 @@
 
                     <div class="col-md-12"> 
                         <div class="form-group"> 
+                            <label for="field-2" class="control-label">Manager</label> 
+                            <select required  class="form-control " name="manager_id">
+                                <option>Select Manager</option>
+                                {% for i in  manager_data %}
+                                <option value="{{i.id}}">{{i.username}}</option>
+                                {% endfor %}
+                                </select>                        
+                        </div> 
+                    </div> 
+
+
+
+                    <div class="col-md-12"> 
+                        <div class="form-group"> 
                             <label for="field-2" class="control-label">Collabarator</label> 
                             <select required multiple class="form-control jsSelect1" name="member_data">
                                 <option value="1">select</option>
@@ -651,17 +673,7 @@
                         </div> 
                     </div> 
 
-                    <div class="col-md-12"> 
-                        <div class="form-group"> 
-                            <label for="field-2" class="control-label">Manager</label> 
-                            <select required  class="form-control " name="manager_id">
-                                <option>Select Manager</option>
-                                {% for i in  manager_data %}
-                                <option value="{{i.id}}">{{i.username}}</option>
-                                {% endfor %}
-                                </select>                        
-                        </div> 
-                    </div> 
+                    
 
                   
                 </div> 
@@ -745,7 +757,6 @@
     })
 </script>
 
-
 <script>
     var colors = ['#259e97', '#f9365f', '#2e3453','#ff8494','#613e97'];
     $('.df1').each(function(){
@@ -799,7 +810,8 @@
 
     $(".add_check_list").click(function(){
         
-        $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
+        $('.checklist_add').append('<input class="form-control mt-4" type="text" name="checklist"><input type="date" min="{{today_date}}" name="checklist_end_date"  class="form-control mt-2">');
+                            
         
     })
     </script>

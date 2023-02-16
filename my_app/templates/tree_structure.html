@@ -1,14 +1,18 @@
 
 {% load permissions %}
-
-<ul style="list-style-type:disc">
-    {% for sub in subs %}
-        <li style="margin-left: 50px;">
-            
-            <i style="color: {{sub.bucket_mapping_id.status_color}}; padding: 14px 9px; ">{{ sub.task_name|title }}</i> 
-          
+{% for sub in subs %}
+<ul>
+    <li style="margin-top: 12px!important;"><folder><icon style="background: {{sub.bucket_mapping_id.status_color}};
+        color: white;
+        padding: 4px 13px;
+        font-size: 12px;"/>{{ sub.task_name|title }}</folder></li>
+        
     {% tree_structure sub %}
-         
-        </li>
-    {% endfor %}
-</ul>
+  
+  
+  </ul>
+  {% endfor %}
+
+
+
+

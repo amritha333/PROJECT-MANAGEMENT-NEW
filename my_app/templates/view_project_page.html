@@ -289,13 +289,16 @@
                                                             font-size: 20px; cursor: pointer;
                                                             font-weight: bold;">+</a>
                                                         {% for ch in sub_space_data.sub_space_checklist.all %}
-                                                        <div class="checkbox checkbox-circle ">
-                                                            <input  id="checkbox7" type="checkbox">
+                                                        <div class="checkbox checkbox-circle " >
+                                                            <input name="checkbox_checklist" value="True" id="checkbox7" type="checkbox">
                                                             <label for="checkbox7" >
-                                                                <input disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
+                                                                {% if ch.status == "True" %}
+                                                                <input  style="text-decoration: line-through;" disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
+
+                                                                {% else %}
+                                                                <input  disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
+                                                                {% endif %}
                                                             </label>
-                                                            
-                                                            
                                                         </div>        
                                                         {% endfor %}   
                                                         
@@ -313,7 +316,8 @@
 
                                                             <div class="col-4 append_attach">
                                                                 {% for a in sub_space_data.sub_space_attachment.all %}
-
+                                                                
+                                                               
                                                                     {% if a.attached_file  %}
                                                                         {% if a.file_type == "link" %}
 
@@ -323,12 +327,12 @@
 
                                                                         <a target="_blank" href="/media/{{a.attached_file}}" >
                                                                         {% endif %}
-
-                                                                <div  class="attach-bx d-flex hide_attach{{a.id}}">
-                                                                    <div class="d-flex align-items-center">
-                                                                        <i class="fa fa-link"></i>
+                                                                        <div  class="attach-bx d-flex "  id="hide_attach{{a.id}}">
+                                                             
+                                                                    <div class="d-flex align-items-center" id="atttachment{{a.id}}">
+                                                                        <i class="fa fa-link" id="atttachment4{{a.id}}"></i>
                                                                     </div>
-                                                                    <div class="attach-details" >
+                                                                    <div class="attach-details" id="atttachment1{{a.id}}">
                                                                         {% if a.text_content == None %}
                                                                         {% else %}
                                                                         <h5>{{a.text_content}}</h5>
@@ -336,8 +340,8 @@
                                                                         <p>{{a.file_name}}</p>
                                                                     </div>
                                                                 </a>
-                                                                    <div class="d-flex align-items-center">
-                                                                        <i style="cursor: pointer;" onclick="attach_remove(`{{a.id}}`)" class="fa fa-remove"></i>
+                                                                    <div class="d-flex align-items-center" id="atttachment2{{a.id}}">
+                                                                        <i style="cursor: pointer;" onclick="attach_remove(`{{a.id}}`)" class="fa fa-remove" id="atttachment3{{a.id}}"></i>
 
                                                                         <ul class="dropdown-menu">
                                                                             <li><a href="#" class="dropdown-item">Edit</a></li>
@@ -392,13 +396,10 @@
                                                                 <div class="form-group url-inpt">
                                                                     <label for="field-1" class="control-label">Address</label>
                                                                     <div class="input-group">
-                                                                        <div class="input-group-append">
-                                                                            <span class="input-group-text">https://</span>
-                                                                        </div>
+                                                                        
                                                                         <input type="url" name="link_address" class="form-control" id="field-1" placeholder="Add your link here">
                                                                        
                                                                     </div>
-                                                                    
                                                                 </div>
                                                             </div>
                                                            
@@ -412,8 +413,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                        
-                                                        <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
+                                                        <!-- <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button> -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -422,8 +422,6 @@
                                     </form>
 
                                         <div class="col-md-7 timesheet-tab mt-3">
-
-                                         
                                                 <ul class="nav nav-tabs tabs" role="tablist" style="width: 100%;">
                                                     <li class="nav-item tab">
                                                         <a class="nav-link active" id="home-tab-2" data-toggle="tab" href="#home-2" role="tab" aria-controls="home-2" aria-selected="false">
@@ -544,9 +542,14 @@
                                                             {% for c in sub_space_data.sub_space_comments.all %}
                                                             <div class="col-md-12 comment-sec">
                                                                 <div class="d-flex align-items-center">
+                                                                    
                                                                     <div class="col px-0 pro-detail">
-                                                                        <img src="./media/{{c.added_by.photo}}" alt=""style="border-radius: 5%;
-                                                                        width: 8%;" class="avatar lg rounded-circle">&ensp;
+                                                                        <img src="./media/{{c.added_by.photo}}" alt=""style="width: 34px;
+                                                                        height: 34px;
+                                                                        object-fit: cover;
+                                                                        border-radius: 100%;
+                                                                        margin-right: -12px;
+                                                                        " class="avatar lg rounded-circle">&ensp;&ensp;&ensp;
                                                                        {{c.added_by.name}}
                                                                     </div>
                                                                     <div class="col px-0">
@@ -556,9 +559,6 @@
                                                                 <p>{{c.comments}}</p>
                                                             </div>
                                                             {% endfor %}
-
-
-                                                          
 
                                                         </div>
                                                     </div>
@@ -570,18 +570,19 @@
                                                                 <tr class="heading-text">
                                                                     <th>Date</th>
                                                                     <th>Employee</th>
+                                                                    <th>Task name</th>
                                                                     <th>Hour Spent</th>                                                           
                                                                     <th></th>
                                                                 </tr>
                                                             </thead>
-    
     
                                                             <tbody class="body-textcls vertcle-center">
                                                                 {% for h in time_details %}
                                                                 {% if h.counter == None %}
                                                                     {% else %}
                                                                 <tr>
-                                                                    <td>{{h.current_date|safe}}</td>
+                                                                   
+                                                                    <td > {{h.current_date|safe}}</td>
                                                                     <td>
                                                                         <div class="profile-image d-flex align-items-center">
                                                                            
@@ -589,16 +590,76 @@
                                                                                <span>{{h.user_details_id.name}}</span> 
                                                                         </div>
                                                                     </td>
-                                                                    <!-- <td></td> -->
+                                                                    <td>{{h.task_id.task_name}}</td>
                                                                     <td>{{h.counter|safe}}</td>                                                               
                                                                     <td><i class="fa-regular fa-trash-can"></i></td>
                                                                 </tr>
+                                                              <tr>
+                                                                <td colspan="4" style="border: none!important;    " >
+                                                                    <a class=" " data-toggle="collapse" href="#collapseExample{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                                                        <i style="    color: #2b314e;
+                                                                        font-weight: bold;
+                                                                        font-size: 12px;" class="fas fa-arrow-down"></i>
+                                                                      </a>
+                                                                </td>
+                                                              </tr>
+                                                             
+                                                              <tr> 
+            
+                                                                <td colspan="4">
+                                                                    <div class="collapse" id="collapseExample{{forloop.counter}}">
+                                                                        <div class="card card-body">
+                                                                         <table id="datatable" class="table dt-responsive table-bordered nowrap table-padd time-sheet" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    S/No
+                                                                                </td>
+                                                                                <td>
+                                                                                    Start Time
+                                                                                </td>
+                                                                                <td>
+            
+                                                                                </td>
+                                                                                <td>
+                                                                                    End Time
+                                                                                </td>
+                                                                                <td>
+                                                                                    Total
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% for j in h.history_task_time_id.all %}
+            
+                                                                            <tr>
+                                                                                <td>
+                                                                                    {{forloop.counter}}
+            
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{j.starting_time}}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <i style="color: #ec407a;
+                                                                                    font-weight: bold;" class="fa-solid fa-arrow-right"></i>
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{j.end_time}}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{j.counter|safe}}
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% endfor %}
+                                                                         </table>
+                                                                        </div>
+                                                                </td>
+                                                              </div>
+                                                               
+                                                              </tr>
+                                                           
+                                                               
                                                               
                                                                 {% endif %}
                                                                 {% endfor %}
-                                                               
-                                                               
-                                                             
                                                             </tbody>
                                                         </table>
 
@@ -838,47 +899,7 @@
         </div> 
 </div>
 
-<div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title mt-0">Add a link</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group url-inpt">
-                            <label for="field-1" class="control-label">Address</label>
-                            <div class="input-group">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">https://</span>
-                                </div>
-                                <input type="url" class="form-control" id="field-1" placeholder="Add your link here">
-                               
-                            </div>
-                            
-                        </div>
-                    </div>
-                   
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="field-1" class="control-label">Text to display</label>
-                            <input type="text" class="form-control" id="field-1" placeholder="Give your link name here">
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-            <div class="modal-footer">
-
-                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -1230,16 +1251,11 @@ $(".update_click").click(function(){
 })
 
 
-
-
-
 function add_function(value,name,img){
     $(".append_user").append(` <div class="profile-image d-flex align-items-center m-2">
         <input type="hidden" name="add_new_memember_list" value=`+value+`>
                                                     <img src=`+img+`> <span>`+name+`</span>                                                      
                                                 </div>`)
-
-
     $(".delete_suggestion"+value).hide()
 }
 
@@ -1255,8 +1271,15 @@ function remove_function(value){
 
 function attach_remove(value){
 
-    $(".append_attach").append(`<input type="text" name="remove_attachment[]" value=`+value+`>`)
-    $(".hide_attach"+value).hide()
+    $(".append_attach").append(`<input type="hidden" name="remove_attachment[]" value=`+value+`>`)
+
+    document.getElementById("hide_attach"+value).style.background = "#f000"; 
+    document.getElementById("hide_attach"+value).style.border = "none"; 
+    $("#atttachment"+value).hide()
+    $("#atttachment1"+value).hide()
+    $("#atttachment2"+value).hide()
+    $("#atttachment3"+value).hide()
+    $("#atttachment4"+value).hide()
 
 }
 

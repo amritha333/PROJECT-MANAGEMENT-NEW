@@ -547,6 +547,21 @@
     });
 </script>
 
+
+<script>
+    $("#add_checklist").click(function(){
+       
+        $("#new_checklist").show()
+        $("#add_checklist").hide()
+    })
+
+    $(".add_check_list").click(function(){
+        
+        $('.checklist_add').append('<input class="form-control mt-2" type="text" name="checklist">');
+        
+    })
+    </script>
+
 <!-- <script>
     $(".project_class").submit(function () {
         event.preventDefault()
