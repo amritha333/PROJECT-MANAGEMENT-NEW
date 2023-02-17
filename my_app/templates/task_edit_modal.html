@@ -1,0 +1,56 @@
+<form name="status_form" method="POST" action="task_edit_action">
+    {% csrf_token %}
+
+<div id="task_edit_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true" style="display: none">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Edit Task Status</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <input type="hidden" value="{{task_data.id}}" name="task_id">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Task Status</label>
+                        <input type="text" value="{{task_data.status_name}}" name="status_name" class="form-control" id="field-1" placeholder="">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Select Color</label>
+                        <div class="my-1 d-flex">
+                            <input type="color" class="form-control clrpicker" id="colorpicker1"  pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="{{task_data.status_color}}">
+                            <input type="text" class="form-control clrcode" name="status_color" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="{{task_data.status_color}}" id="hexcolor1"></input>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+
+            <button type="submit" style="background-color:#f9365f!important;border: none!important;"
+                class="btn btn-info waves-effect waves-light">Save </button>
+        </div>
+    </div>
+</div>
+</div>
+
+</form>
+
+
+<script>
+    $('#colorpicker1').on('input', function () {
+        $('#hexcolor1').val(this.value);
+    });
+    $('#hexcolor1').on('input', function () {
+        $('#colorpicker1').val(this.value);
+    });
+</script>

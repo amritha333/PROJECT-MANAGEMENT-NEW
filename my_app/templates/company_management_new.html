@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="content-right">
+    <div class="margin-class-this chat-section">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-shadow">
+                    <div class="card-body body-change card-border">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h2 class="main-heading-txt">Company Management</h2>
+                            <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#company-modal"><i class="fa fa-plus"></i> New</button>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12 col-sm-12 col-12">
+                                <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <thead class="border-class">
+                                        <tr class="heading-text">
+                                            <th style="width: 150px;">Logo</th>
+                                            <th>Company Name</th>
+                                            <th>Mobile No</th>
+                                            <th>Website</th>
+                                            <th>Email</th>
+                                            <th>Address</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody class="body-textcls vertcle-center">
+                                        {% for i in data %}
+                                        <tr>
+                                            <td>
+                                                <div class="" >
+                                                    {% if i.company_logo == "" or i.company_logo == None %}
+                                                    <img style=" width: 45px;  height: 45px;
+                                                     border-radius: 50px;"  src="{% static 'assets/images/user-dummy-img.jpg' %}" alt="">
+                                                    {% else %}
+                                                    <img style=" width: 45px;  height: 45px;
+                                                     border-radius: 50px;"  src="./media/{{i.company_logo}}" alt="">
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>{{i.company_name}}</td>
+                                            {% if i.mobile == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{i.mobile}} </td>
+                                            {% endif %}
+                                            {% if i.website == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{i.website}} </td>
+                                            {% endif %}
+                                            {% if i.email == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{i.email}} </td>
+                                            {% endif %}
+                                            {% if i.address == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{i.address}} </td>
+                                            {% endif %}
+                                            <td>
+                                                <div class="action-tbl d-flex justify-content-end">
+                                                    <a href="#" onclick="edit_company('{{i.id}}')"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                    <a href="#" class="company_delete" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
+                                                    <!-- <i class="fa fa-save mx-1 sv-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"></i>
+                                                    <i class="ion-close mx-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"></i>  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="edit_company_div"></div>
+<div id="company_delete_div"></div>
+
+
+<form name="comany_form" method="POST" action="company_add_action" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="company-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mt-0">Create New Company</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_name" class="control-label">Company Name</label>
+                                <input type="text" required autocomplete="off" name="companyname" id="company_name" class="form-control" placeholder="Company Name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="logo" class="control-label">Logo</label>
+                                <div class="input-group uploadFile1">
+                                    <input type="file" name="logo" required id="logo" class="inputfile form-control">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="website" class="control-label">Website</label>
+                                <input type="url" required name="website" id="website" class="form-control" placeholder="yourwebsite.com">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" class="control-label">Email</label>
+                                <input type="email" required name="email" id="email" class="form-control" placeholder="yourmail@gamil.com">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="tax_no" class="control-label">Tax No.</label>
+                                <input type="text" required placeholder="Tax No." class="form-control" name="tax_no" id="tax_no">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="mobile_no" class="control-label">Mobile</label>
+                                <input type="text" required class="form-control numberField" name="mobile_no" id="mobile_no" placeholder="Mobile">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="phone" class="control-label">Phone</label>
+                                <input type="text" required name="phone" id="phone" class="form-control numberField1" placeholder="Phone">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="address" class="control-label">Address</label>
+                                <textarea required name="address" id="address" class="form-control" placeholder="Your Address"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+    function edit_company(id){
+        var redirect_url = 'edit_company_modal'
+        $.ajax({
+            url: redirect_url,
+            type: "GET",
+            data: {
+                'id':id,
+            },
+            success: function (data) {
+                $("#edit_company_div").html(data);
+                $('#edit_company_modal').modal('show');
+            }
+        });
+    }
+</script>
+
+<script>
+    $(".company_delete").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="company_delete_modal";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#company_delete_div").html(data);
+            $('#company_delete_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#datatable').dataTable();
+        $('#datatable-keytable').DataTable({
+            keys: true
+        });
+        $('#datatable-responsive').DataTable();
+        $('#datatable-scroller').DataTable({
+            ajax: "plugins/datatables/json/scroller-demo.json",
+            deferRender: true,
+            scrollY: 380,
+            scrollCollapse: true,
+            scroller: true
+        });
+        var table = $('#datatable-fixed-header').DataTable({
+            fixedHeader: true
+        });
+    });
+    TableManageButtons.init();
+</script>
+
+
+<script>
+    var userName = document.querySelector('.numberField');
+    userName.addEventListener('input', restrictNumber);
+    function restrictNumber (e) {
+        var newValue = this.value.replace(new RegExp(/[^\d]/,'ig'), "");
+        this.value = newValue;
+    }
+</script>
+
+<script>
+    var userName = document.querySelector('.numberField1');
+    userName.addEventListener('input', restrictNumber);
+    function restrictNumber (e) {
+        var newValue = this.value.replace(new RegExp(/[^\d]/,'ig'), "");
+        this.value = newValue;
+    }
+</script>
+
+
+{% endblock %}

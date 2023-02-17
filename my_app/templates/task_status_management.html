@@ -41,8 +41,8 @@
                                         <td>{{i.status_name}}</td>
                                         <td>
                                             <div class="action-tbl d-flex justify-content-end">
-                                                <i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i>
-                                                <i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i>
+                                                <a href="#" class="task_edit" data-id="{{i.id}}"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                <a href="#" class="task_delete" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -59,6 +59,9 @@
         </div>
     </div>
 </div>
+
+<div id="task_edit_div"></div>
+<div id="task_delete_div"></div>
 
 
 <form name="status_form" method="POST" action="task_status_action">
@@ -175,6 +178,44 @@ aria-hidden="true" style="display: none">
     });
     TableManageButtons.init();
 </script>
+
+
+
+<script>
+    $(".task_edit").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="task_edit_modal";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#task_edit_div").html(data);
+            $('#task_edit_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
+
+<script>
+    $(".task_delete").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="task_delete_modal";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#task_delete_div").html(data);
+            $('#task_delete_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
+
+
 
 
 {% endblock %}

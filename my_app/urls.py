@@ -11,7 +11,11 @@ urlpatterns = [
     path('index',views.index,name='index'),
     path('calendar',views.calendar,name='calendar'),
     path('chat',views.chat,name='chat'),
-    path('company_management',views.company_management,name='company_management'),
+    path('company_management_new',views.company_management_new,name='company_management_new'),
+    path('edit_company_modal',views.edit_company_modal,name='edit_company_modal'),
+    path('edit_company_action',views.edit_company_action,name='edit_company_action'),
+    path('company_delete_modal',views.company_delete_modal,name="company_delete_modal"),
+
     path('user_login',views.user_login,name='user_login'),
     path('meeting',views.meeting,name='meeting'),
     path('member_management',views.member_management,name='member_management'),
@@ -23,8 +27,26 @@ urlpatterns = [
     path('new_user',views.new_user,name='new_user'),
     path('project_management',views.project_management,name='project_management'),
     path('role_management',views.role_management,name='role_management'),
+    path('edit_role_management',views.edit_role_management,name='edit_role_management'),
+    path('delete_role_management',views.delete_role_management,name='delete_role_management'),
+    path('edit_role_action',views.edit_role_action,name='edit_role_action'),
+    path('edit_company_admin_user',views.edit_company_admin_user,name='edit_company_admin_user'),
+    path('memeber_edit_action',views.memeber_edit_action,name='memeber_edit_action'),
+    path('member_edit_modal',views.member_edit_modal,name="member_edit_modal"),
+    path('member_delete_modal',views.member_delete_modal,name="member_delete_modal"),
+    path('task_edit_modal',views.task_edit_modal,name="task_edit_modal"),
+    path('task_delete_modal',views.task_delete_modal,name="task_delete_modal"),
+    path('task_edit_action',views.task_edit_action,name='task_edit_action'),
+
+
+
+
+
     path('task_status_management',views.task_status_management,name='task_status_management'),
-    path('user_management',views.user_management,name='user_management'),
+    path('user_management_new',views.user_management_new,name='user_management_new'),
+    path('user_edit_modal',views.user_edit_modal,name='user_edit_modal'),
+    path('user_delete_modal',views.user_delete_modal,name="user_delete_modal"),
+
     path('view_group',views.view_group,name='view_group'),
     path('view_project_page',views.view_project_page,name='view_project_page'),
     path('base',views.base,name='base'),
@@ -66,6 +88,15 @@ urlpatterns = [
     path('open_project/<str:name>',views.open_project,name='open_project'),
 
     path('update_task_details',views.update_task_details,name='update_task_details'),
+    path('tag_edit_modal',views.tag_edit_modal,name="tag_edit_modal"),
+    path('tag_delete_modal',views.tag_delete_modal,name="tag_delete_modal"),
+    path('edit_tag_action',views.edit_tag_action,name="edit_tag_action"),
+
+    path('member_edit_modal',views.member_edit_modal,name="member_edit_modal"),
+    path('member_delete_modal',views.member_delete_modal,name="member_delete_modal"),
+    path('memeber_edit_action',views.memeber_edit_action,name='memeber_edit_action'),
+    path('edit_group_modal',views.edit_group_modal,name='edit_group_modal'),
+    path('space_edit_action',views.space_edit_action,name='space_edit_action'),
 
 
 

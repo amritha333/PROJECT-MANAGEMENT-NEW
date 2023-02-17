@@ -57,12 +57,50 @@ class signup(TemplateView):
 
 def index(request):
     user_details_data = ""
+    member_data = ""
     try:
+
+        user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+        user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+        user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
         user_details_data = User_details.objects.get(auth_user=request.user)
+        if user_manage_all_permission:
+            active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(active_user_id.active_auth_user_id.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(auth_user = request.user)
+        else:
+            if user_details_data.user_type == "company_admin":
+                user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+                child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+                child_user_id.append(int(request.user.id))
+                member_data = User_details.objects.filter(created_by__in=child_user_id) 
+                member_data1 = User_details.objects.filter(auth_user=request.user) 
+                member_data = list(chain(member_data1,member_data))
+
+            else:
+                member_data = User_details.objects.filter(manager_auth=request.user)
+
     except:
         pass
+
+    project_count = sub_space_master.objects.filter(created_by=request.user).count()
+
+    task_count = Add_task_master.objects.filter(created_by=request.user).count()
+
+    completed_count =  Add_task_master.objects.filter(created_by=request.user,progress = "Completed").count()
+
+    progress_count =  Add_task_master.objects.filter(created_by=request.user,progress = "In progress").count()
+   
     context = {
-        "user_details_data":user_details_data
+        "user_details_data":user_details_data,
+        "member_data":member_data,
+        "project_count":project_count,
+        "task_count":task_count,
+        "completed_count":completed_count,
+        "progress_count":progress_count
     }
     return render(request,'index.html',context)
 
@@ -72,9 +110,38 @@ def calendar(request):
 
 
 def chat(request):
-    user_details_data = User_details.objects.get(auth_user=request.user)
+    member_data = ""
+    try:
+
+        user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+        user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+        user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
+        user_details_data = User_details.objects.get(auth_user=request.user)
+        if user_manage_all_permission:
+            active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(active_user_id.active_auth_user_id.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(auth_user = request.user)
+        else:
+            if user_details_data.user_type == "company_admin":
+                user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+                child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+                child_user_id.append(int(request.user.id))
+                member_data = User_details.objects.filter(created_by__in=child_user_id) 
+                member_data1 = User_details.objects.filter(auth_user=request.user) 
+                member_data = list(chain(member_data1,member_data))
+
+            else:
+                member_data = User_details.objects.filter(manager_auth=request.user)
+
+    except:
+        pass
+
     context = {
-        "user_details_data":user_details_data
+        "user_details_data":user_details_data,
+        "member_data":member_data
     }
     return render(request, 'chat.html',context)
 
@@ -193,17 +260,29 @@ def login_action(request):
 # -----------------------------------------------------company_management-----------------------------------------------------------------
 
 
-def company_management(request):
-
+def company_management_new(request):
     user_data = User.objects.all().first()
-    member_data = User_details.objects.all().exclude(created_by = user_data)
-   
+    member_data = User_details.objects.all().exclude(created_by=user_data)
+
     data = company_master.objects.all()
     context = {
-        "data" : data,
-        "member_data" : member_data
+        "data": data,
+        "member_data": member_data
     }
-    return render(request, 'company_management.html',context)
+    return render(request, 'company_management_new.html', context)
+
+
+
+def edit_company_modal(request):
+    id = request.GET.get("id")
+    data = company_master.objects.all()
+    company = company_master.objects.get(id=id)
+    context = {
+        'data':data,
+        'company':company
+    }
+    return render(request, 'edit_company_modal.html',context)
+
 
 
 
@@ -256,23 +335,128 @@ def company_add_action(request):
 
 
 
+def edit_company_action(request):
+    if request.method == "POST":
+        companyname = request.POST.get("companyname", False)
+        company_id = request.POST.get("company_id",False)
+        tax_no = request.POST.get("tax_no", False)
+        mobile_no = request.POST.get("mobile_no", False)
+        website = request.POST.get("website", False)
+        phone = request.POST.get("phone", False)
+        email = request.POST.get("email", False)
+        address = request.POST.get("address", False)
+
+        try:
+            logo = request.FILES['logo']
+        except:
+            logo = ""
+
+        data_company = company_master.objects.get(id=company_id)
+        if (data_company.company_name == companyname) and (data_company.tax_number == tax_no) and (data_company.mobile == mobile_no) and (data_company.website == website) and (data_company.phone == phone) and (data_company.email == email) and (data_company.address == address) and (logo == ""):
+            messages.warning(request, "No changes !!!!!!!")
+            return redirect(request.META['HTTP_REFERER'])
+        elif (data_company.company_name == companyname):
+            data = company_master.objects.filter(id=company_id).update(
+                company_name=companyname,
+                tax_number=tax_no,
+                mobile=mobile_no,
+                website=website,
+                phone=phone,
+                email=email,
+                address=address,
+                created_by=request.user,
+                status="True"
+            )
+            try:
+                fixed_height = 400
+                image = Image.open(logo)
+                print("image.size", image.size)
+                width_size = int(fixed_height / image.height * image.width)
+                print("width_size:::::", width_size)
+                resized_image = image.resize((width_size, fixed_height))
+                print("resizeeeeeed:", resized_image.size)
+                from django.conf import settings
+                resized_image.save("media/company_logo/" + logo.name, quality=100)
+                image_new1 = 'company_logo/' + logo.name
+                data_update = company_master.objects.filter(id=company_id).update(company_logo=image_new1)
+            except:
+                pass
+        elif company_master.objects.filter(company_name=companyname).exists():
+            messages.error(request,"Company name already exists")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            data = company_master.objects.filter(id=company_id).update(
+                company_name=companyname,
+                tax_number=tax_no,
+                mobile=mobile_no,
+                website=website,
+                phone=phone,
+                email=email,
+                address=address,
+                created_by=request.user,
+                status="True"
+            )
+            try:
+                fixed_height = 400
+                image = Image.open(logo)
+                print("image.size", image.size)
+                width_size = int(fixed_height / image.height * image.width)
+                print("width_size:::::", width_size)
+                resized_image = image.resize((width_size, fixed_height))
+                print("resizeeeeeed:", resized_image.size)
+                from django.conf import settings
+                resized_image.save("media/company_logo/" + logo.name, quality=100)
+                image_new1 = 'company_logo/' + logo.name
+                data_update = company_master.objects.filter(id=company_id).update(company_logo=image_new1)
+            except:
+                pass
+        messages.success(request, "Updated company details")
+        return redirect('company_management_new')
+
+
+
+def company_delete_modal(request):
+    if request.method == "POST":
+        company_id = request.POST.get("company_id")
+        data = company_master.objects.get(id=company_id)
+        data.delete()
+        messages.success(request, "Company Deleted Successfully..")
+        return redirect('company_management_new')
+    else:
+        id = request.GET.get("id")
+        data = company_master.objects.get(id=id)
+        return render(request,"company_delete_modal.html",{'data':data})
+
+
 
 
 
 
 # -----------------------------------------------------user_management-----------------------------------------------------------------
 
-def user_management(request):
+def user_management_new(request):
     user_data = User.objects.all().first()
-    member_data = User_details.objects.all().exclude(created_by = user_data)
-    
-    data = User_details.objects.all()
-    context = {
-        "data" : data,
-        "member_data":member_data
-    }
-    return render(request, 'user_management.html',context)
+    member_data = User_details.objects.all().exclude(created_by=user_data)
 
+    data = User_details.objects.all()
+    company_data = company_master.objects.all()
+    context = {
+        "data": data,
+        "member_data": member_data,
+        "company_data":company_data
+    }
+    return render(request,"user_management_new.html",context)
+
+
+def user_edit_modal(request):
+    id = request.GET.get("id")
+    user_data = User_details.objects.get(id=id)
+    company_data = company_master.objects.all()
+    context = {
+        'user_data':user_data,
+        'company_data':company_data
+    }
+    return render(request,"user_edit_modal.html",context)
 
 @api_view(['POST'])
 def user_management_action(request):
@@ -330,7 +514,7 @@ def user_management_action(request):
                     status = "True"
                     )
             messages.success(request,"Successfully added User details")
-            return redirect('user_management')
+            return redirect('user_management_new')
             
         else:
 
@@ -429,6 +613,100 @@ def user_management_action(request):
                 return redirect('member_management')
 
 
+@api_view(['POST'])
+def edit_company_admin_user(request):
+    data = request.data
+    try:
+        photo = request.FILES['photo']
+    except:
+        photo = ""
+    user_data = User_details.objects.get(id=data['company_admin_id'])
+    user_update = User.objects.get(username=data['username_old'])
+    user_update.username = data['username']
+    user_update.save()
+    if (user_data.name == data['name']) and (user_data.company_name == data['companyname']) and (user_data.username == data['username']) and (user_data.phone == data['phone']) and (user_data.email == data['email']) and (photo == "") and (data['password_option'] == "no_change"):
+        messages.warning(request, "No Updates !!!")
+        return redirect(request.META['HTTP_REFERER'])
+    elif (data['password'] != data['confirm_password']):
+        messages.warning(request, "Password Doesnot Match !!!")
+        return redirect(request.META['HTTP_REFERER'])
+    elif(user_data.username == data['username']):
+        data_user = User_details.objects.filter(id=data['company_admin_id']).update(
+            name=data['name'],
+            company_name=data['companyname'],
+            username=data['username'],
+            phone=data['phone'],
+            email=data['email'],
+        )
+        if (data['password_option'] == "change_password"):
+            user_update.set_password(data['password'])
+            user_update.save()
+            user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
+        else:
+            pass
+        try:
+            fixed_height = 128
+            image = Image.open(photo)
+            print("image.size", image.size)
+            width_size = int(fixed_height / image.height * image.width)
+
+            resized_image = image.resize((width_size, fixed_height))
+            print("resizeeeeeed:", resized_image.size)
+            from django.conf import settings
+            resized_image.save("media/user_image/" + photo.name)
+            image_new1 = 'user_image/' + photo.name
+            data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
+        except:
+            pass
+    elif User_details.objects.filter(username=data['username']).exists():
+        messages.warning(request,"Username already exists")
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        data_user =User_details.objects.filter(id=data['company_admin_id']).update(
+            name=data['name'],
+            company_name=data['companyname'],
+            username=data['username'],
+            phone=data['phone'],
+            email=data['email'],
+        )
+        if (data['password_option'] == "change_password"):
+            user_update.set_password(data['password'])
+            user_update.save()
+            user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
+        else:
+            pass
+        try:
+            fixed_height = 128
+            image = Image.open(photo)
+            print("image.size", image.size)
+            width_size = int(fixed_height / image.height * image.width)
+
+            resized_image = image.resize((width_size, fixed_height))
+            print("resizeeeeeed:", resized_image.size)
+            from django.conf import settings
+            resized_image.save("media/user_image/" + photo.name)
+            image_new1 = 'user_image/' + photo.name
+            data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
+        except:
+            pass
+    messages.success(request, "Successfully updated User details")
+    return redirect('user_management_new')
+
+
+
+def user_delete_modal(request):
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        data = User_details.objects.get(id=user_id)
+        data.delete()
+        messages.success(request, "User Deleted Successfully..")
+        return redirect('user_management_new')
+    else:
+        id = request.GET.get("id")
+        data = User_details.objects.get(id=id)
+        return render(request,"user_delete_modal.html",{'data':data})
+
+
 
 # -----------------------------------------------------member_management-----------------------------------------------------------------
 
@@ -440,7 +718,6 @@ def member_management(request):
         user_details_data = User_details.objects.get(auth_user=request.user)
         role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
         manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
-        print("manager_data:::::",manager_data)
     except:
         pass
 
@@ -479,6 +756,178 @@ def member_management(request):
     return render(request, 'member_management.html',context)
 
 
+
+def member_edit_modal(request):
+    id = request.GET.get("id")
+    user_data = User_details.objects.get(id=id)
+    roles = user_permission_mapping.objects.filter(user_id=user_data)
+    manager_data = ""
+    role_data = ""
+    try:
+        user_details_data = User_details.objects.get(auth_user=request.user)
+        role_data = Role_master.objects.filter(company_id=user_details_data.company_id.id)
+        manager_data = User_details.objects.filter(user_level="Manager", company_id=user_details_data.company_id.id)
+        print("manager_data:::::", manager_data)
+    except:
+        pass
+    context = {
+        'user_data':user_data,
+        'manager_data':manager_data,
+        'role_data':role_data,
+        'roles':roles,
+    }
+    return render(request,"member_edit_modal.html",context)
+
+
+
+@api_view(['POST'])
+def memeber_edit_action(request):
+    data = request.data
+    role_id = request.POST.getlist("role_id[]")
+    role_description = request.POST.getlist("role_description[]")
+    role_start_dt = request.POST.getlist("role_start_dt[]")
+    role_end_dt = request.POST.getlist("role_end_dt[]")
+    role_permission_name = request.POST.getlist("role_permission_name")
+    role_length = len(role_id)
+
+    role_id_new = request.POST.getlist("role_id_new[]")
+    role_description_new = request.POST.getlist("role_description_new[]")
+    role_start_dt_new = request.POST.getlist("role_start_dt_new[]")
+    role_end_dt_new = request.POST.getlist("role_end_dt_new[]")
+    role_length_new = len(role_id_new)
+
+    role_delete = request.POST.get("role_delete")
+    aaaa = [int(x.strip()) for x in role_delete.split(',') if x]
+    data_delete = user_permission_mapping.objects.filter(id__in=aaaa)
+    data_delete.delete()
+
+    try:
+        photo = request.FILES['photo']
+    except:
+        photo = ""
+    user_data = User_details.objects.get(id=data['member_id'])
+    user_update = User.objects.get(username=data['username_old'])
+    user_update.username = data['username']
+    user_update.save()
+    # if (user_data.name == data['name']) and (user_data.username == data['username']) and (user_data.phone == data['phone']) and (user_data.email == data['email']) and (photo == "") and (data['password_option'] == "no_change") and (user_data.manager_auth.username == data['manager_id']):
+    #     messages.warning(request, "No Updates !!!")
+    #     return redirect(request.META['HTTP_REFERER'])
+    # elif (data['password'] != data['confirm_password']):
+    #     messages.warning(request, "Password Doesnot Match !!!")
+    #     return redirect(request.META['HTTP_REFERER'])
+    if(user_data.username == data['username']):
+        data_user = User_details.objects.filter(id=data['member_id']).update(
+            name=data['name'],
+            username=data['username'],
+            phone=data['phone'],
+            email=data['email'],
+        )
+        for i in range(0, role_length):
+            role_end_dt1 = role_end_dt[i]
+            if role_end_dt1 == "":
+                role_end_dt1 = None
+            data_save_user_role = user_permission_mapping.objects.filter(id=role_permission_name[i],user_id_id=data['member_id']).update(
+                role_mapping_id_id=int(role_id[i]),
+                start_dt=role_start_dt[i],
+                end_dt=role_end_dt1,
+                description=role_description[i]
+            )
+        for i in range(0, role_length_new):
+            user = User.objects.get(username=data['username'])
+            role_end_dt2 = role_end_dt_new[i]
+            if role_end_dt2 == "":
+                role_end_dt2 = None
+            data_save_user_role = user_permission_mapping(
+                auth_user_id_id=user.id,
+                user_id_id=user_data.id,
+                role_mapping_id_id=role_id_new[i],
+                start_dt=role_start_dt_new[i],
+                end_dt=role_end_dt2,
+                description=role_description_new[i]
+            )
+            data_save_user_role.save()
+
+        if (user_data.manager_auth.username == data['manager_id']):
+            pass
+        else:
+            user_id = data['manager_id']
+
+            user_detail = User_details.objects.get(id=user_id)
+            data_user = User_details.objects.filter(id=data['member_id']).update(
+            manager_auth_id = user_detail.auth_user.id)
+        if (data['password_option'] == "change_pass"):
+            user_update.set_password(data['password'])
+            user_update.save()
+            user_data_update = User_details.objects.filter(id=data['member_id']).update(password=data['password'])
+        else:
+            pass
+        try:
+            fixed_height = 128
+            image = Image.open(photo)
+            width_size = int(fixed_height / image.height * image.width)
+
+            resized_image = image.resize((width_size, fixed_height))
+            from django.conf import settings
+            resized_image.save("media/user_image/" + photo.name)
+            image_new1 = 'user_image/' + photo.name
+            data_user = User_details.objects.filter(id=data['member_id']).update(photo=image_new1)
+        except:
+            pass
+    elif User_details.objects.filter(username=data['username']).exists():
+        messages.warning(request,"Username already exists")
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        data_user =User_details.objects.filter(id=data['member_id']).update(
+            name=data['name'],
+            username=data['username'],
+            phone=data['phone'],
+            email=data['email'],
+        )
+        if (user_data.manager_auth.username == data['manager_id']):
+            pass
+        else:
+            user_id = data['manager_id']
+
+            user_detail = User_details.objects.get(id=user_id)
+            data_user = User_details.objects.filter(id=data['member_id']).update(
+            manager_auth_id = user_detail.auth_user.id)
+        if (data['password_option'] == "change_password"):
+            user_update.set_password(data['password'])
+            user_update.save()
+            user_data_update = User_details.objects.filter(id=data['member_id']).update(password=data['password'])
+        else:
+            pass
+        try:
+            fixed_height = 128
+            image = Image.open(photo)
+            width_size = int(fixed_height / image.height * image.width)
+
+            resized_image = image.resize((width_size, fixed_height))
+            from django.conf import settings
+            resized_image.save("media/user_image/" + photo.name)
+            image_new1 = 'user_image/' + photo.name
+            data_user = User_details.objects.filter(id=data['member_id']).update(photo=image_new1)
+        except:
+            pass
+    messages.success(request, "Successfully updated Member details")
+    return redirect('member_management')
+
+
+def member_delete_modal(request):
+    if request.method == "POST":
+        member_id = request.POST.get("member_id")
+        data = User_details.objects.get(id=member_id)
+        data.delete()
+        messages.success(request, "Memeber Deleted Successfully..")
+        return redirect('member_management')
+    else:
+        id = request.GET.get("id")
+        data = User_details.objects.get(id=id)
+        return render(request,"member_delete_modal.html",{'data':data})
+
+
+
+
 def new_member(request):
     manager_data = ""
     role_data = ""
@@ -512,6 +961,138 @@ def role_management(request):
         "user_details_data":userdetails_data,
     }
     return render(request,"role_management.html",context)
+
+
+def edit_role_management(request):
+    id = request.GET.get("id")
+    role_data = Role_master.objects.get(id=id)
+    role_company = Role_mapping.objects.get(role_master_id_id=role_data.id,navbar_name="Company")
+    role_user = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="User")
+    role_role = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Role")
+    role_team = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Team member")
+    role_tags = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Tags")
+    role_status = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Status")
+    context = {
+        'role_data':role_data,
+        'role_company':role_company,
+        'role_user': role_user,
+        'role_role': role_role,
+        'role_team': role_team,
+        'role_tags': role_tags,
+        'role_status': role_status,
+    }
+    return render(request, "edit_role_management.html", context)
+
+
+def delete_role_management(request):
+    if request.method == "POST":
+        role_id = request.POST.get("role_id")
+        data = Role_master.objects.get(id=role_id)
+        data.delete()
+        messages.success(request, "Role Deleted Successfully..")
+        return redirect('role_management')
+    else:
+        id = request.GET.get("id")
+        data = Role_master.objects.get(id=id)
+        return render(request,"delete_role_management.html",{'data':data})
+
+
+def edit_role_action(request):
+    if request.method == "POST":
+        role_data = request.POST.get('role_data')
+        role_company = request.POST.get('role_company')
+        role_user = request.POST.get('role_user')
+        role_role = request.POST.get('role_role')
+        role_team = request.POST.get('role_team')
+        role_tags = request.POST.get('role_tags')
+        role_status = request.POST.get('role_status')
+
+        data_role = Role_master.objects.get(id=role_data)
+        data_role_company = Role_mapping.objects.get(id=role_company)
+        data_role_user = Role_mapping.objects.get(id=role_user)
+        data_role_role = Role_mapping.objects.get(id=role_role)
+        data_role_team = Role_mapping.objects.get(id=role_team)
+        data_role_tag = Role_mapping.objects.get(id=role_tags)
+        data_role_status = Role_mapping.objects.get(id=role_status)
+
+        if ((data_role.role_name == request.POST.get('name')) and (data_role.description == request.POST.get('description')) and (str(data_role_company.read) == str(request.POST.get('company_read',False))) and (str(data_role_company.write) == str(request.POST.get('company_write',False))) and (str(data_role_company.edit) == str(request.POST.get('company_edit',False))) and (str(data_role_company.delete) == str(request.POST.get('company_delete',False))) and (str(data_role_company.view_all) == str(request.POST.get('company_view_all',False))) and (str(data_role_company.manage_all) == str(request.POST.get('company_manage_all',False)))  and (str(data_role_user.read) == str(request.POST.get('user_read',False))) and (str(data_role_user.write) == str(request.POST.get('user_write',False))) and (str(data_role_user.edit) == str(request.POST.get('user_edit',False))) and (str(data_role_user.delete) == str(request.POST.get('user_delete',False))) and (str(data_role_user.view_all) == str(request.POST.get('user_view_all',False))) and (str(data_role_user.manage_all) == str(request.POST.get('user_manage_all',False))) and (str(data_role_role.read) == str(request.POST.get('role_read',False))) and (str(data_role_role.write) == str(request.POST.get('role_write',False))) and (str(data_role_role.edit) == str(request.POST.get('role_edit',False))) and (str(data_role_role.delete) == str(request.POST.get('role_delete',False))) and (str(data_role_role.view_all) == str(request.POST.get('role_view_all',False))) and (str(data_role_role.manage_all) == str(request.POST.get('role_manage_all',False))) and (str(data_role_team.read) == str(request.POST.get('team_member_read',False))) and (str(data_role_team.write) == str(request.POST.get('team_member_write',False))) and (str(data_role_team.edit) == str(request.POST.get('team_member_edit',False))) and (str(data_role_team.delete) == str(request.POST.get('team_member_delete',False))) and (str(data_role_team.view_all) == str(request.POST.get('team_member_view_all',False))) and (str(data_role_team.manage_all) == str(request.POST.get('team_member_manage_all',False))) and (str(data_role_tag.read) == str(request.POST.get('tag_read',False))) and (str(data_role_tag.write) == str(request.POST.get('tag_write',False))) and (str(data_role_tag.edit) == str(request.POST.get('tag_edit',False))) and (str(data_role_tag.delete) == str(request.POST.get('tag_delete',False))) and (str(data_role_tag.view_all) == str(request.POST.get('tag_view_all',False))) and (str(data_role_tag.manage_all) == str(request.POST.get('tag_manage_all',False))) and (str(data_role_status.read) == str(request.POST.get('status_read',False))) and (str(data_role_status.write) == str(request.POST.get('status_write',False))) and (str(data_role_status.edit) == str(request.POST.get('status_edit',False))) and (str(data_role_status.delete) == str(request.POST.get('status_delete',False))) and (str(data_role_status.view_all) == str(request.POST.get('status_view_all',False))) and (str(data_role_status.manage_all) == str(request.POST.get('status_manage_all',False)))):
+            messages.warning(request, "No Updates...!!")
+            return redirect('role_management')
+        else:
+            data_save_role = Role_master.objects.filter(id=role_data).update(
+                    role_name = request.POST.get('name'),
+                    description = request.POST.get('description'),
+                )
+
+            Role_mapping.objects.filter(id=role_company).update(
+                    navbar_name = "Company",
+                    read = request.POST.get('company_read',False),
+                    write = request.POST.get('company_write',False),
+                    edit = request.POST.get('company_edit',False),
+                    delete = request.POST.get('company_delete',False),
+                    view_all = request.POST.get('company_view_all',False),
+                    manage_all = request.POST.get('company_manage_all',False),
+                )
+
+            Role_mapping.objects.filter(id=role_user).update(
+                    navbar_name = "User",
+                    read =  request.POST.get('user_read',False),
+                    write =  request.POST.get('user_write',False),
+                    edit =  request.POST.get('user_edit',False),
+                    delete =  request.POST.get('user_delete',False),
+                    view_all =  request.POST.get('user_view_all',False),
+                    manage_all =  request.POST.get('user_manage_all',False),
+                )
+
+            Role_mapping.objects.filter(id=role_role).update(
+                    navbar_name = "Role",
+                    read = request.POST.get('role_read',False),
+                    write = request.POST.get('role_write',False),
+                    edit = request.POST.get('role_edit',False),
+                    delete = request.POST.get('role_delete',False),
+                    view_all = request.POST.get('role_view_all',False),
+                    manage_all = request.POST.get('role_manage_all',False),
+                )
+
+            Role_mapping.objects.filter(id=role_team).update(
+                    navbar_name = "Team member",
+                    read = request.POST.get('team_member_read',False),
+                    write = request.POST.get('team_member_write',False),
+                    edit = request.POST.get('team_member_edit',False),
+                    delete = request.POST.get('team_member_delete',False),
+                    view_all = request.POST.get('team_member_view_all',False),
+                    manage_all = request.POST.get('team_member_manage_all',False),
+                )
+
+
+            Role_mapping.objects.filter(id=role_tags).update(
+                    navbar_name = "Tags",
+                    read = request.POST.get('tag_read',False),
+                    write = request.POST.get('tag_write',False),
+                    edit = request.POST.get('tag_edit',False),
+                    delete = request.POST.get('tag_delete',False),
+                    view_all = request.POST.get('tag_view_all',False),
+                    manage_all = request.POST.get('tag_manage_all',False),
+                )
+
+            Role_mapping.objects.filter(id=role_status).update(
+                    navbar_name = "Status",
+                    read = request.POST.get('status_read',False),
+                    write = request.POST.get('status_write',False),
+                    edit = request.POST.get('status_edit',False),
+                    delete = request.POST.get('status_delete',False),
+                    view_all = request.POST.get('status_view_all',False),
+                    manage_all = request.POST.get('status_manage_all',False),
+                )
+
+            messages.success(request,"Successfully updated Role")
+            return redirect('role_management')
+
+
+
+
+
+
 
 
 def role_management_action(request):
@@ -636,6 +1217,56 @@ def task_status_action(request):
     return redirect('task_status_management')
 
 
+
+def task_edit_modal(request):
+    id = request.GET.get("id")
+    task_data = status_name_master.objects.get(id=id)
+
+    context = {
+        'task_data':task_data,
+    }
+    return render(request, "task_edit_modal.html", context)
+
+
+def task_delete_modal(request):
+    if request.method == "POST":
+        task_id = request.POST.get("task_id")
+        data = status_name_master.objects.get(id=task_id)
+        data.delete()
+        messages.success(request, "Task Deleted Successfully..")
+        return redirect('task_status_management')
+    else:
+        id = request.GET.get("id")
+        data = status_name_master.objects.get(id=id)
+        return render(request,"task_delete_modal.html",{'data':data})
+
+
+@api_view(['POST'])
+def task_status_action(request):
+    data = request.data
+    user_data = User_details.objects.get(auth_user = request.user)
+    print("data['status_color']:",data['status_color'])
+    status_name_master.objects.create(active_user_id_id =user_data.id,
+    active_auth_user_id_id =request.user.id ,status_name = data['status_name'],created_by = request.user,status="True",
+    status_color=data['status_color'],company_id_id = user_data.company_id.id )
+    messages.success(request,"Successfully added Status")
+    return redirect('task_status_management')
+
+@api_view(['POST'])
+def task_edit_action(request):
+    data = request.data
+    data_task = status_name_master.objects.get(id=data['task_id'])
+    if (data_task.status_name==data['status_name']) and (data_task.status_color==data['status_color']):
+        messages.warning(request, "No Updates")
+        return redirect('task_status_management')
+    else:
+        data_update = status_name_master.objects.filter(id=data['task_id']).update(status_name = data['status_name'],status_color=data['status_color'])
+        messages.success(request,"Successfully updated Status")
+        return redirect('task_status_management')
+
+
+
+
 # ----------------------------------------------------project_management-------------------------------------------------------------
 
 def project_management(request):
@@ -675,7 +1306,6 @@ def project_management(request):
         if userdetails_data.user_type == "company_admin":
             space_master_data = space_master.objects.filter(added_user_id=request.user)
             space_list = list(space_master_data.values_list('id',flat=True))
-            print("space_list.first:",space_list[0])
             space_dept = space_master.objects.get(id=space_list[0])
             # space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
@@ -718,6 +1348,34 @@ def project_management(request):
 
 
 # -----------------------------------------------------space_management-----------------------------------------------------------------
+
+def edit_group_modal(request):
+    space_id = request.GET.get("space_id")
+    print("space_id::::::::",space_id)
+    space_data = space_master.objects.get(id=space_id)
+
+    context = {
+        'space_data':space_data,
+    }
+    return render(request, "edit_group_modal.html", context)
+
+
+def space_edit_action(request):
+    if request.method == "POST":
+        spacename = request.POST.get("spacename",False)
+        space_id = request.POST.get("space_id",False)
+        space_master.objects.filter(id=space_id).update(space_name =spacename)
+        messages.success(request,"Successfully updated Group")
+        return redirect(request.META['HTTP_REFERER'])
+
+
+
+
+
+
+
+
+
 
 def space_add_action(request):
     if request.method == "POST":
@@ -778,6 +1436,7 @@ def get_bucket_details(request):
 
 def project_add_action(request):
     if request.method == "POST":
+        today_date = datetime.today().strftime('%Y-%m-%d')
         space_id = request.POST.get("space_id")
         foldername = request.POST.get("foldername")
         member_data = request.POST.getlist("member_data",False)
@@ -799,11 +1458,8 @@ def project_add_action(request):
         comments = request.POST.get("comments",False)
         checklist_item = request.POST.getlist("checklist",False)
         new_checklist_item = list(filter(None, checklist_item))
-        print("new_checklist_item::::",new_checklist_item)
         checklist_end_date = request.POST.getlist("checklist_end_date",False)
-        print("checklist_end_date::;",checklist_end_date)
         new_checklist_end_date = list(filter(None, checklist_end_date))
-        print("new_checklist_end_date:",new_checklist_end_date)
         
         user_data = User_details.objects.get(auth_user = request.user)
         if user_data.user_type == "company_admin":
@@ -831,7 +1487,7 @@ def project_add_action(request):
 
             for m,d in zip_objects:
                 check_data = sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
-                milestone = m,due_date = d)
+                milestone = m,due_date = d,updated_by = request.user,updated_dt=today_date)
            
 
                
@@ -886,7 +1542,7 @@ def project_add_action(request):
 
             for m,d in zip_objects:
                 check_data = sub_space_checklist.objects.create(sub_space_id_id=data_save.id,
-                milestone = m,due_date = d)
+                milestone = m,due_date = d,updated_by = request.user,updated_dt=today_date)
 
             try:
 
@@ -938,14 +1594,27 @@ def update_project_details(request):
         notes = request.POST.get("notes",False)
         print("notes:::::",notes)
         checklist_new = request.POST.getlist("checklist_new",False)
-        print("checklist_new:::::",checklist_new)
+        print("checklist_new::::",checklist_new)
+        checklist_end_date = request.POST.getlist("checklist_date",False)
+        print("checklist_end_date::::::::",checklist_end_date)
+        
         try :
 
             checklist_new = list(filter(None, checklist_new))
+            new_checklist_end_date = list(filter(None, checklist_end_date))
+            print("new_checklist_end_date::::",new_checklist_end_date)
         except:
             pass
-        checkbox_checklist = request.POST.get("checkbox_checklist",False)
-        print('checkbox_checklist:',checkbox_checklist)
+
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        try:
+
+            checkbox_checklist = request.POST.get("checkbox_checklist",False)
+            print('checkbox_checklist:',checkbox_checklist)
+            sub_space_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date)
+        except:
+            pass
+
 
 
         try:
@@ -1007,8 +1676,10 @@ def update_project_details(request):
        
 
         try:
-            for k in checklist_new:
-                sub_space_checklist.objects.create(sub_space_id_id=sub_space_id,milestone=k,status=checkbox_checklist,updated_by = request.user,updated_dt=today_date)
+            zip_objects = zip(checklist_new,new_checklist_end_date)
+            for m,d in zip_objects:
+                sub_space_checklist.objects.create(sub_space_id_id=sub_space_id,
+                milestone = m,due_date = d,updated_by = request.user,updated_dt=today_date)
         except:
             pass
                
@@ -1292,7 +1963,8 @@ def task_management_action(request):
         end_date = request.POST.get("end_date",False)
         checklist_item = request.POST.getlist("checklist",False)
         new_checklist_item = list(filter(None, checklist_item))
-        print("new_checklist_item:",new_checklist_item)
+        checklist_end_date = request.POST.getlist("checklist_end_date",False)
+        new_checklist_end_date = list(filter(None, checklist_end_date))
         comments = request.POST.get("comments",False)
 
         task_master_save = Add_task_master.objects.create(space_id_id = space_id,
@@ -1304,7 +1976,8 @@ def task_management_action(request):
         notes = notes,
         start_date = start_date,
         end_date = end_date,
-        task_status = "Main_task"
+        task_status = "Main_task",
+        created_by = request.user
         )
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
@@ -1312,9 +1985,14 @@ def task_management_action(request):
             invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id
             )
 
-        for i in new_checklist_item:
+        zip_objects = zip(new_checklist_item,new_checklist_end_date)
+
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        for m,d in zip_objects:
             Add_task_checklist.objects.create(add_task_id_id=task_master_save.id,
-            item_name = i)
+            item_name = m,due_date = d,updated_by = request.user,updated_dt=today_date)
+
+        
 
         try:
             # file_name = request.POST.get("file_name",False)
@@ -1331,8 +2009,6 @@ def task_management_action(request):
 
         except:
             pass
-
-
 
 
         user_data = User_details.objects.get(auth_user=request.user)
@@ -1624,7 +2300,8 @@ def sub_task_action(request):
         notes = notes,
         start_date = start_date,
         end_date = end_date,
-        task_status = "sub_task"
+        task_status = "sub_task",
+        created_by = request.user
         )
 
         for i in member_checkbox:
@@ -1673,6 +2350,30 @@ def tags_management(request):
     return render(request, 'tags_management.html',context)
 
 
+def tag_edit_modal(request):
+    id = request.GET.get("id")
+    tag_data = tags_name_master.objects.get(id=id)
+
+    context = {
+        'tag_data':tag_data,
+    }
+    return render(request, "tag_edit_modal.html", context)
+
+
+def tag_delete_modal(request):
+    if request.method == "POST":
+        tag_id = request.POST.get("tag_id")
+        data = tags_name_master.objects.get(id=tag_id)
+        data.delete()
+        messages.success(request, "Tags Deleted Successfully..")
+        return redirect('tags_management')
+    else:
+        id = request.GET.get("id")
+        data = tags_name_master.objects.get(id=id)
+        return render(request,"tag_delete_modal.html",{'data':data})
+
+
+
 @api_view(['POST'])
 def tags_add_action(request):
     data = request.data
@@ -1682,6 +2383,19 @@ def tags_add_action(request):
     tags_color=data['tags_color'],company_id_id = user_data.company_id.id )
     messages.success(request,"Successfully added Tags")
     return redirect('tags_management')
+
+
+@api_view(['POST'])
+def edit_tag_action(request):
+    data = request.data
+    data_tag = tags_name_master.objects.get(id=data['tag_id'])
+    if (data_tag.tags_name==data['tags_name']) and (data_tag.tags_color==data['tags_color']):
+        messages.warning(request, "No Updates")
+        return redirect('tags_management')
+    else:
+        data_update = tags_name_master.objects.filter(id=data['tag_id']).update(tags_name=data['tags_name'],tags_color=data['tags_color'])
+        messages.success(request, "Successfully updated Tags")
+        return redirect('tags_management')
 
 
 def new_tags(request):
@@ -1694,7 +2408,27 @@ def new_tags(request):
 
 def project_management_board(request):
     today_date = datetime.today().strftime('%Y-%m-%d')
+    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
+    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
+    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+
     user_details_data = User_details.objects.get(auth_user=request.user)
+    manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
+    if user_manage_all_permission:
+        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(active_user_id.active_auth_user_id.id))
+        member_data = User_details.objects.filter(created_by__in=child_user_id)
+    else:
+        if user_details_data.user_type == "company_admin":
+            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+            child_user_id.append(int(request.user.id))
+            member_data = User_details.objects.filter(created_by__in=child_user_id)
+        else:
+            member_data = User_details.objects.filter(manager_auth=request.user)
+
 
     space_id =  request.GET.get("space_id")
     space_datas = ""
@@ -1753,7 +2487,9 @@ def project_management_board(request):
     "space_datas":space_datas,
     "bucket_data":bucket_data,
     "data_model":data_model,
-    "space_member_data":space_member_data
+    "space_member_data":space_member_data,
+    "manager_data":manager_data,
+    "member_data":member_data
     }
     return render(request, 'project_management_board.html',context)
 

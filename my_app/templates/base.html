@@ -128,7 +128,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="d-none d-sm-block">
+                        <!-- <li class="d-none d-sm-block">
                             <a href="#" class="right-bar-toggle waves-effect waves-light"><i class="ion-chatbubbles"></i></a>
                         </li>
                         <li class="d-none d-sm-block">
@@ -136,11 +136,20 @@
                         </li>
                         <li class="d-none d-sm-block">
                             <a href="#" id="btn-fullscreen" class="waves-effect waves-light"><i class="ion-qr-scanner"></i></a>
-                        </li>
+                        </li> -->
 
                         <li class="dropdown open">
-                            <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true"><img src="../static/assets/images/users/avatar-1.jpg" alt="user-img" class="rounded-circle"> </a>
-                            <span class="ms-1 nav-user-name hidden-sm" style="color: rgb(234, 246, 234);">{{request.user}}</span>
+                            {% if request.user.is_superuser == True %}
+                            <a><img src="{% static 'assets/images/users/avatar-1.jpg' %}"  style="border-radius: 100%;  height: 36px; width: 36px; object-fit: cover;  margin-right: -12px;" alt="user-img" class="rounded-circle"></a>
+                            {% else %}
+
+                            <a>
+                                
+                                <img src="./media/{{request.user.user_details_authuser.all.0.photo}}" style="border-radius: 100%;  height: 36px; width: 36px; object-fit: cover;  margin-right: -12px;"
+                              
+                                 alt="user-img" class="rounded-circle"> </a>
+                            {% endif %}
+                            <span class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true" style="color: rgb(234, 246, 234);cursor:pointer;">{{request.user}}</span>
 
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:void(0)" class="dropdown-item"><i class="md md-face-unlock mr-2"></i> Profile</a></li>
@@ -175,22 +184,23 @@
                                 <li><a href="mail-read.html">View Mail</a></li>
                             </ul> -->
                         </li>
-                        <li>
+
+                        <!-- <li>
                             <a href="meeting" class="waves-effect"><i class="md md-call"></i><span> Meeting </span></a>
-                        </li>
+                        </li> -->
 
                         <li>
                             <a href="calendar" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
                         </li>
                         {% if request.user.id|company_nav_perm_check:"Company" %}
                         <li>
-                            <a href="company_management" class="waves-effect"><i class="md md-face-unlock"></i><span> Company Management </span></a>
+                            <a href="company_management_new" class="waves-effect"><i class="md md-face-unlock"></i><span> Company Management </span></a>
                         </li>
                         {% endif %}
 
                         {% if request.user.id|company_nav_perm_check:"User" %}
                         <li>
-                            <a href="user_management" class="waves-effect"><i class="md md-add"></i><span> User Management </span></a>
+                            <a href="user_management_new" class="waves-effect"><i class="md md-add"></i><span> User Management </span></a>
                         </li>
                         {% endif %}
 

@@ -1,0 +1,120 @@
+<form name="user_form" method="POST" action="edit_company_admin_user" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="user_edit_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <input type="hidden" name="user_type" value="{{user_data.user_type}}">
+                    <input type="hidden" name="company_admin_id" value="{{user_data.id}}">
+                    <h4 class="modal-title mt-0">Edit User</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Name</label>
+                                <input type="text" value="{{user_data.name}}" class="form-control" name="name" id="field-1" placeholder="Yourname">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">User Image</label>
+                                <div class="input-group uploadFile1">
+                                    <input type="file" class="inputfile form-control" name="photo" >
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="company_name" class="control-label">Company Name</label>
+                                <input type="text" value="{{user_data.company_name}}" class="form-control" list="company_data" autocomplete="off" name="companyname" id="company_name" placeholder="Company Name" readonly>
+                                <datalist id="company_data">
+                                    {% for c in company_data %}
+                                        <option value="{{c.company_name}}"></option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{user_data.username}}" name="username_old">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Username</label>
+                                <input type="text" value="{{user_data.username}}" name="username" class="form-control" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Phone</label>
+                                <input type="text" value="{{user_data.phone}}" name="phone" class="form-control numberField" placeholder="Phone Number">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Email</label>
+                                <input name="email" value="{{user_data.email}}" type="email" class="form-control" id="field-2" placeholder="yourmail@gmail.com">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" class="control-label">Change Password</label>
+                                <div class="my-1">
+                                    <div class="radio form-check-inline">
+                                        <input type="radio" id="edit_Manual"  name="password_option" value="change_password">
+                                        <label for="edit_Manual"> Yes </label>
+                                    </div>
+                                    <div class="radio form-check-inline">
+                                        <input type="radio" id="edit_Automatic"  name="password_option" value="no_change" checked>
+                                        <label for="edit_Automatic"> No </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="password" style="display:none;" autocomplete="off" class="form-control" name="password" id="password4" placeholder="Enter Password">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" style="display:none;" autocomplete="off" class="form-control" name="confirm_password" id="password5" placeholder="Confirm Password">
+                                        <span id='message'></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" style="background-color:#f9365f!important;border: none!important;"
+                        class="btn btn-info waves-effect waves-light">Save </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    $("#edit_Manual").click(function(){
+
+        $("#password4").show()
+        $("#password5").show()
+    })
+    $("#edit_Automatic").click(function(){
+        $("#password4").hide()
+        $("#password5").hide()
+    })
+</script>
+
+<script>
+    $('#password4, #password5').on('keyup', function () {
+        if ($('#password4').val() == $('#password5').val()) {
+            $('#message').html('Matching').css('color', 'green');
+        }
+        else{
+            $('#message').html('Not Matching').css('color', 'red');
+        }
+    });
+</script>

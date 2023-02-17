@@ -34,10 +34,10 @@
                             <h5 class="mb-2 lh-1 d-block text-truncate">Total
                                 Projects</h5>
                             <h3 class="mb-2">
-                                <span class="counter-value" data-target="10">10</span>
+                                <span class="counter-value" data-target="10">{{project_count}}</span>
                             </h3>
                             <div class="text-nowrap txt">
-                                <span class="badge bg-soft-info text-info">4 Projects</span>
+                                <span class="badge bg-soft-info text-info">{{project_count}} Projects</span>
                                 <span class="ms-1 text-muted font-size-13">Since last week</span>
                             </div>
                         </div>
@@ -62,10 +62,10 @@
                         <div class="flex-grow-1">
                             <h5 class="mb-2 lh-1 d-block text-truncate">Total Tasks</h5>
                             <h3 class="mb-2">
-                                <span class="counter-value" data-target="100">100</h3>
+                                <span class="counter-value" data-target="100">{{task_count}}</h3>
 
                             <div class="text-nowrap txt">
-                                <span class="badge bg-soft-info text-info">40 Tasks</span>
+                                <span class="badge bg-soft-info text-info">{{task_count}} Tasks</span>
                                 <span class="ms-1 text-muted font-size-13">Since last week</span>
                             </div>
                         </div>
@@ -90,10 +90,10 @@
                             <h5 class="mb-2 lh-1 d-block text-truncate">Completed
                                 Tasks</h5>
                             <h3 class="mb-2">
-                                <span class="counter-value" data-target="40">60</span>
+                                <span class="counter-value" data-target="40">{{completed_count}}</span>
                             </h3>
                             <div class="text-nowrap txt">
-                                <span class="badge bg-soft-info text-info">40 Tasks</span>
+                                <span class="badge bg-soft-info text-info">{{completed_count}} Tasks</span>
                                 <span class="ms-1 text-muted font-size-13">Since last week</span>
                             </div>
                         </div>
@@ -118,10 +118,10 @@
                             <h5 class="mb-2 lh-1 d-block text-truncate">Progress
                                 Tasks</h5>
                             <h3 class="mb-2">
-                                <span class="counter-value" data-target="30">30</span>
+                                <span class="counter-value" data-target="30">{{progress_count}}</span>
                             </h3>
                             <div class="text-nowrap txt">
-                                <span class="badge bg-soft-info text-info">10 Tasks</span>
+                                <span class="badge bg-soft-info text-info">{{progress_count}} Tasks</span>
                                 <span class="ms-1 text-muted font-size-13">Since last week</span>
                             </div>
                         </div>
@@ -161,15 +161,17 @@
 
                 <div class="card-body px-0">
                     <div class="px-3 mbr" data-simplebar >
+
+                        {% for i in member_data %}
                         <div class="d-flex align-items-center pb-4">
                             <div class="avatar-md me-4">
-                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
+                                <img style="    width: 60px!important;;height: 60px!important;" src="./media/{{i.photo}}" class="img-fluid rounded-circle"
                                     alt="">
                             </div>
-                            <div class="flex-grow-1">
-                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Randy
-                                        Matthews</a></h5>
-                                <span class="text-muted">Randy@gmail.com</span>
+                            <div class="flex-grow-1 m-2">
+                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">{{i.name}}
+                                        </a></h5>
+                                <span class="text-muted">{{i.email}}</span>
                             </div>
                             <div class="flex-shrink-0 text-end">
                                 <div class="dropdown align-self-start">
@@ -187,114 +189,9 @@
                                 </div>
                             </div>
                         </div>
+                        {% endfor %}
 
-                        <div class="d-flex align-items-center pb-4">
-                            <div class="avatar-md me-4">
-                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
-                                    alt="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Vernon
-                                        Wood</a></h5>
-                                <span class="text-muted">Vernon@gmail.com</span>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <div class="dropdown align-self-start">
-                                    <a class="dropdown-toggle" href="#" role="button"
-                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Copy</a>
-                                        <a class="dropdown-item" href="#">Save</a>
-                                        <a class="dropdown-item" href="#">Forward</a>
-                                        <a class="dropdown-item" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center pb-4">
-                            <div class="avatar-md me-4">
-                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
-                                    alt="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Howard
-                                        Rhoades</a></h5>
-                                <span class="text-muted">Howard@gmail.com</span>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <div class="dropdown align-self-start">
-                                    <a class="dropdown-toggle" href="#" role="button"
-                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Copy</a>
-                                        <a class="dropdown-item" href="#">Save</a>
-                                        <a class="dropdown-item" href="#">Forward</a>
-                                        <a class="dropdown-item" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center pb-4">
-                            <div class="avatar-md me-4">
-                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
-                                alt="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Arthur
-                                        Zurcher</a></h5>
-                                <span class="text-muted">Arthur@gmail.com</span>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <div class="dropdown align-self-start">
-                                    <a class="dropdown-toggle" href="#" role="button"
-                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Copy</a>
-                                        <a class="dropdown-item" href="#">Save</a>
-                                        <a class="dropdown-item" href="#">Forward</a>
-                                        <a class="dropdown-item" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center pb-4">
-                            <div class="avatar-md me-4">
-                                <img style="    width: 63%;" src="{% static 'assets/images/users/avatar-1.jpg' %}" class="img-fluid rounded-circle"
-                                    alt="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="font-size-15 mb-1"><a href="#" class="text-dark">Angela
-                                        Palmer</a></h5>
-                                <span class="text-muted">Angela@gmail.com</span>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <div class="dropdown align-self-start">
-                                    <a class="dropdown-toggle" href="#" role="button"
-                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-ellipsis-h font-size-24 text-dark"></i>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Copy</a>
-                                        <a class="dropdown-item" href="#">Save</a>
-                                        <a class="dropdown-item" href="#">Forward</a>
-                                        <a class="dropdown-item" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
 
                       
                     </div>

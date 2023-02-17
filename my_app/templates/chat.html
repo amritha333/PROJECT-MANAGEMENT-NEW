@@ -1,174 +1,497 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions %}
 {% block content %}
+<script src="https://kit.fontawesome.com/6adc82e575.js" crossorigin="anonymous"></script>
+<div class="content">
 
-<div class="row">
-    <!-- INBOX -->
-    <div class="col-xl-4 mt-4" style="margin-top: 92px!important;">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Inbox</h3>
-            </div>
-            <div class="card-body">
-                <div class="inbox-widget nicescroll mx-box">
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-1.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Chadengle</p>
-                            <p class="inbox-item-text">Hey! there I'm available...</p>
-                            <p class="inbox-item-date">13:40 PM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-2.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Tomaslau</p>
-                            <p class="inbox-item-text">I've finished it! See you so...</p>
-                            <p class="inbox-item-date">13:34 PM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-3.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Stillnotdavid</p>
-                            <p class="inbox-item-text">This theme is awesome!</p>
-                            <p class="inbox-item-date">13:17 PM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-4.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Kurafire</p>
-                            <p class="inbox-item-text">Nice to meet you</p>
-                            <p class="inbox-item-date">12:20 PM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-5.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Shahedk</p>
-                            <p class="inbox-item-text">Hey! there I'm available...</p>
-                            <p class="inbox-item-date">10:15 AM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-6.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Adhamdannaway</p>
-                            <p class="inbox-item-text">This theme is awesome!</p>
-                            <p class="inbox-item-date">9:56 AM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-8.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Arashasghari</p>
-                            <p class="inbox-item-text">Hey! there I'm available...</p>
-                            <p class="inbox-item-date">10:15 AM</p>
-                        </div>
-                    </a>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="assets/images/users/avatar-9.jpg" class="rounded-circle" alt=""></div>
-                            <p class="inbox-item-author">Joshaustin</p>
-                            <p class="inbox-item-text">I've finished it! See you so...</p>
-                            <p class="inbox-item-date">9:56 AM</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end col -->
-<br>
-<br>
-<br>
-    <!-- CHAT -->
+                
 
-    <div class="col-xl-8 mt-4" style="margin-top: 92px!important;">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Chat</h3>
-            </div>
-            <div class="card-body">
-                <div class="chat-conversation">
-                    <ul class="conversation-list nicescroll">
-                        <li class="clearfix">
-                            <div class="chat-avatar">
-                                <img src="assets/images/avatar-1.jpg" alt="male">
-                                <i>10:00</i>
-                            </div>
-                            <div class="conversation-text">
-                                <div class="ctext-wrap">
-                                    <i>John Deo</i>
-                                    <p>
-                                        Hello!
-                                    </p>
-                                </div>
-                            </div>
+    <div class="content-right">
+     
+        <div class="margin-class-this chat-section">
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chat-box-left">
+                    <ul class="nav nav-tabs mb-3 nav-justified" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="general_chat_tab" data-toggle="tab" href="#general_chat" role="tab" aria-controls="general_chat" aria-selected="false">General</a>
                         </li>
-                        <li class="clearfix odd">
-                            <div class="chat-avatar">
-                                <img src="assets/images/users/avatar-5.jpg" alt="Female">
-                                <i>10:01</i>
-                            </div>
-                            <div class="conversation-text">
-                                <div class="ctext-wrap">
-                                    <i>Smith</i>
-                                    <p>
-                                        Hi, How are you? What about our next meeting?
-                                    </p>
-                                </div>
-                            </div>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" id="group_chat_tab" data-toggle="tab" href="#group_chat" role="tab" aria-controls="group_chat" aria-selected="false">Groups</a>
                         </li>
-                        <li class="clearfix">
-                            <div class="chat-avatar">
-                                <img src="assets/images/avatar-1.jpg" alt="male">
-                                <i>10:01</i>
-                            </div>
-                            <div class="conversation-text">
-                                <div class="ctext-wrap">
-                                    <i>John Deo</i>
-                                    <p>
-                                        Yeah everything is fine
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="clearfix odd">
-                            <div class="chat-avatar">
-                                <img src="assets/images/users/avatar-5.jpg" alt="male">
-                                <i>10:02</i>
-                            </div>
-                            <div class="conversation-text">
-                                <div class="ctext-wrap">
-                                    <i>Smith</i>
-                                    <p>
-                                        Wow that's great
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="personal_chat_tab" data-toggle="tab" href="#personal_chat" role="tab" aria-controls="personal_chat" aria-selected="false">Personal</a>
+                        </li> -->
                     </ul>
-                    <div class="row">
-                        <div class="col-sm-9 chat-inputbar">
-                            <input type="text" class="form-control chat-input" placeholder="Enter your text">
+                    <div class="chat-search">
+                        <div class="form-group"> 
+                            <div class="input-group">                                                
+                                <input type="text" id="chat-search" name="chat-search" class="form-control form-control-sm" placeholder="Search">
+                                <button type="button" class="btn btn-soft-primary btn-sm shadow-none"><i class="fas fa-search"></i></button>
+                            </div>                                                    
                         </div>
-                        <div class="col-sm-3 chat-send">
-                            <button type="submit" class="btn btn-info btn-block waves-effect waves-light">Send</button>
-                        </div>
+                    </div><!--end chat-search-->
+
+                    <div class="chat-list" data-simplebar>
+                        <div class="tab-content " id="pills-tabContent" >
+                            <div class="tab-pane fade show active" id="general_chat" role="tabpanel" aria-labelledby="general_chat_tab">
+
+                                {% for i in member_data %}
+                                <a href="#" class="media ">
+                                    <div class="media-left">
+                                        <img src="./media/{{i.photo}}" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-success"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div class="d-inline-block">
+                                            <h6>{{i.name}}</h6>
+                                            <p>Good morning! Congratulations Friend...</p>
+                                        </div>
+                                        <div>
+                                            <span>20 Feb</span>
+                                            <span>3</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a> <!--end media-->  
+                                {% endfor %}  
+                                                                         
+                            </div><!--end general chat-->
+
+                            <div class="tab-pane fade" id="group_chat" role="tabpanel" aria-labelledby="group_chat_tab">                                                
+                                <a href="#" class="media new-message">
+                                    <div class="media-left">
+                                        <div class="avatar-box thumb-md align-self-center me-2">
+                                            <span class="avatar-title bg-primary rounded-circle"><i class="fab fa-quinscape"></i></span>
+                                        </div>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Design Group</h6>
+                                            <p>Good morning! How are you?</p>
+                                        </div>
+                                        <div>
+                                            <span>20 Feb</span>
+                                            <span>1</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a> <!--end media-->
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <div class="avatar-box thumb-md align-self-center me-2">
+                                            <span class="avatar-title bg-success rounded-circle"><i class="fab fa-connectdevelop"></i></span>
+                                        </div>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Front end Developers</h6>
+                                            <p>Have A Nice day...</p>
+                                        </div>
+                                        <div>
+                                            <span>15 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a>   <!--end media-->  
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <div class="avatar-box thumb-md align-self-center me-2">
+                                            <span class="avatar-title bg-warning rounded-circle"><i class="far fa-gem"></i></span>
+                                        </div>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>UI/UX Designers</h6>
+                                            <p>Congratulations everybody... </p>
+                                        </div>
+                                        <div>
+                                            <span>14 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media--> 
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <div class="avatar-box thumb-md align-self-center me-2">
+                                            <span class="avatar-title bg-pink rounded-circle"><i class="fab fa-react"></i></span>
+                                        </div>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>React Developers</h6>
+                                            <p>How are you Friends...</p>
+                                        </div>
+                                        <div>
+                                            <span>10 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->   
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <div class="avatar-box thumb-md align-self-center me-2">
+                                            <span class="avatar-title bg-info rounded-circle"><i class="fas fa-globe"></i></span>
+                                        </div>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Marketing Group</h6>
+                                            <p>How are you Friends...</p>
+                                        </div>
+                                        <div>
+                                            <span>10 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->   
+                            </div><!--end group chat-->
+
+                            <div class="tab-pane fade" id="personal_chat" role="tabpanel" aria-labelledby="personal_chat_tab">
+                                <a href="#" class="media new-message">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-1.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-success"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div class="d-inline-block">
+                                            <h6>Daniel Madsen</h6>
+                                            <p>Good morning! Congratulations Friend...</p>
+                                        </div>
+                                        <div>
+                                            <span>20 Feb</span>
+                                            <span>3</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->     
+                                <a href="#" class="media new-message">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-2.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-success"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Robert Jefferson</h6>
+                                            <p>Congratulations Friend...</p>
+                                        </div>
+                                        <div>
+                                            <span>20 Feb</span>
+                                            <span>1</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media--> 
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-secondary"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Jesse Ross</h6>
+                                            <p>How are you Friend...</p>
+                                        </div>
+                                        <div>
+                                            <span>15 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->     
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-4.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-secondary"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Mary Schneider</h6>
+                                            <p>Have A Nice day...</p>
+                                        </div>
+                                        <div>
+                                            <span>14 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media--> 
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-5.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-success"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>David Herrmann</h6>
+                                            <p>Good morning! How are you?</p>
+                                        </div>
+                                        <div>
+                                            <span>10 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->     
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-6.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-secondary"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Mary Hayes</h6>
+                                            <p>How are you Friend...</p>
+                                        </div>
+                                        <div>
+                                            <span>1 Feb</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media--> 
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-7.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-secondary"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Rita Duarte</h6>
+                                            <p>Have A Nice day...</p>
+                                        </div>
+                                        <div>
+                                            <span>30 Jan</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-->     
+                                <a href="#" class="media">
+                                    <div class="media-left">
+                                        <img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-md">
+                                        <span class="round-10 bg-secondary"></span>
+                                    </div><!-- media-left -->
+                                    <div class="media-body">
+                                        <div>
+                                            <h6>Dennis Wilson</h6>
+                                            <p>Good morning! How are you?</p>
+                                        </div>
+                                        <div>
+                                            <span>26 Jan</span>
+                                        </div>
+                                    </div><!-- end media-body -->
+                                </a><!--end media-body-->  
+                            </div><!--end personal chat-->
+                        </div><!--end tab-content-->
                     </div>
-                </div>
+                </div><!--end chat-box-left -->
+
+                <div class="chat-box-right">
+                    <div class="chat-header">
+                        <a href="#" class="media">
+                            <div class="media-left">
+                                <img src="../static/assets/images/users/user-4.jpg" alt="user" class="rounded-circle thumb-md">
+                            </div><!-- media-left -->
+                            <div class="media-body">
+                                <div>
+                                    <h6 class="m-0">Mary Schneider</h6>
+                                    <p class="mb-0">Last seen: 2 hours ago</p>
+                                </div>
+                            </div><!-- end media-body -->
+                        </a><!--end media-->   
+                        <div class="chat-features">
+                            <div class="d-none d-sm-inline-block dropleft">
+                                <!-- <a href="#"><i class="fas fa-phone"></i></a>
+                                <a href="#"><i class="fas fa-video"></i></a>
+                                <a href="#"><i class="fas fa-trash-alt"></i></a> -->
+                                <a href="#" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>     
+                                <ul class="dropdown-menu" style="right: 0; left: auto;">
+                                    <li><a href="#" class="dropdown-item">Mute</a></li>
+                                    <li><a href="#" class="dropdown-item">Clear chat</a></li>
+
+                                </ul>                                                    
+                            </div>
+                        </div><!-- end chat-features -->
+                    </div><!-- end chat-header -->
+                    <div class="chat-body" data-simplebar>
+                        <div class="chat-detail">
+                            <div class="media">
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-4.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                                <div class="media-body">
+                                    <div class="chat-msg">
+                                        <p>Good Morning !</p>
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>There are many variations of passages of Lorem Ipsum available.</p>
+                                        <div class="chat-time">9:02am</div>
+                                    </div>
+                                  
+                                </div><!--end media-body--> 
+                               
+                            </div><!--end media-->  
+                            
+                            <div class="media">                                                        
+                                <div class="media-body reverse">
+                                    <div class="chat-msg">
+                                        <p>Good Morning !</p>
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>There are many variations of passages of Lorem Ipsum available.</p>
+                                        <div class="chat-time text-right">9:02am</div>
+                                    </div>                                                            
+                                </div><!--end media-body--> 
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                            </div><!--end media-->  
+
+                            <div class="media">
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-4.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                                <div class="media-body">                                                            
+                                    <div class="chat-msg">
+                                        <p>There are many variations of passages of Lorem Ipsum available.</p>
+                                        <div class="chat-time">9:02am</div>
+                                    </div>
+                                </div><!--end media-body--> 
+                            </div><!--end media-->  
+
+                            <div class="media">                                                        
+                                <div class="media-body reverse">
+                                    <div class="chat-msg">
+                                        <p>Good Morning !</p>
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>It is a long established fact that a reader will be distracted by 
+                                            the readable content of a page when looking at its layout. 
+                                            The point of using Lorem Ipsum is that it has a more-or-less normal 
+                                            distribution of letters, as opposed to using 'Content here.
+                                        </p>
+                                        <div class="chat-time text-right">9:02am</div>
+                                    </div>                                                            
+                                </div><!--end media-body--> 
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                            </div><!--end media-->  
+
+                            <div class="media">
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-4.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                                <div class="media-body">
+                                    <div class="chat-msg">
+                                        <p>Good Morning !</p>
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>It is a long established fact that a reader will be distracted by 
+                                            the readable content of a page when looking at its layout. 
+                                            The point of using Lorem Ipsum is that it has a more-or-less normal 
+                                            distribution of letters, as opposed to using 'Content here.
+                                        </p>
+                                       
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>Ok</p>
+                                        <div class="chat-time">9:02am</div>
+                                    </div>
+                                </div><!--end media-body--> 
+                            </div> <!--end media--> 
+
+                            <div class="media">                                                        
+                                <div class="media-body reverse">
+                                    <div class="chat-msg">
+                                        <p>Good Morning !</p>
+                                    </div>
+                                    <div class="chat-msg">
+                                        <p>There are many variations of passages of Lorem Ipsum available.</p>
+                                    </div>  
+                                    <div class="chat-msg">
+                                        <p>By</p>
+                                        <div class="chat-time text-right">9:02am</div>
+                                    </div>                                                            
+                                </div><!--end media-body--> 
+                                <div class="media-img">
+                                    <img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-md">
+                                </div>
+                            </div> <!--end media--> 
+                        </div>  <!-- end chat-detail -->                                               
+                    </div><!-- end chat-body -->
+                    <div class="chat-footer">
+                        <div class="row">                                                    
+                            <div class="col-12 col-md-11 chat-inpt">
+                                <span class="chat-admin"><img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-sm"></span>
+                                <input type="text" class="form-control" placeholder="Type something here...">
+                                <i class="fa fa-send"></i>
+                            </div><!-- col-8 -->
+                            <div class="col-1 text-right">
+                                <div class="d-none d-sm-inline-block chat-features">
+                                    <a href="#"><i class="fas fa-paperclip"></i></a>
+                                    
+                                </div>
+                            </div><!-- end col -->
+                        </div><!-- end row -->
+                    </div><!-- end chat-footer -->
+                </div><!--end chat-box-right --> 
+              </div>
             </div>
         </div>
     </div>
 
-    <!-- end col-->
-
-
-    <!-- TODOs -->
-  
-    <!-- end col -->
 </div>
 
+
+
+<div id="url-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0">Add a link</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group url-inpt">
+                            <label for="field-1" class="control-label">Address</label>
+                            <div class="input-group">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">https://</span>
+                                </div>
+                                <input type="url" class="form-control" id="field-1" placeholder="Add your link here">
+                               
+                            </div>
+                            
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="field-1" class="control-label">Text to display</label>
+                            <input type="text" class="form-control" id="field-1" placeholder="Give your link name here">
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Add </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% block scripts %}
+
+
+
+<script>
+    var resizefunc = [];
+</script>
+
+
+<script src="../static/assets/js/simplebar.min.js"></script>
+
+
+<!-- Dashboard js  -->
+<script src="../static/assets/pages/jquery.dashboard.js"></script>
+
+
+
+{% endblock %}
 {% endblock %}

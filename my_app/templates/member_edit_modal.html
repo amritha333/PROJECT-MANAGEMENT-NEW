@@ -1,0 +1,246 @@
+<form name="comany_form" method="POST" action="memeber_edit_action" enctype="multipart/form-data">
+    {% csrf_token %}
+
+<div id="member_edit_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true" style="display: none">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Edit User</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+             <input type="hidden" name="user_type" value="{{user_data.user_type}}">
+            <input type="hidden" name="member_id" value="{{user_data.id}}">
+            <input type="hidden" value="{{user_data.username}}" name="username_old">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Name</label>
+                        <input type="text" required name="name" value="{{user_data.name}}" class="form-control" id="field-1" placeholder="Yourname">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">User Image</label>
+                        <div class="input-group uploadFile1">
+
+                            <input type="file" name="photo" class="inputfile form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Phone</label>
+                        <input type="text" required value="{{user_data.phone}}" class="form-control" name="phone">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Email</label>
+                        <input type="email" required name="email" value="{{user_data.email}}" class="form-control" id="field-1" placeholder="yourmail@gmail.com">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Username</label>
+                        <input type="text" required name="username" value="{{user_data.username}}" class="form-control" placeholder="Userame">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-2" class="control-label">Manager</label>
+                        <select class="form-control" name="manager_id">
+                            <option value="{{user_data.manager_auth.username}}">{{user_data.manager_auth.username}}</option>
+                            {% for data in  manager_data %}
+                                <option value="{{data.id}}">{{data.name}}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Change Password</label>
+                        <div class="my-1">
+                            <div class="radio radio-primary form-check-inline">
+                                <input type="radio" required id="change_yes"  name="password_option"  value="change_pass">
+                                <label for="change_yes"> Yes </label>
+                            </div>
+                            <div class="radio radio-primary form-check-inline">
+                                <input type="radio"  id="change_no"  name="password_option" value="no_change" checked>
+                                <label for="change_no"> No </label>
+                            </div>
+                        </div>
+                        <input autocomplete="off" name="password" type="password" id="password4" style="display:none ;" class="form-control"placeholder="Enter Password">
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">User Type</label>
+                        <div class="my-1">
+                            {% if user_data.user_level == "Manager" %}
+                            <div class="radio radio-primary form-check-inline">
+                                <input type="radio" name="user_level" value="Manager" readonly {% if user_data.user_level == "Manager" %} checked {% else %} {% endif %}>
+                                <label for="inlineRadio1"> Manager </label>
+                            </div>
+                            {% elif user_data.user_level == "Normal Staff" %}
+                            <div class="radio radio-primary form-check-inline">
+                                <input type="radio" name="user_level" value="Normal Staff" readonly {% if user_data.user_level == "Normal Staff" %} checked {% else %} {% endif %}>
+                                <label for="inlineRadio2"> Normal Staff </label>
+                            </div>
+                            {% else %}
+                                <div class="radio radio-primary form-check-inline">
+                                    <input type="radio" name="user_level" value="Manager" {% if user_data.user_level == "Manager" %} checked {% else %} {% endif %}>
+                                    <label for="inlineRadio1"> Manager </label>
+                                </div>
+                                <div class="radio radio-primary form-check-inline">
+                                    <input type="radio" name="user_level" value="Normal Staff" {% if user_data.user_level == "Normal Staff" %} checked {% else %} {% endif %}>
+                                    <label for="inlineRadio2"> Normal Staff </label>
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">User Type</label>
+                        <table id="datatable" class="table dt-responsive table-bordered nowrap usertype-tbl mt-2" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+
+                                <tr>
+                                    <th class="th_btnpand">
+                                        <div class="appnd_user_btn1 append_btn" style="cursor: pointer;">+</div>
+                                    </th>
+                                    <th  class="th_user_role">Role</th>
+                                    <th class="th_user_decrptn">Description</th>
+                                    <th class="th_user_strtdate">Start Date</th>
+                                    <th class="th_user_enddate">End Date</th>
+                                </tr>
+                                <tbody class="apenduser1">
+                                {% for i in roles %}
+                                <input type="hidden" value="{{i.id}}" id="role_permission_id{{forloop.counter}}" name="role_permission_name">
+                                <tr>
+                                    <td class="th_btnpand">
+                                        <div class="appnd_user_minus_btn1 appnd_minus_btn" style="cursor: pointer;" onclick="f2({{forloop.counter}})">-</div>
+                                    </td>
+                                    <td class="th_user_role">
+                                        <select class="form-control" name="role_id[]">
+                                            <option value="{{i.role_mapping_id.id}}">{{i.role_mapping_id.role_name}}</option>
+                                            {% for role in  role_data %}
+                                            <option value="{{role.id}}">{{role.role_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td class="th_user_decrptn">
+                                        <input name="role_description[]" value="{{i.description}}" class="form-control">
+                                    </td>
+                                    <td class="th_user_strtdate">
+                                        <div class="input-group date">
+                                            <input  name="role_start_dt[]" value="{{i.start_dt|safe}}" min="{{today_date}}" type="date" class="input form-control" >
+                                        </div>
+                                    </td>
+                                    <td class="th_user_enddate">
+                                        <div class="input-group date">
+                                            <input name="role_end_dt[]" type="date" min={{today_date}}" value="{{i.end_dt|safe}}" class="input form-control">
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+
+                                <input type="hidden" class="role_delete" name="role_delete" id="role_delete">
+
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+
+            <button type="submit" style="background-color:#f9365f!important;border: none!important;"
+                class="btn btn-info waves-effect waves-light">Save </button>
+        </div>
+    </div>
+</div>
+</div>
+</form>
+
+
+<script>
+    $("#change_yes").click(function(){
+
+        $("#password4").show()
+    })
+    $("#change_no").click(function(){
+        $("#password4").hide()
+    })
+    </script>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    $(".appnd_user_btn1").click(function() {
+
+        $(".apenduser1").append("<tr>\n" +
+            "                                    <td class=\"th_btnpand\">\n" +
+            "                                        <div style=\"cursor: pointer;\" class=\"appnd_user_minus_btn1 appnd_minus_btn\">-</div>\n" +
+            "                                    </td>\n" +
+            "                                    <td class=\"th_user_role\">\n" +
+            "                                        <select name=\"role_id_new[]\" class=\"form-control\">\n" +
+            "                                            {% for role in  role_data %}\n" +
+            "                                           <option value=\"{{role.id}}\">{{role.role_name}}</option>\n" +
+            "                                           {% endfor %}\n" +
+            "                                        </select>\n" +
+            "                                    </td>\n" +
+            "                                    <td class=\"th_user_decrptn\">\n" +
+            "                                        <input name=\"role_description_new[]\" class=\"form-control\">\n" +
+            "                                    </td>\n" +
+            "                                 <td class=\"th_user_strtdate\">\n" +
+            "                                        <div class=\"input-group date\">\n" +
+            "                                            <input name=\"role_start_dt_new[]\" value=\"{{today|safe}}\" type=\"date\" class=\"input form-control\" id=\"datetimepicker\"> \n" +
+            "                                        </div>\n" +
+            "                                    </td>\n" +
+            "                                    <td class=\"th_user_enddate\">\n" +
+            "                                        <div class=\"input-group date\">\n" +
+            "                                            <input name=\"role_end_dt_new[]\" type=\"date\"  class=\"input form-control\" id=\"datetimepicker\"> \n" +
+            "                                        </div>\n" +
+            "                                    </td>\n" +
+
+            "                                </tr>");
+        $(".appnd_user_minus_btn1").click(function() {
+            $(this).parent().parent().remove();
+        });
+    });
+    });
+    $(".appnd_user_minus_btn1").click(function() {
+            $(this).parent().parent().remove();
+        });
+</script>
+
+
+<script>
+    check_list = []
+    function f2(count){
+        value = document.getElementById('role_permission_id'+count).value;
+        check_list.push(value)
+        alert(check_list)
+        $('.role_delete').val(check_list)
+
+    }
+</script>

@@ -1,0 +1,24 @@
+<form name="user_form" method="POST" action="user_delete_modal" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="user_delete_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mt-0">Delete User</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="{{data.id}}" name="user_id">
+                    <p>Are You Sure to Delete this User ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" style="background-color:#3e3436!important;border: none!important;" class="btn btn-info waves-effect waves-light" data-dismiss="modal" aria-label="Close">Cancel </button>
+                    <button type="submit" style="background-color:#f9365f!important;border: none!important;"
+                        class="btn btn-info waves-effect waves-light">Delete </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

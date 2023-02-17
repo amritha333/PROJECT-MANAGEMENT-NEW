@@ -61,8 +61,8 @@
                                             <td>{{i.email}} </td>
                                             <td>
                                                 <div class="action-tbl d-flex justify-content-end">
-                                                    <i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i>
-                                                    <i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i>
+                                                    <a href="#" class="member_edit" data-id="{{i.id}}"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                    <a href="#" class="member_delete" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
                                                     <!-- <i class="fa fa-save mx-1 sv-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"></i>
                                                     <i class="ion-close mx-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"></i>  -->
                                                 </div>
@@ -83,6 +83,8 @@
         </div>
     </div>
 
+<div id="member_edit_div"></div>
+<div id="member_delete_div"></div>
 
 <form name="comany_form" method="POST" action="user_management_action" enctype="multipart/form-data">
     {% csrf_token %}   
@@ -302,7 +304,39 @@ aria-hidden="true" style="display: none">
     </script>
 
 
+<script>
+    $(".member_edit").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="member_edit_modal";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#member_edit_div").html(data);
+            $('#member_edit_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
 
+<script>
+    $(".member_delete").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="member_delete_modal";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#member_delete_div").html(data);
+            $('#member_delete_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
 
 
 {% endblock %}

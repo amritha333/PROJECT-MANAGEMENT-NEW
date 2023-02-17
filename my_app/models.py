@@ -223,6 +223,7 @@ class Add_task_access_user(common_table):
 class Add_task_checklist(common_table):
     add_task_id = models.ForeignKey(Add_task_master,related_name="add_task_checklist",on_delete=models.CASCADE,null=True)
     item_name = models.CharField(max_length=50,null=True)
+    due_date = models.DateField(blank=True,null=True)
 
 class Add_task_attachment(common_table):
     add_task_id = models.ForeignKey(Add_task_master,related_name="add_attachment",on_delete=models.CASCADE,null=True)

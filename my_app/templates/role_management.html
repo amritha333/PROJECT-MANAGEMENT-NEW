@@ -44,8 +44,8 @@
                                 </td>
                                         <td>
                                             <div class="action-tbl d-flex justify-content-end">
-                                                <i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i>
-                                                <i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i>
+                                                <a href="#" class="edit_role" data-id="{{i.id}}"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                <a href="#" class="delete_role" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
                                                 <!-- <i class="fa fa-save mx-1 sv-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"></i>
                                                 <i class="ion-close mx-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"></i>  -->
                                             </div>
@@ -63,6 +63,8 @@
         </div>
     </div>
 </div>
+<div id="edit_role_div"></div>
+<div id="delete_role_div"></div>
 
 
 <form name="role_form" method="POST" action="role_management_action">
@@ -185,12 +187,39 @@ aria-hidden="true" style="display: none">
 </form>
 
 
+<script>
+    $(".edit_role").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="edit_role_management";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#edit_role_div").html(data);
+            $('#edit_role_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
 
-
-
-
-
-
+<script>
+    $(".delete_role").click(function(){
+        var id = $(this).attr("data-id")
+        var url ="delete_role_management";
+        $.ajax({
+        url: url,
+        data: {
+          'id': id
+        },
+        success: function (data) {
+            $("#delete_role_div").html(data);
+            $('#delete_role_modal').modal('show');
+        }
+      });messageCheckbox
+    })
+</script>
 
 
 {% endblock %}

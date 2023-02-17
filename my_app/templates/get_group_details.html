@@ -1,5 +1,7 @@
 
 {% load permissions %}
+<link href="../static/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
 
 <style>
     .capital 
@@ -75,14 +77,12 @@
 <div class="card-body body-change card-border">
     <div class="d-flex align-items-center justify-content-between">
         <h2 class="main-heading-txt">{{space_dept.space_name}}</h2>
-        <div class="search-field-icon">
-
-            <input type="search" class="search-class" placeholder="Search">
+        <div class="">
             <button type="button" style="cursor: pointer;"  data-space-id="{{space_dept.id}}" class="new_project create-task">Create New Project</button>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-4">
 
         <div class="col-md-12 col-sm-12 col-12">
             <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -574,3 +574,35 @@
     }
     })
 </script> -->
+<script src="../static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../static/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Responsive examples -->
+    <script src="../static/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="../static/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+    <!-- Datatable init js -->
+    <script src="../static/assets/pages/datatables.init.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#datatable').dataTable();
+        $('#datatable-keytable').DataTable({
+            keys: true
+        });
+        $('#datatable-responsive').DataTable();
+        $('#datatable-scroller').DataTable({
+            ajax: "plugins/datatables/json/scroller-demo.json",
+            deferRender: true,
+            scrollY: 380,
+            scrollCollapse: true,
+            scroller: true
+        });
+        var table = $('#datatable-fixed-header').DataTable({
+            fixedHeader: true
+        });
+    });
+    TableManageButtons.init();
+</script>
