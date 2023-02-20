@@ -312,18 +312,23 @@
                                                                         {{ch.updated_by}}
                                                                      </span>
 
-
-
-
                                                                     </span>                                                      
                                                                 </div>
-
-
 
                                                                 {% else %}
                                                                 <input  disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
 
                                                                 <input  disabled type="date"  placeholder="Checklist due date" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                                <div class="profile-image d-flex align-items-center m-2">
+                                                                    <img class="" src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}"> <span class="" style="padding: 6px 13px;">
+                                                                        
+                                                                    
+                                                                     <span>
+                                                                        {{ch.updated_by}}
+                                                                     </span>
+
+                                                                    </span>                                                      
+                                                                </div>
 
 
                                                                 {% endif %}
@@ -499,6 +504,9 @@
                                                                     </td>
                                                                 </tr>
                                                                 {% for i in task_data %}
+                                                                
+                                                                {% if request.user in i.invite_user_auth_id.all %} 
+                                                            
                                                                 <tr>
                                                                     <td>
     
@@ -513,12 +521,11 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="profile-image d-flex align-items-center">
-                                                                            {% for j in i.add_task_space.all %}
-                                                                            <img src="./media/{{j.invite_user_details_id.photo}}">
+                                                                            {% for j in i.invite_user_details_id.all %}
+                                                                            <img src="./media/{{j.photo}}">
                                                                             {% endfor %}
-                                                                            <!-- <div class="circle-user">
-                                                                                <i class="ion-plus"></i>5
-                                                                            </div> -->
+                                                                            
+                                                                           
                                                                           
                                                                         </div>
                                                                     </td>
@@ -540,7 +547,7 @@
                                                          
                                                                     <td class="d-flex justify-content-end align-items-center text-right">
 
-                                                                        <a href="view_task_page?task_id={{i.id}}" class="viewtasklink"><i class="fa fa-eye"></i> View Task</a>
+                                                                        <a href="view_task_page?task_id={{i.id}}&parent_id={{sub_space_data.id}}&status=task" class="viewtasklink"><i class="fa fa-eye"></i> View Task</a>
     
                                                                         <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
                                                                             <i class="md-more-vert"></i>
@@ -552,6 +559,62 @@
     
                                                                     </td>
                                                                 </tr>
+
+                                                                {% elif request.user.user_details_authuser.all.0.user_type == 'company_admin' %}
+                                                                
+                                                                <tr>
+                                                                    <td>
+    
+                                                                        <div class="checkbox margin-check checkbox-primary checkbox-circle">
+                                                                            <input id="checkbox-9" type="checkbox" class="padd-radio">
+                                                                            <label for="checkbox-9">
+                                                              
+                                                                            </label>
+                                                                            <p class="main-head">{{i.task_name}}</p>
+                                                                        </div>
+    
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="profile-image d-flex align-items-center">
+                                                                            {% for j in i.invite_user_details_id.all %}
+                                                                            <img src="./media/{{j.photo}}">
+                                                                            {% endfor %}
+                                                                           
+                                                                           
+                                                                          
+                                                                        </div>
+                                                                    </td>
+                                                                   
+                                                                    <td>
+                                                                        {% if request.user.id|due_date_check_task:i.id == True %}
+                                                                        <span  class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i>&ensp;{{i.end_date|safe}}</span>
+
+                                                                        {% else %}
+                                                                        <i class="ion-calendar"></i>&ensp;{{i.end_date|safe}}
+
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
+                                                
+                        
+                                                                    </td>
+                                                         
+                                                                    <td class="d-flex justify-content-end align-items-center text-right">
+
+                                                                        <a href="view_task_page?task_id={{i.id}}&parent_id={{sub_space_data.id}}&status=task" class="viewtasklink"><i class="fa fa-eye"></i> View Task</a>
+    
+                                                                        <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
+                                                                            <i class="md-more-vert"></i>
+                                                                    </button>
+                                                                        <ul class="dropdown-menu">
+                                                                            <li><a href="#" class="dropdown-item">Edit</a></li>
+                                                                            <li><a href="#" class="dropdown-item">Delete</a></li>
+                                                                        </ul>
+    
+                                                                    </td>
+                                                                </tr>
+                                                                {% endif %}
                                                                 
                                                                {% endfor %}
                                                     </tbody>
@@ -826,9 +889,7 @@
                     <div class="col-md-12"> 
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Attachments </label> 
-                            <!-- <a id="add_attachment" style="float: right;
-                            font-size: 18px; cursor: pointer;
-                            font-weight: bold;">+</a> -->
+                         
                             <input type="file" multiple name="attached_file" class="form-control">
 
                             <div class="" id="new_attachment" style="display:none;">
@@ -861,7 +922,7 @@
                             <label for="field-2" class="control-label">Assignees</label> 
                             <select required multiple class="form-control jsSelect1" name="member_checkbox">
                                 <option value="1">select</option>
-                                {% for i in sub_space_member_data.invite_user_details_id.all %}
+                                {% for i in sub_space_data.invite_user_details_id.all %}
                                 <option value="{{i.id}}"> {{i.name}}</option>
                                 {% endfor %}
                              </select>                        
@@ -888,53 +949,6 @@
         </div> 
     </div>
 </div><!-- /.modal -->
-
-<div id="task_employee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-    <div class="modal-dialog"> 
-        <div class="modal-content"> 
-            <div class="modal-header">
-                <h4 class="modal-title mt-0" style="color: #f9365f;
-                font-weight: bold;">Employee Invitation</h4> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div> 
-            <div class="modal-body"> 
-                <div class="row"> 
-                    <div class="col-md-12"> 
-                        <div class="form-group"> 
-                           <div class="row">
-
-                            {% for i in sub_space_member_data.invite_user_details_id.all %}
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <img style="border-radius: 50%;
-                                        width: 45%;" class="avatar lg rounded-circle" src="./media/{{i.photo}}">  
-                                    </div>
-                                   <div class="col-md-4" style="margin: 22px -52px;
-                                   font-size: 12px;">
-                                    <input name="member_checkbox1" class="member_data"  value="{{i.id}}" type="checkbox">&nbsp;&nbsp;
-                                        {{i.name}}
-                                   </div>
-                                </div>
-                              
-                            </div>
-                            {% endfor %}
-
-                           </div>
-                        </div> 
-                    </div> 
-                   
-                    </div> 
-                </div> 
-            </div> 
-            <!-- <div class="modal-footer"> 
-                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> 
-                <button type="button" style="background-color:#f9365f!important;border: none!important;" class="btn btn-info waves-effect waves-light">Save </button> 
-            </div>  -->
-        </div> 
-</div>
 
 
 
@@ -1230,9 +1244,8 @@ if (running == 1) {
     <script>
         $(".checklist_more").click(function(){
         $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input name="checklist_new" type="text" placeholder="Add an item" class="form-control checkitem"><input  type="date" name="checklist_date" placeholder="Checklist due date"  class="form-control checkitem">
-</label></div>`);
-        
-    })
+        </label></div>`);
+        })
     </script>
 
     <script>

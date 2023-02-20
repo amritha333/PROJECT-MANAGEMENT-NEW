@@ -125,7 +125,6 @@
                                 <table id="datatable" class="table table-striped dt-responsive table-bordered nowrap table-padd" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                                     <thead class="border-class">
-
                                         <tr class="heading-text">
                                             <th>Task title</th>
                                             <th>Assigned to</th>
@@ -158,12 +157,7 @@
                                                     {% for j in i.invite_user_details_id.all %}
                                                     <img src="./media/{{j.photo}}">
                                                     {% endfor %}
-                                                    <!-- <div class="circle-user">
-                                                        <i class="ion-plus"></i>5
-                                                    </div>
-                                                    <div class="circle-plus-brdr">
-                                                        <i class="fa fa-plus"></i>
-                                                    </div> -->
+                                                   
                                                 </div>
                                             </td>
                                             <td>
@@ -215,80 +209,7 @@
                                             </td>
                                         </tr>
 
-                                        {% elif request.user in i.space_id.manager_auth.all %} 
-                                        <tr>
-                                            <td>
-
-                                                <div class="checkbox margin-check checkbox-primary checkbox-circle">
-                                                    <input id="checkbox-9" type="checkbox" class="padd-radio">
-                                                    <label for="checkbox-9">
-                                      
-                                                    </label>
-                                                    <p class="main-head"><a href="view_project_page?sub_space_id={{i.id}}">{{i.sub_space_name}}</a></p>
-                                                </div>
-
-                                            </td>
-                                            <td>
-                                                <div class="profile-image d-flex align-items-center">
-                                                    {% for j in i.invite_user_details_id.all %}
-                                                    <img src="./media/{{j.photo}}">
-                                                    {% endfor %}
-                                                    <!-- <div class="circle-user">
-                                                        <i class="ion-plus"></i>5
-                                                    </div>
-                                                    <div class="circle-plus-brdr">
-                                                        <i class="fa fa-plus"></i>
-                                                    </div> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="files">
-                                                    <i class="md-attach-file"></i><span>{{i.sub_space_attachment.count}}</span> &ensp;
-                                                    <i class="ion-checkmark-circled"></i> <span>0/{{i.sub_space_checklist.count}}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {% if i.priority == "Urgent" %}
-                                                <img src="../static/assets/images/bell.png" class="img-fluid danger-icon">
-
-                                                {% elif i.priority == "Important" %}
-                                                <img src="../static/assets/images/danger.png" class="img-fluid danger-icon">
-
-                                                {% elif i.priority == "Medium" %}
-                                                <img src="../static/assets/images/greendot.png" class="img-fluid danger-icon">
-
-                                                {% elif i.priority == "Low" %}
-                                                <img src="../static/assets/images/bluearrow.png" class="img-fluid danger-icon">
-
-                                                {% endif %}
-                                               {{i.priority}}
-                                            </td>
-
-                                            <td> 
-                                                {% if request.user.id|due_date_check_sub_space:i.id == True %}
-                                                <span  class="badge badge-size badge-pill badge-danger"><i class="ion-calendar"></i>&ensp;{{i.Planning_end_date|safe}}</span>
-
-                                                {% else %}
-                                                <i class="ion-calendar"></i>&ensp;{{i.Planning_end_date|safe}}
-
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <span style="background-color: {{i.bucket_mapping_id.status_color}};"   class="badge badge-size badge-pill">{{i.bucket_mapping_id}}</span>
-                                            </td>
-                                            <td>
-
-                                                <button type="button" class="btn btn-more-data waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">
-                                                <i class="md-more-vert"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="view_project_page?sub_space_id={{i.id}}" class="dropdown-item">View Project</a></li>
-                                                    <li><a href="#" class="dropdown-item">Another action</a></li>
-                                                    <li><a href="#" class="dropdown-item">Something else here</a></li>
-                                                    <li><a href="#" class="dropdown-item">Separated link</a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                       
 
                                         {% elif request.user.user_details_authuser.all.0.user_type == 'company_admin' %}
                                         <tr>

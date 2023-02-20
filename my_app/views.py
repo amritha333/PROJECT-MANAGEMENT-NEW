@@ -19,6 +19,7 @@ class signup(TemplateView):
         email = self.request.POST.get("email")
         Phone = self.request.POST.get("Phone")
         password = self.request.POST.get("password")
+        name = self.request.POST.get("name")
         Photo = None
         try:
             Photo = self.request.FILES['Photo']
@@ -39,6 +40,7 @@ class signup(TemplateView):
             user_data = User_details.objects.create(
                     company_id_id = company_master_id,
                     company_name =companyname,
+                    name = name,
                     auth_user = user,
                     photo = Photo,
                     username = Username,
@@ -1271,26 +1273,10 @@ def task_edit_action(request):
 
 def project_management(request):
     today_date = datetime.today().strftime('%Y-%m-%d')
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
 
-    user_details_data = User_details.objects.get(auth_user=request.user)
+    user_details_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id)
     manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
-    else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id)
-        else:
-            member_data = User_details.objects.filter(manager_auth=request.user)
 
     role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
     status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
@@ -1322,14 +1308,12 @@ def project_management(request):
             # space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
 
-
-            
             # sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
 
     except:
         pass
 
-    if userdetails_data.user_type == "company_admin":
+    if user_details_data.user_type == "company_admin":
         space_data = space_master.objects.filter(added_user_id = request.user)
 
     context = {
@@ -1573,30 +1557,19 @@ def update_project_details(request):
     if request.method == "POST":
         sub_space_id = request.POST.get("sub_space_id",False)
         project_name = request.POST.get("project_name",False)
-        print("project_name:::::",project_name)
         tag_name = request.POST.getlist("tag_name",False)
         tag_name.pop(0)
         
         status_name = request.POST.get("status_name",False)
-        print("status_name:::::",status_name)
         progress = request.POST.get("progress",False)
-        print("progress:::::",progress)
         priority = request.POST.get("priority",False)
-        print("priority:::::",priority)
         planning_start_date = request.POST.get("planning_start_date",False)
-        print("planning_start_date:::::",planning_start_date)
         planning_end_date = request.POST.get("planning_end_date",False)
-        print("planning_end_date:::::",planning_end_date)
         actual_start_date = request.POST.get("actual_start_date",False)
-        print("actual_start_date:::::",actual_start_date)
         actual_end_date = request.POST.get("actual_end_date",False)
-        print("actual_end_date:::::",actual_end_date)
         notes = request.POST.get("notes",False)
-        print("notes:::::",notes)
         checklist_new = request.POST.getlist("checklist_new",False)
-        print("checklist_new::::",checklist_new)
         checklist_end_date = request.POST.getlist("checklist_date",False)
-        print("checklist_end_date::::::::",checklist_end_date)
         
         try :
 
@@ -1669,7 +1642,7 @@ def update_project_details(request):
             pass
 
 
-        today_date = datetime.today().strftime('%Y-%m-%d')
+        today_date = datetime.today().strftime('%d-%m-%Y')
         sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = project_name,bucket_mapping_id =status_name,progress=progress,priority=priority,Planning_start_date=planning_start_date,Planning_end_date=planning_end_date,
         Actual_start_date = actual_start_date,Actual_end_date = actual_end_date,notes = notes,updated_dt = today_date)
 
@@ -1706,6 +1679,7 @@ def update_project_details(request):
 
 def update_task_details(request):
     if request.method == "POST":
+        today_date = datetime.today().strftime('%d-%m-%Y')
         task_id = request.POST.get("task_id",False)
         task_name = request.POST.get("task_name",False)
         print("task_name:::::",task_name)
@@ -1713,44 +1687,56 @@ def update_task_details(request):
         tag_name.pop(0)
         
         status_name = request.POST.get("status_name",False)
-        print("status_name:::::",status_name)
         progress = request.POST.get("progress",False)
-        print("progress:::::",progress)
         priority = request.POST.get("priority",False)
-        print("priority:::::",priority)
         start_date = request.POST.get("start_date",False)
-        print("start_date:::::",start_date)
         end_date = request.POST.get("end_date",False)
-        print("end_date:::::",end_date)
         notes = request.POST.get("notes",False)
-        print("notes:::::",notes)
-        checklist_new = request.POST.getlist("checklist_new",False)
-        print("checklist_new:::::",checklist_new)
-        checklist_new = list(filter(None, checklist_new))
-        checkbox_checklist = request.POST.get("checkbox_checklist",False)
-        print('checkbox_checklist:',checkbox_checklist)
+        try:
+
+            checklist_new = request.POST.getlist("checklist_new",False)
+            checklist_new = list(filter(None, checklist_new))
+            checklist_end_date = request.POST.getlist("checklist_date",False)
+            new_checklist_end_date = list(filter(None, checklist_end_date))
+        except:
+            pass
+
+        try:
+
+            checkbox_checklist = request.POST.get("checkbox_checklist",False)
+            print("checkbox_checklist:::::::",checkbox_checklist)
+            Add_task_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date)
+
+        except:
+            pass
+
 
 
         try:
             removed_user = request.POST.getlist("remove_assign_user[]",False)
             for i in removed_user:
 
-                Add_task_access_user.objects.filter(add_task=task_id,invite_user_details_id=i).delete()
-                
+                user_details = User_details.objects.get(id=i)
+                data_save = Add_task_master.objects.get(id=task_id)
+                data_save.invite_user_auth_id.remove(user_details.auth_user.id)
+                data_save.invite_user_details_id.remove(i)
+
         except:
             pass
+
+
 
         try:
             add_user = request.POST.getlist("add_new_memember_list",False)
-            
             for i in add_user:
 
                 user_details = User_details.objects.get(id=i)
-                task_access_user_save = Add_task_access_user.objects.create(add_task_id=task_id,
-                invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id)
-                
+                data_save = Add_task_master.objects.get(id=task_id)
+                data_save.invite_user_auth_id.add(user_details.auth_user.id)
+                data_save.invite_user_details_id.add(i)
         except:
             pass
+
 
         try:
 
@@ -1786,12 +1772,14 @@ def update_task_details(request):
         notes = notes,updated_dt = today_date)
 
        
-
         try:
-            for k in checklist_new:
-                Add_task_checklist.objects.create(add_task_id_id=task_id,item_name=k,updated_by = request.user,updated_dt=today_date)
+            zip_objects = zip(checklist_new,new_checklist_end_date)
+            for m,d in zip_objects:
+                Add_task_checklist.objects.create(add_task_id_id=task_id,
+                item_name = m,due_date = d,updated_by = request.user,updated_dt=today_date)
         except:
             pass
+
                
         add_task = Add_task_master.objects.get(id=task_id)
         for t in tag_name:
@@ -1861,22 +1849,18 @@ def view_project_page(request):
     sub_space_id = request.GET.get("sub_space_id")
     sub_space_data = sub_space_master.objects.get(id=sub_space_id)
     space_id = sub_space_data.space_id
-
     space_data = space_master.objects.get(id=space_id.id)
 
-    sub_space_member_data = sub_space_master.objects.get(id=sub_space_id)
-
     task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None )
+
 
     user_details_data = User_details.objects.get(auth_user=request.user)
     dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
 
     task_data_time = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id)
-    print("task_data_time::::::",task_data_time)
     task_details = list(task_data_time.values_list('id',flat=True))
     time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id = request.user)
-    print("time_details:::::",time_details)
     total_hr = ""
     try : 
         total_price = sum(time_details.values_list('total_second', flat=True))
@@ -1885,31 +1869,11 @@ def view_project_page(request):
         pass
 
 
-
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
-    user_details_data = User_details.objects.get(auth_user=request.user)
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
-    else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id)
-        else:
-            member_data = User_details.objects.filter(manager_auth=request.user)
-
+    user_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_data.company_id)
 
     user_access_generate = Project_user_access_link.objects.filter(project_id_id=sub_space_id).first()
     context = {
-        "sub_space_member_data" : sub_space_member_data,
         "space_data":space_data,
         "sub_space_data":sub_space_data,
         "today_date":today_date,
@@ -1925,7 +1889,8 @@ def view_project_page(request):
         "time_details":time_details,
         "total_hr":total_hr,
         'user_access_generate':user_access_generate,
-        "member_data":member_data
+        "member_data":member_data,
+       
     }
     return render(request, 'view_project_page.html',context)
 
@@ -1979,11 +1944,15 @@ def task_management_action(request):
         task_status = "Main_task",
         created_by = request.user
         )
+
+
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
-            task_access_user_save = Add_task_access_user.objects.create(add_task_id=task_master_save.id,
-            invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id
-            )
+            task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
+            task_master_save.invite_user_details_id.add(i)
+
+            
+            
 
         zip_objects = zip(new_checklist_item,new_checklist_end_date)
 
@@ -2038,6 +2007,7 @@ def convert(seconds):
 
 
 def view_task_page(request):
+    parent_id = request.GET.get("parent_id")
    
     from.models import progress,priority
     from datetime import datetime
@@ -2082,7 +2052,6 @@ def view_task_page(request):
 
 
     time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id = request.user)
-    print("time_details::::::::",time_details)
     total_hr = ""
     try : 
         total_price = sum(time_details.values_list('total_second', flat=True))
@@ -2101,42 +2070,22 @@ def view_task_page(request):
 
     space_data = space_master.objects.get(id=space_id.id)
 
-    task_member_data = Add_task_access_user.objects.filter(add_task=task_id)
-
-    # task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id )
-
+  
     user_details_data = User_details.objects.get(auth_user=request.user)
     dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
 
 
-
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
-    user_details_data = User_details.objects.get(auth_user=request.user)
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
+    status =  request.GET.get("status")
+    if status == "task":
+        suggestion_user = sub_space_master.objects.get(id=sub_space_data.id)
+        pass
     else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id)
-        else:
-            member_data = User_details.objects.filter(manager_auth=request.user)
+        suggestion_user = Add_task_master.objects.get(id=parent_id)
+        pass
 
-
-
-    parent_id = task_id
 
     context = {
-        "task_member_data" : task_member_data,
         "space_data":space_data,
         "sub_space_data":sub_space_data,
         "task_data":task_data,
@@ -2146,7 +2095,6 @@ def view_task_page(request):
         "priority":priority,
         "today_date":today_date,
         "sub_task_data":sub_task_data,
-        'parent_id':parent_id,
         "dynamic_status":dynamic_status,
         "tags_name":tags_name,
 
@@ -2155,7 +2103,10 @@ def view_task_page(request):
         "refresh_time_diff":refresh_time_diff,
         "time_details":time_details,
         'total_hr':total_hr,
-        "member_data":member_data
+        'parent_id':parent_id,
+        'suggestion_user':suggestion_user,
+        'task_id':task_id
+      
     }
     return render(request, 'view_task_page.html',context)
 
@@ -2304,11 +2255,13 @@ def sub_task_action(request):
         created_by = request.user
         )
 
+
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
-            task_access_user_save = Add_task_access_user.objects.create(add_task_id=task_master_save.id,
-            invite_user_details_id_id =i,invite_user_auth_id_id=user_details.auth_user.id
-            )
+            task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
+            task_master_save.invite_user_details_id.add(i)
+
+            
 
         messages.success(request,"Successfully added Sub Task")
         return redirect(request.META['HTTP_REFERER'])

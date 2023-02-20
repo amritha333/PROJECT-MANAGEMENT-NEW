@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import status_name_master,Add_task_master,Add_task_access_user,sub_space_master
+from .models import status_name_master,Add_task_master,sub_space_master
 
 
 class sub_space_master_Serializer(serializers.ModelSerializer):

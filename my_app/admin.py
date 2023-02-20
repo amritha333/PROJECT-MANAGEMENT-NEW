@@ -21,7 +21,6 @@ admin.site.register(sub_space_comments)
 admin.site.register(tags_name_master)
 
 admin.site.register(Add_task_master)
-admin.site.register(Add_task_access_user)
 admin.site.register(Add_task_checklist)
 admin.site.register(Add_task_attachment)
 admin.site.register(Add_task_comments)

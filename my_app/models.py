@@ -213,12 +213,10 @@ class Add_task_master(common_table):
     end_date = models.DateField(blank=True)
     task_status = models.CharField(max_length=50,null=True)
     tag_id = models.ManyToManyField(tags_name_master,related_name="Add_task_master_tag")
-    
+    invite_user_details_id = models.ManyToManyField(User_details,related_name="add_task_user_id")
+    invite_user_auth_id = models.ManyToManyField(User,related_name="add_task_auth_id")
 
-class Add_task_access_user(common_table):
-    add_task = models.ForeignKey(Add_task_master,related_name="add_task_space",on_delete=models.CASCADE,null=True)
-    invite_user_details_id = models.ForeignKey(User_details,related_name="add_task_user",on_delete=models.CASCADE,null=True)
-    invite_user_auth_id = models.ForeignKey(User,related_name="add_task_auth",on_delete=models.CASCADE,null=True)
+
 
 class Add_task_checklist(common_table):
     add_task_id = models.ForeignKey(Add_task_master,related_name="add_task_checklist",on_delete=models.CASCADE,null=True)
