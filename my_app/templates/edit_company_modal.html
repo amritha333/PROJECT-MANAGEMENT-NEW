@@ -1,3 +1,11 @@
+<style>
+    .capital 
+{
+    text-transform:capitalize;
+}
+</style> 
+
+
 <form name="comany_form" method="POST" action="edit_company_action" enctype="multipart/form-data">
     {% csrf_token %}
     <div id="edit_company_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
@@ -15,7 +23,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="company_name" class="control-label">Company Name</label>
-                                <input type="text" required autocomplete="off" value="{{company.company_name}}" name="companyname" id="company_name" class="form-control" placeholder="Company Name">
+                                <input type="text" required autocomplete="off" value="{{company.company_name}}" name="companyname" id="company_name" class="form-control capital" placeholder="Company Name">
                             </div>
                         </div>
 
@@ -34,37 +42,65 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="website" class="control-label">Website</label>
+                                {% if company.website == None %}
+                                <input type="url" required name="website"  id="website" class="form-control" placeholder="yourwebsite.com">
+
+
+                                {% else %}
+
                                 <input type="url" required name="website" value="{{company.website}}" id="website" class="form-control" placeholder="yourwebsite.com">
+                                {%endif%}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="email" class="control-label">Email</label>
+                                {% if company.email == None %}
+                                <input type="email" required name="email" id="email" class="form-control" placeholder="yourmail@gamil.com">
+                                {% else %}
                                 <input type="email" required name="email" value="{{company.email}}" id="email" class="form-control" placeholder="yourmail@gamil.com">
+                                {%endif%}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                               
                                 <label for="tax_no" class="control-label">Tax No.</label>
+                                {% if company.tax_number == None %}
+                                <input type="text" required placeholder="Tax No."  class="form-control" name="tax_no" id="tax_no">
+                                {% else %}
                                 <input type="text" required placeholder="Tax No." value="{{company.tax_number}}" class="form-control" name="tax_no" id="tax_no">
+                                {%endif%}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mobile_no" class="control-label">Mobile</label>
+                                {% if company.mobile == None %}
+                                <input type="text" required class="form-control numberField"  name="mobile_no" id="mobile_no" placeholder="Mobile">
+                                {% else %}
                                 <input type="text" required class="form-control numberField" value="{{company.mobile}}" name="mobile_no" id="mobile_no" placeholder="Mobile">
+                                {%endif%}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="phone" class="control-label">Phone</label>
+                                {% if company.phone == None %}
+                                <input type="text" required name="phone" id="phone"  class="form-control numberField1" placeholder="Phone">
+                                {% else %}
                                 <input type="text" required name="phone" id="phone" value="{{company.phone}}" class="form-control numberField1" placeholder="Phone">
+                                {%endif%}
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="address" class="control-label">Address</label>
+                                {% if company.address == None %}
+                                <textarea required name="address" id="address" class="form-control" placeholder="Your Address"></textarea>
+                                {% else %}
                                 <textarea required name="address" id="address" class="form-control" placeholder="Your Address">{{company.address}}</textarea>
+                                {%endif%}
                             </div>
                         </div>
                     </div>

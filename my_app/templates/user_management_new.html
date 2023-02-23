@@ -2,6 +2,13 @@
 {% load static %}
 {% block content %}
 
+<style>
+    .capital 
+{
+    text-transform:capitalize;
+}
+</style> 
+
 <div class="content-right">
     <div class="margin-class-this chat-section">
         <div class="row">
@@ -66,7 +73,7 @@
 <div id="user_edit_div"></div>
 <div id="user_delete_div"></div>
 
-<form name="user_form" method="POST" action="user_management_action" enctype="multipart/form-data">
+<form name="user_form" class="submit_action" method="POST" action="user_management_action" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="user_type" value="company_admin">
     <div id="user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
@@ -83,14 +90,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">Name</label>
-                                <input type="text" class="form-control" name="name" id="field-1" placeholder="Yourname">
+                                <input type="text" autocomplete="off" required class="form-control capital" name="name" id="field-1" placeholder="Yourname">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">User Image</label>
                                 <div class="input-group uploadFile1">
-                                    <input type="file" class="inputfile form-control" name="photo" >
+                                    <input type="file" class="inputfile form-control" required name="photo" >
                                     <div class="input-group-append">
                                         <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
                                     </div>
@@ -100,7 +107,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="company_name" class="control-label">Company Name</label>
-                                <input type="text" class="form-control" list="company_data" autocomplete="off" name="companyname" id="company_name" placeholder="Company Name">
+                                <input type="text" required class="form-control" list="company_data" autocomplete="off" name="companyname" id="company_name" placeholder="Company Name">
                                 <datalist id="company_data">
                                     {% for c in company_data %}
                                         <option value="{{c.company_name}}"></option>
@@ -111,19 +118,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="Username">
+                                <input type="text" required name="username" id="username_id" class="form-control" placeholder="Username">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">Phone</label>
-                                <input type="text" name="phone" class="form-control numberField" placeholder="Phone Number">
+                                <input type="text" required name="phone" class="form-control numberField" placeholder="Phone Number">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-2" class="control-label">Email</label>
-                                <input name="email" type="email" class="form-control" id="field-2" placeholder="yourmail@gmail.com">
+                                <input name="email" required type="email" class="form-control" id="email_id" placeholder="yourmail@gmail.com">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -131,11 +138,11 @@
                                 <label for="field-1" class="control-label">Password Option</label>
                                 <div class="my-1">
                                     <div class="radio form-check-inline">
-                                        <input type="radio" id="Manual"  name="password_option" value="Manual">
+                                        <input required type="radio" id="Manual"  name="password_option" value="Manual">
                                         <label for="Manual"> Manual </label>
                                     </div>
                                     <div class="radio form-check-inline">
-                                        <input type="radio" id="Automatic"  name="password_option" value="Automatic">
+                                        <input required type="radio" id="Automatic"  name="password_option" value="Automatic">
                                         <label for="Automatic"> Automatic </label>
                                     </div>
                                 </div>
@@ -247,6 +254,113 @@
             $('#message_new').html('Not Matching').css('color', 'red');
         }
     });
+</script>
+
+
+
+<script>
+    $(".submit_action").submit(function(){
+
+        event.preventDefault()
+        $.ajax({                    
+        url: "user_details_check",                    
+        data: {
+          username : $("#username_id").val(),
+          password2 : $("#password2").val(),
+          password3 : $("#password3").val(),
+          email_id : $("#email_id").val()
+
+        },
+        success: function (data) {  
+            status = data['message']
+            if(status == "usernameTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: 'username already exists'
+                });
+            }
+            else if(status == "passwordTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "password doesn't match"
+                });
+            }
+            else if(status == "emailTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Email id already exist"
+                });
+            }
+            else if(status == "password_blankTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Please enter a password"
+                });
+            }
+            else{
+               
+                document.forms["user_form"].submit();
+                
+            }
+        }
+      });
+    })
 </script>
 
 

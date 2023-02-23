@@ -3,6 +3,12 @@
 {% load permissions %}
 {% block content %}
 
+<style>
+    .capital 
+{
+    text-transform:capitalize;
+}
+</style>
 
                 
 
@@ -105,7 +111,7 @@ aria-hidden="true" style="display: none">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="control-label">Name</label>
-                        <input type="text" required name="name" required class="form-control" id="field-1" placeholder="Yourname">
+                        <input type="text" required name="name" required class="form-control capital" id="field-1" placeholder="Yourname">
                     </div>
                 </div>
                 <div class="col-md-6">

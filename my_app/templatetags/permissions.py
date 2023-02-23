@@ -62,6 +62,30 @@ def due_date_check_task(value,args):
             pass
 
 
+
+@register.filter(name='due_date_project_checklist')
+def due_date_project_checklist(value,args):
+    due_date_data = sub_space_checklist.objects.filter(due_date__lt=today)
+    for i in due_date_data :
+        if i.id == args :
+            return True
+        else:
+            pass
+
+
+
+@register.filter(name='due_date_task_checklist')
+def due_date_task_checklist(value,args):
+    due_date_data = Add_task_checklist.objects.filter(due_date__lt=today)
+    for i in due_date_data :
+        if i.id == args :
+            return True
+        else:
+            pass
+
+
+
+
 @register.filter
 def index_f(value, args):
     s1 = "/" in args

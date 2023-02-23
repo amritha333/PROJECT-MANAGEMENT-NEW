@@ -1,0 +1,99 @@
+<form name="tags_form" method="POST" action="event_depended_action">
+    {% csrf_token %}
+
+<div id="event_depended_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true" style="display: none">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div>
+<!--        <div class="modal-header">-->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title mt-0">{{task_data.task_name}}</h4>
+        </div>
+        <input type="hidden" value="{{task_data.id}}" name="task_id">
+        <div class="modal-body mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Bucket</label>
+                        <select class="form-control" name="bucket">
+                            <option  value="{{task_data.bucket_mapping_id.id}}">{{task_data.bucket_mapping_id}}</option>
+                            {% for b in bucket_data %}
+                            {% if task_data.bucket_mapping_id.status_name == b.status_name %}
+
+                            {% else %}
+                            <option  value="{{b.id}}">{{b.status_name}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+<!--                        <input type="text" value="{{task_data.bucket_mapping_id.status_name}}" name="tags_name"  class="form-control" id="field-1" placeholder="">-->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Progress</label>
+                        <select class="form-control" name="progress">
+                            <option value="{{task_data.progress}}" selected="">{{task_data.progress}}</option>
+                            {% for p in progress %}
+
+                            {% if task_data.progress == p.0 %}
+                            {% else %}
+                                <option value="{{p.0}}">{{p.0}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+<!--                        <input type="text" value="{{task_data.progress}}" name="tags_name"  class="form-control" id="field-1" placeholder="">-->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Start Date</label>
+                        <input type="date" value="{{task_data.start_date|safe}}" name="start_date"  class="form-control" id="field-1" placeholder="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">End Date</label>
+                        <input type="date" value="{{task_data.end_date|safe}}" name="end_date"  class="form-control" id="field-1" placeholder="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="field-1" class="control-label">Priority</label>
+                        <select class="form-control"  name="priority">
+                            <option value="{{task_data.priority}}" selected="">{{task_data.priority}}</option>
+                           {% for p in priority %}
+
+                            {% if task_data.priority == p.0 %}
+                            {% else %}
+                                <option value="{{p.0}}">{{p.0}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+<!--                        <input type="text" value="{{task_data.priority}}" name="tags_name"  class="form-control" id="field-1" placeholder="">-->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+
+            <button type="submit" style="background-color:#f9365f!important;border: none!important;"
+                class="btn btn-info waves-effect waves-light">Save </button>
+        </div>
+    </div>
+</div>
+</div>
+
+</form>
+
+<script>
+    $('#colorpicker1').on('input', function () {
+        $('#hexcolor1').val(this.value);
+    });
+    $('#hexcolor1').on('input', function () {
+        $('#colorpicker1').val(this.value);
+    });
+</script>

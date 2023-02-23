@@ -10,7 +10,7 @@ urlpatterns = [
     path('',views.user_login,name=''),
     path('index',views.index,name='index'),
     path('calendar',views.calendar,name='calendar'),
-    path('chat',views.chat,name='chat'),
+    
     path('company_management_new',views.company_management_new,name='company_management_new'),
     path('edit_company_modal',views.edit_company_modal,name='edit_company_modal'),
     path('edit_company_action',views.edit_company_action,name='edit_company_action'),
@@ -67,7 +67,6 @@ urlpatterns = [
     path('tags_management',views.tags_management,name='tags_management'),
     path('new_tags',views.new_tags,name='new_tags'),
     path('tags_add_action',views.tags_add_action,name='tags_add_action'),
-    path('demo',views.demo,name='demo'),
     path('signup',views.signup.as_view(),name='signup'),
     path('project_management_board',views.project_management_board,name='project_management_board'),
     path('get_group_details',views.get_group_details,name='get_group_details'),
@@ -83,6 +82,7 @@ urlpatterns = [
     path('update_task_status',views.update_task_status,name='update_task_status'),
 
     path('get_project_comment',views.get_project_comment,name='get_project_comment'),
+    path('get_task_comment',views.get_task_comment,name='get_task_comment'),
 
     path('generate_client_access_link',views.generate_client_access_link,name='generate_client_access_link'),
     path('open_project/<str:name>',views.open_project,name='open_project'),
@@ -97,6 +97,32 @@ urlpatterns = [
     path('memeber_edit_action',views.memeber_edit_action,name='memeber_edit_action'),
     path('edit_group_modal',views.edit_group_modal,name='edit_group_modal'),
     path('space_edit_action',views.space_edit_action,name='space_edit_action'),
+
+    path('test_demo',views.test_demo,name='test_demo'),
+
+
+
+    path('chat',views.chat,name='chat'),
+    path('chat_inner_page_action',views.chat_inner_page_action,name='chat_inner_page_action'),
+    path('user_upload_chat_file_action',views.user_upload_chat_file_action,name='user_upload_chat_file_action'),
+
+
+
+    # calendar urls
+    path('calendar_detail',views.calendar_detail,name='calendar_detail'),
+    path('get_group_details_calendar',views.get_group_details_calendar,name='get_group_details_calendar'),
+    path('calendar_new',views.calendar_new,name='calendar_new'),
+    path('all_events',views.all_events,name='all_events'),
+    path('event_depended',views.event_depended,name='event_depended'),
+    path('event_depended_action',views.event_depended_action,name='event_depended_action'),
+
+    path('calendar_task',views.calendar_task,name='calendar_task'),
+    path('event_task',views.event_task,name='event_task'),
+    path('task_depended',views.task_depended,name='task_depended'),
+    path('task_depended_action',views.task_depended_action,name='task_depended_action'),
+
+    path('user_details_check',views.user_details_check,name='user_details_check'),
+    
 
 
 

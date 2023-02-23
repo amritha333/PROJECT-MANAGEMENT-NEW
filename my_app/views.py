@@ -113,36 +113,10 @@ def calendar(request):
 
 def chat(request):
     member_data = ""
-    try:
-
-        user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-        user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-        user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
-        user_details_data = User_details.objects.get(auth_user=request.user)
-        if user_manage_all_permission:
-            active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(active_user_id.active_auth_user_id.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(auth_user = request.user)
-        else:
-            if user_details_data.user_type == "company_admin":
-                user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-                child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-                child_user_id.append(int(request.user.id))
-                member_data = User_details.objects.filter(created_by__in=child_user_id) 
-                member_data1 = User_details.objects.filter(auth_user=request.user) 
-                member_data = list(chain(member_data1,member_data))
-
-            else:
-                member_data = User_details.objects.filter(manager_auth=request.user)
-
-    except:
-        pass
+    user_details_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id).exclude(auth_user=request.user)
 
     context = {
-        "user_details_data":user_details_data,
         "member_data":member_data
     }
     return render(request, 'chat.html',context)
@@ -158,11 +132,10 @@ def meeting(request):
         user_details_data = User_details.objects.get(auth_user=request.user)
         data = User_details.objects.get(auth_user=request.user)
         meeting_data = Add_meeting.objects.filter(invite_user_id__id=data.id).order_by('-id')
-        status_name = status_name_master.objects.filter(company_id=userdetails_data.company_id)
+        status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
 
     except:
         pass
-    user_details_data = User_details.objects.get(auth_user=request.user)
     context = {
         "user_details_data":user_details_data,
         'meeting_data':meeting_data,
@@ -296,7 +269,8 @@ import cv2
 
 def company_add_action(request):
     if request.method == "POST":
-        companyname = request.POST.get("companyname",False)
+        companyname1 = request.POST.get("companyname",False)
+        companyname = companyname1.title()
         logo =  request.FILES['logo']
         fixed_height = 400
         image = Image.open(logo)
@@ -333,13 +307,15 @@ def company_add_action(request):
                 status = "True"
                 )
             messages.success(request,"Successfully added company details")
-            return redirect('company_management')
+            return redirect('company_management_new')
 
 
 
 def edit_company_action(request):
     if request.method == "POST":
-        companyname = request.POST.get("companyname", False)
+        companyname1 = request.POST.get("companyname", False)
+        companyname = companyname1.title()
+
         company_id = request.POST.get("company_id",False)
         tax_no = request.POST.get("tax_no", False)
         mobile_no = request.POST.get("mobile_no", False)
@@ -460,6 +436,37 @@ def user_edit_modal(request):
     }
     return render(request,"user_edit_modal.html",context)
 
+
+def user_details_check(request):
+    username = request.GET.get("username",False)
+    password1 = request.GET.get("password2",False)
+    password2 = request.GET.get("password3",False)
+    email_id = request.GET.get("email_id",False)
+
+    data = []
+    if User.objects.filter(username=username).exists():
+        data = {"message":"usernameTrue"}
+        return JsonResponse(data,safe=False)
+    
+    elif password1 != password2:
+        data = {"message":"passwordTrue"}
+        return JsonResponse(data,safe=False)
+    
+    elif User_details.objects.filter(email=email_id).exists():
+        data = {"message":"emailTrue"}
+        return JsonResponse(data,safe=False)
+    
+    elif password1 == "":
+        data = {"message":"password_blankTrue"}
+        return JsonResponse(data,safe=False)
+
+    else:
+        data = {"message":"False"}
+        return JsonResponse(data,safe=False)
+
+
+
+
 @api_view(['POST'])
 def user_management_action(request):
     data = request.data
@@ -482,10 +489,13 @@ def user_management_action(request):
     else:
         password = request.POST.get("password",False)
     company_master_id = ''
-    if User_details.objects.filter(username=data['username']).exists():
+    if User.objects.filter(username=data['username']).exists():
         messages.warning(request,"Username already exists")
         return redirect(request.META['HTTP_REFERER'])
-
+    elif User_details.objects.filter(email=data['email']).exists():
+        messages.warning(request,"Email already exists")
+        return redirect(request.META['HTTP_REFERER'])
+   
     else:
 
         # super_admin add company admin(navabsir)
@@ -504,7 +514,7 @@ def user_management_action(request):
                     company_name =data['companyname'],
                     auth_user = user,
                     photo = image_new1,
-                    name = data['name'],
+                    name = data['name'].title(),
                     username = data['username'],
                     password_option = data['password_option'],
                     password = password,
@@ -541,7 +551,7 @@ def user_management_action(request):
                     company_name =login_user_data.company_id.company_name,
                     auth_user = user,
                     photo = image_new1,
-                    name = data['name'],
+                    name = data['name'].title(),
                     username = data['username'],
                     password_option = data['password_option'],
                     password = password,
@@ -582,7 +592,7 @@ def user_management_action(request):
                     company_name =login_user_data.company_id.company_name,
                     auth_user = user,
                     photo = image_new1,
-                    name = data['name'],
+                    name = data['name'].title(),
                     username = data['username'],
                     password_option = data['password_option'],
                     password = password,
@@ -624,75 +634,98 @@ def edit_company_admin_user(request):
         photo = ""
     user_data = User_details.objects.get(id=data['company_admin_id'])
     user_update = User.objects.get(username=data['username_old'])
-    user_update.username = data['username']
-    user_update.save()
-    if (user_data.name == data['name']) and (user_data.company_name == data['companyname']) and (user_data.username == data['username']) and (user_data.phone == data['phone']) and (user_data.email == data['email']) and (photo == "") and (data['password_option'] == "no_change"):
-        messages.warning(request, "No Updates !!!")
-        return redirect(request.META['HTTP_REFERER'])
-    elif (data['password'] != data['confirm_password']):
-        messages.warning(request, "Password Doesnot Match !!!")
-        return redirect(request.META['HTTP_REFERER'])
-    elif(user_data.username == data['username']):
-        data_user = User_details.objects.filter(id=data['company_admin_id']).update(
-            name=data['name'],
-            company_name=data['companyname'],
-            username=data['username'],
-            phone=data['phone'],
-            email=data['email'],
-        )
-        if (data['password_option'] == "change_password"):
-            user_update.set_password(data['password'])
-            user_update.save()
-            user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
+
+    if user_update.username != data['username']:
+        
+        if User.objects.filter(username=data['username']).exists():
+            messages.warning(request,"Username already exists")
+            return redirect(request.META['HTTP_REFERER'])
         else:
             pass
-        try:
-            fixed_height = 128
-            image = Image.open(photo)
-            print("image.size", image.size)
-            width_size = int(fixed_height / image.height * image.width)
-
-            resized_image = image.resize((width_size, fixed_height))
-            print("resizeeeeeed:", resized_image.size)
-            from django.conf import settings
-            resized_image.save("media/user_image/" + photo.name)
-            image_new1 = 'user_image/' + photo.name
-            data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
-        except:
+    elif user_data.email != data['email']:
+        if User_details.objects.filter(email=data['email']).exists():
+            messages.warning(request,"Email already exists")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
             pass
-    elif User_details.objects.filter(username=data['username']).exists():
-        messages.warning(request,"Username already exists")
-        return redirect(request.META['HTTP_REFERER'])
+    elif data['password'] != data['confirm_password']:
+        if data['password'] != data['confirm_password']:
+
+            messages.warning(request,"password doesn't match")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            pass
     else:
-        data_user =User_details.objects.filter(id=data['company_admin_id']).update(
-            name=data['name'],
-            company_name=data['companyname'],
-            username=data['username'],
-            phone=data['phone'],
-            email=data['email'],
-        )
-        if (data['password_option'] == "change_password"):
-            user_update.set_password(data['password'])
-            user_update.save()
-            user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
-        else:
-            pass
-        try:
-            fixed_height = 128
-            image = Image.open(photo)
-            print("image.size", image.size)
-            width_size = int(fixed_height / image.height * image.width)
 
-            resized_image = image.resize((width_size, fixed_height))
-            print("resizeeeeeed:", resized_image.size)
-            from django.conf import settings
-            resized_image.save("media/user_image/" + photo.name)
-            image_new1 = 'user_image/' + photo.name
-            data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
-        except:
-            pass
-    messages.success(request, "Successfully updated User details")
-    return redirect('user_management_new')
+        user_update.username = data['username']
+        user_update.save()
+        if (user_data.name == data['name']) and (user_data.company_name == data['companyname']) and (user_data.username == data['username']) and (user_data.phone == data['phone']) and (user_data.email == data['email']) and (photo == "") and (data['password_option'] == "no_change"):
+            messages.warning(request, "No Updates !!!")
+            return redirect(request.META['HTTP_REFERER'])
+        elif (data['password'] != data['confirm_password']):
+            messages.warning(request, "Password Doesnot Match !!!")
+            return redirect(request.META['HTTP_REFERER'])
+        elif(user_data.username == data['username']):
+            data_user = User_details.objects.filter(id=data['company_admin_id']).update(
+                name=data['name'],
+                company_name=data['companyname'],
+                username=data['username'],
+                phone=data['phone'],
+                email=data['email'],
+            )
+            if (data['password_option'] == "change_password"):
+                user_update.set_password(data['password'])
+                user_update.save()
+                user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
+            else:
+                pass
+            try:
+                fixed_height = 128
+                image = Image.open(photo)
+                print("image.size", image.size)
+                width_size = int(fixed_height / image.height * image.width)
+
+                resized_image = image.resize((width_size, fixed_height))
+                print("resizeeeeeed:", resized_image.size)
+                from django.conf import settings
+                resized_image.save("media/user_image/" + photo.name)
+                image_new1 = 'user_image/' + photo.name
+                data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
+            except:
+                pass
+        elif User_details.objects.filter(username=data['username']).exists():
+            messages.warning(request,"Username already exists")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            data_user =User_details.objects.filter(id=data['company_admin_id']).update(
+                name=data['name'],
+                company_name=data['companyname'],
+                username=data['username'],
+                phone=data['phone'],
+                email=data['email'],
+            )
+            if (data['password_option'] == "change_password"):
+                user_update.set_password(data['password'])
+                user_update.save()
+                user_data_update = User_details.objects.filter(id=data['company_admin_id']).update(password=data['password'])
+            else:
+                pass
+            try:
+                fixed_height = 128
+                image = Image.open(photo)
+                print("image.size", image.size)
+                width_size = int(fixed_height / image.height * image.width)
+
+                resized_image = image.resize((width_size, fixed_height))
+                print("resizeeeeeed:", resized_image.size)
+                from django.conf import settings
+                resized_image.save("media/user_image/" + photo.name)
+                image_new1 = 'user_image/' + photo.name
+                data_user = User_details.objects.filter(id=data['company_admin_id']).update(photo=image_new1)
+            except:
+                pass
+        messages.success(request, "Successfully updated User details")
+        return redirect('user_management_new')
 
 
 
@@ -700,7 +733,9 @@ def user_delete_modal(request):
     if request.method == "POST":
         user_id = request.POST.get("user_id")
         data = User_details.objects.get(id=user_id)
+        auth_data = data.auth_user
         data.delete()
+        auth_data.delete()
         messages.success(request, "User Deleted Successfully..")
         return redirect('user_management_new')
     else:
@@ -811,15 +846,10 @@ def memeber_edit_action(request):
     user_update = User.objects.get(username=data['username_old'])
     user_update.username = data['username']
     user_update.save()
-    # if (user_data.name == data['name']) and (user_data.username == data['username']) and (user_data.phone == data['phone']) and (user_data.email == data['email']) and (photo == "") and (data['password_option'] == "no_change") and (user_data.manager_auth.username == data['manager_id']):
-    #     messages.warning(request, "No Updates !!!")
-    #     return redirect(request.META['HTTP_REFERER'])
-    # elif (data['password'] != data['confirm_password']):
-    #     messages.warning(request, "Password Doesnot Match !!!")
-    #     return redirect(request.META['HTTP_REFERER'])
+   
     if(user_data.username == data['username']):
         data_user = User_details.objects.filter(id=data['member_id']).update(
-            name=data['name'],
+            name=data['name'].title(),
             username=data['username'],
             phone=data['phone'],
             email=data['email'],
@@ -880,7 +910,7 @@ def memeber_edit_action(request):
         return redirect(request.META['HTTP_REFERER'])
     else:
         data_user =User_details.objects.filter(id=data['member_id']).update(
-            name=data['name'],
+            name=data['name'].title(),
             username=data['username'],
             phone=data['phone'],
             email=data['email'],
@@ -968,22 +998,19 @@ def role_management(request):
 def edit_role_management(request):
     id = request.GET.get("id")
     role_data = Role_master.objects.get(id=id)
-    role_company = Role_mapping.objects.get(role_master_id_id=role_data.id,navbar_name="Company")
-    role_user = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="User")
     role_role = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Role")
     role_team = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Team member")
     role_tags = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Tags")
     role_status = Role_mapping.objects.get(role_master_id_id=role_data.id, navbar_name="Status")
     context = {
         'role_data':role_data,
-        'role_company':role_company,
-        'role_user': role_user,
         'role_role': role_role,
         'role_team': role_team,
         'role_tags': role_tags,
         'role_status': role_status,
     }
     return render(request, "edit_role_management.html", context)
+
 
 
 def delete_role_management(request):
@@ -1002,48 +1029,24 @@ def delete_role_management(request):
 def edit_role_action(request):
     if request.method == "POST":
         role_data = request.POST.get('role_data')
-        role_company = request.POST.get('role_company')
-        role_user = request.POST.get('role_user')
         role_role = request.POST.get('role_role')
         role_team = request.POST.get('role_team')
         role_tags = request.POST.get('role_tags')
         role_status = request.POST.get('role_status')
 
         data_role = Role_master.objects.get(id=role_data)
-        data_role_company = Role_mapping.objects.get(id=role_company)
-        data_role_user = Role_mapping.objects.get(id=role_user)
         data_role_role = Role_mapping.objects.get(id=role_role)
         data_role_team = Role_mapping.objects.get(id=role_team)
         data_role_tag = Role_mapping.objects.get(id=role_tags)
         data_role_status = Role_mapping.objects.get(id=role_status)
 
-        if ((data_role.role_name == request.POST.get('name')) and (data_role.description == request.POST.get('description')) and (str(data_role_company.read) == str(request.POST.get('company_read',False))) and (str(data_role_company.write) == str(request.POST.get('company_write',False))) and (str(data_role_company.edit) == str(request.POST.get('company_edit',False))) and (str(data_role_company.delete) == str(request.POST.get('company_delete',False))) and (str(data_role_company.view_all) == str(request.POST.get('company_view_all',False))) and (str(data_role_company.manage_all) == str(request.POST.get('company_manage_all',False)))  and (str(data_role_user.read) == str(request.POST.get('user_read',False))) and (str(data_role_user.write) == str(request.POST.get('user_write',False))) and (str(data_role_user.edit) == str(request.POST.get('user_edit',False))) and (str(data_role_user.delete) == str(request.POST.get('user_delete',False))) and (str(data_role_user.view_all) == str(request.POST.get('user_view_all',False))) and (str(data_role_user.manage_all) == str(request.POST.get('user_manage_all',False))) and (str(data_role_role.read) == str(request.POST.get('role_read',False))) and (str(data_role_role.write) == str(request.POST.get('role_write',False))) and (str(data_role_role.edit) == str(request.POST.get('role_edit',False))) and (str(data_role_role.delete) == str(request.POST.get('role_delete',False))) and (str(data_role_role.view_all) == str(request.POST.get('role_view_all',False))) and (str(data_role_role.manage_all) == str(request.POST.get('role_manage_all',False))) and (str(data_role_team.read) == str(request.POST.get('team_member_read',False))) and (str(data_role_team.write) == str(request.POST.get('team_member_write',False))) and (str(data_role_team.edit) == str(request.POST.get('team_member_edit',False))) and (str(data_role_team.delete) == str(request.POST.get('team_member_delete',False))) and (str(data_role_team.view_all) == str(request.POST.get('team_member_view_all',False))) and (str(data_role_team.manage_all) == str(request.POST.get('team_member_manage_all',False))) and (str(data_role_tag.read) == str(request.POST.get('tag_read',False))) and (str(data_role_tag.write) == str(request.POST.get('tag_write',False))) and (str(data_role_tag.edit) == str(request.POST.get('tag_edit',False))) and (str(data_role_tag.delete) == str(request.POST.get('tag_delete',False))) and (str(data_role_tag.view_all) == str(request.POST.get('tag_view_all',False))) and (str(data_role_tag.manage_all) == str(request.POST.get('tag_manage_all',False))) and (str(data_role_status.read) == str(request.POST.get('status_read',False))) and (str(data_role_status.write) == str(request.POST.get('status_write',False))) and (str(data_role_status.edit) == str(request.POST.get('status_edit',False))) and (str(data_role_status.delete) == str(request.POST.get('status_delete',False))) and (str(data_role_status.view_all) == str(request.POST.get('status_view_all',False))) and (str(data_role_status.manage_all) == str(request.POST.get('status_manage_all',False)))):
+        if ((data_role.role_name == request.POST.get('name')) and (data_role.description == request.POST.get('description')) and (str(data_role_role.read) == str(request.POST.get('role_read',False))) and (str(data_role_role.write) == str(request.POST.get('role_write',False))) and (str(data_role_role.edit) == str(request.POST.get('role_edit',False))) and (str(data_role_role.delete) == str(request.POST.get('role_delete',False))) and (str(data_role_role.view_all) == str(request.POST.get('role_view_all',False))) and (str(data_role_role.manage_all) == str(request.POST.get('role_manage_all',False))) and (str(data_role_team.read) == str(request.POST.get('team_member_read',False))) and (str(data_role_team.write) == str(request.POST.get('team_member_write',False))) and (str(data_role_team.edit) == str(request.POST.get('team_member_edit',False))) and (str(data_role_team.delete) == str(request.POST.get('team_member_delete',False))) and (str(data_role_team.view_all) == str(request.POST.get('team_member_view_all',False))) and (str(data_role_team.manage_all) == str(request.POST.get('team_member_manage_all',False))) and (str(data_role_tag.read) == str(request.POST.get('tag_read',False))) and (str(data_role_tag.write) == str(request.POST.get('tag_write',False))) and (str(data_role_tag.edit) == str(request.POST.get('tag_edit',False))) and (str(data_role_tag.delete) == str(request.POST.get('tag_delete',False))) and (str(data_role_tag.view_all) == str(request.POST.get('tag_view_all',False))) and (str(data_role_tag.manage_all) == str(request.POST.get('tag_manage_all',False))) and (str(data_role_status.read) == str(request.POST.get('status_read',False))) and (str(data_role_status.write) == str(request.POST.get('status_write',False))) and (str(data_role_status.edit) == str(request.POST.get('status_edit',False))) and (str(data_role_status.delete) == str(request.POST.get('status_delete',False))) and (str(data_role_status.view_all) == str(request.POST.get('status_view_all',False))) and (str(data_role_status.manage_all) == str(request.POST.get('status_manage_all',False)))):
             messages.warning(request, "No Updates...!!")
             return redirect('role_management')
         else:
             data_save_role = Role_master.objects.filter(id=role_data).update(
                     role_name = request.POST.get('name'),
                     description = request.POST.get('description'),
-                )
-
-            Role_mapping.objects.filter(id=role_company).update(
-                    navbar_name = "Company",
-                    read = request.POST.get('company_read',False),
-                    write = request.POST.get('company_write',False),
-                    edit = request.POST.get('company_edit',False),
-                    delete = request.POST.get('company_delete',False),
-                    view_all = request.POST.get('company_view_all',False),
-                    manage_all = request.POST.get('company_manage_all',False),
-                )
-
-            Role_mapping.objects.filter(id=role_user).update(
-                    navbar_name = "User",
-                    read =  request.POST.get('user_read',False),
-                    write =  request.POST.get('user_write',False),
-                    edit =  request.POST.get('user_edit',False),
-                    delete =  request.POST.get('user_delete',False),
-                    view_all =  request.POST.get('user_view_all',False),
-                    manage_all =  request.POST.get('user_manage_all',False),
                 )
 
             Role_mapping.objects.filter(id=role_role).update(
@@ -1092,11 +1095,6 @@ def edit_role_action(request):
 
 
 
-
-
-
-
-
 def role_management_action(request):
     if request.method == "POST":
         user_data = User_details.objects.get(auth_user = request.user)
@@ -1107,32 +1105,6 @@ def role_management_action(request):
                 auth_user_id = request.user.id,
                 created_by = request.user,
                 company_id_id = user_data.company_id.id
-            )
-
-        Role_mapping.objects.create(
-                role_master_id_id = data_save_role.id,
-                navbar_name = "Company",
-                read = request.POST.get('company_read',False),
-                write = request.POST.get('company_write',False),
-                edit = request.POST.get('company_edit',False),
-                delete = request.POST.get('company_delete',False),
-                view_all = request.POST.get('company_view_all',False),
-                manage_all = request.POST.get('company_manage_all',False),
-                created_by = request.user,
-                status = "True"
-            )
-
-        Role_mapping.objects.create(
-                role_master_id_id = data_save_role.id,
-                navbar_name = "User",
-                read =  request.POST.get('user_read',False),
-                write =  request.POST.get('user_write',False),
-                edit =  request.POST.get('user_edit',False),
-                delete =  request.POST.get('user_delete',False),
-                view_all =  request.POST.get('user_view_all',False),
-                manage_all =  request.POST.get('user_manage_all',False),
-                created_by = request.user,
-                status = "True"
             )
 
         Role_mapping.objects.create(
@@ -1190,7 +1162,6 @@ def role_management_action(request):
 
     messages.success(request,"Successfully added Role")
     return redirect('role_management')
-
 
 # -----------------------------------------------------task_status_management-----------------------------------------------------------------
 
@@ -1273,18 +1244,15 @@ def task_edit_action(request):
 
 def project_management(request):
     today_date = datetime.today().strftime('%Y-%m-%d')
-
     user_details_data = User_details.objects.get(auth_user = request.user)
     member_data = User_details.objects.filter(company_id =user_details_data.company_id)
     manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
 
-    role_data = Role_master.objects.filter(company_id = user_details_data.company_id.id)
     status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
 
     space_master_data = ""
     sub_space_data =""
     space_dept = ""
-    space_member_data =""
     try:
         userdetails_data = User_details.objects.get(auth_user=request.user)
 
@@ -1293,39 +1261,28 @@ def project_management(request):
             space_master_data = space_master.objects.filter(added_user_id=request.user)
             space_list = list(space_master_data.values_list('id',flat=True))
             space_dept = space_master.objects.get(id=space_list[0])
-            # space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
         else:
             # if user is company_user(their space only)
             sub_space = sub_space_master.objects.filter(invite_user_auth_id=request.user)
             user_permission_space = list(sub_space.values_list('space_id',flat=True))
             space_master_data = space_master.objects.filter(id__in=user_permission_space)
-            print("space_master_data::::::",space_master_data)
 
             space_list = list(space_master_data.values_list('id',flat=True))
-            print("space_list.first:",space_list[0])
             space_dept = space_master.objects.get(id=space_list[0])
-            # space_member_data = space_view_access_user.objects.filter(space_id=space_list[0])
             sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
-
-            # sub_space_data = sub_space_master.objects.filter(space_id__in =space_list)
 
     except:
         pass
 
-    if user_details_data.user_type == "company_admin":
-        space_data = space_master.objects.filter(added_user_id = request.user)
-
     context = {
     "member_data" : member_data,
-    "role_data":role_data,
     "user_details_data":user_details_data,
     "status_name":status_name,
     "manager_data":manager_data,
     "space_master_data":space_master_data,
     "sub_space_data":sub_space_data,
     "space_dept":space_dept,
-    # "space_member_data":space_member_data,
     "today_date":today_date
     }
     return render(request, 'project_management.html',context)
@@ -1347,23 +1304,17 @@ def edit_group_modal(request):
 def space_edit_action(request):
     if request.method == "POST":
         spacename = request.POST.get("spacename",False)
+        group_name = spacename.title()
         space_id = request.POST.get("space_id",False)
-        space_master.objects.filter(id=space_id).update(space_name =spacename)
+        space_master.objects.filter(id=space_id).update(space_name =group_name)
         messages.success(request,"Successfully updated Group")
         return redirect(request.META['HTTP_REFERER'])
-
-
-
-
-
-
-
-
 
 
 def space_add_action(request):
     if request.method == "POST":
         spacename = request.POST.get("spacename",False)
+        group_name = spacename.title()
         task_status_add = request.POST.getlist("task_status_add",False)
         print("task_status_add::::::",task_status_add)
         new_task_status_add = list(filter(None, task_status_add))
@@ -1382,15 +1333,13 @@ def space_add_action(request):
 
         task_new_status_data =status_name_master.objects.filter(status_name__in=new_task_status_add)
         task_new_status_list = list(task_new_status_data.values_list('id',flat=True))
-        print("task_new_status_list:",task_new_status_list)
 
         status_list = task_status_list + task_new_status_list
         new_status = [*set(status_list)]
-        print("new_status::::",new_status)
 
         user_data = User_details.objects.get(auth_user = request.user)
         if user_data.user_type == "company_admin":
-            space_master_data = space_master.objects.create(space_name=spacename,
+            space_master_data = space_master.objects.create(space_name=group_name,
             added_user_id = request.user,
             status = "True",
             created_by = request.user
@@ -1400,7 +1349,7 @@ def space_add_action(request):
 
         else:
             user_active = user_active_account.objects.get(user_id=user_data.id)
-            space_master_data = space_master.objects.create(space_name=spacename,
+            space_master_data = space_master.objects.create(space_name=group_name,
             active_account_id_id=user_active.active_user_id.id,
             added_user_id = request.user,
             status = "True",
@@ -1423,11 +1372,12 @@ def project_add_action(request):
         today_date = datetime.today().strftime('%Y-%m-%d')
         space_id = request.POST.get("space_id")
         foldername = request.POST.get("foldername")
+        project_name = foldername.title()
+       
         member_data = request.POST.getlist("member_data",False)
         manager_id = request.POST.getlist("manager_id",False)
         list_new = manager_id + member_data
         permission_user = [*set(list_new)]
-        print("permission_user:::::::::",permission_user)
         manager = request.POST.get("manager_id",False)
         User_details_data = User_details.objects.get(id=manager)
         
@@ -1440,15 +1390,19 @@ def project_add_action(request):
         actual_start_date = request.POST.get("actual_start_date",False)
         actual_end_date = request.POST.get("actual_end_date",False)
         comments = request.POST.get("comments",False)
-        checklist_item = request.POST.getlist("checklist",False)
-        new_checklist_item = list(filter(None, checklist_item))
-        checklist_end_date = request.POST.getlist("checklist_end_date",False)
-        new_checklist_end_date = list(filter(None, checklist_end_date))
+        try:
+
+            checklist_item = request.POST.getlist("checklist",False)
+            new_checklist_item = list(filter(None, checklist_item))
+            checklist_end_date = request.POST.getlist("checklist_end_date",False)
+            new_checklist_end_date = list(filter(None, checklist_end_date))
+        except:
+            pass
         
         user_data = User_details.objects.get(auth_user = request.user)
         if user_data.user_type == "company_admin":
             data_save = sub_space_master.objects.create(space_id_id = space_id,
-            sub_space_name = foldername,
+            sub_space_name = project_name,
             bucket_mapping_id_id = bucket,
             progress = progress,
             priority = priority,
@@ -1503,7 +1457,7 @@ def project_add_action(request):
             user_active = user_active_account.objects.get(user_id=user_data.id)
 
             data_save = sub_space_master.objects.create(space_id_id = space_id,
-            sub_space_name = foldername,
+            sub_space_name = project_name,
             bucket_mapping_id_id = bucket,
             progress = progress,
             priority = priority,
@@ -1554,11 +1508,16 @@ def project_add_action(request):
 
 
 def update_project_details(request):
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    current_time = datetime.now().strftime("%H:%M:%S")
+    print("current_time::;",current_time)
     if request.method == "POST":
         sub_space_id = request.POST.get("sub_space_id",False)
-        project_name = request.POST.get("project_name",False)
+        project_name1 = request.POST.get("project_name",False)
+        project_name = project_name1.title()
         tag_name = request.POST.getlist("tag_name",False)
-        tag_name.pop(0)
+        print("tag_name1:::::;",tag_name)
+        
         
         status_name = request.POST.get("status_name",False)
         progress = request.POST.get("progress",False)
@@ -1579,16 +1538,13 @@ def update_project_details(request):
         except:
             pass
 
-        today_date = datetime.today().strftime('%Y-%m-%d')
         try:
 
             checkbox_checklist = request.POST.get("checkbox_checklist",False)
             print('checkbox_checklist:',checkbox_checklist)
-            sub_space_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date)
+            sub_space_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date,updated_tm =current_time)
         except:
             pass
-
-
 
         try:
             removed_user = request.POST.getlist("remove_assign_user[]",False)
@@ -1619,7 +1575,6 @@ def update_project_details(request):
             attach_name = request.POST.get("attach_name",False)
             print("attachment_new:",attachment_new)
             for i in attachment_new:
-
                 import os
                 filename = os.path.splitext(str(i))[0]
                 print("nameeeee",filename)
@@ -1631,7 +1586,6 @@ def update_project_details(request):
         except:
             pass
 
-
         try:
             link_address = request.POST.get("link_address",False)
             text_content = request.POST.get("text_content",False)
@@ -1641,12 +1595,8 @@ def update_project_details(request):
         except:
             pass
 
-
-        today_date = datetime.today().strftime('%d-%m-%Y')
         sub_space_master.objects.filter(id=sub_space_id).update(sub_space_name = project_name,bucket_mapping_id =status_name,progress=progress,priority=priority,Planning_start_date=planning_start_date,Planning_end_date=planning_end_date,
         Actual_start_date = actual_start_date,Actual_end_date = actual_end_date,notes = notes,updated_dt = today_date)
-
-       
 
         try:
             zip_objects = zip(checklist_new,new_checklist_end_date)
@@ -1658,7 +1608,11 @@ def update_project_details(request):
                
         sub_space = sub_space_master.objects.get(id=sub_space_id)
         for t in tag_name:
-            sub_space.tag_id.add(t)
+            print("t:::::::::::",str(t))
+            if t == '0':
+                pass
+            else:                
+                sub_space.tag_id.add(t)
 
         try:
 
@@ -1669,8 +1623,6 @@ def update_project_details(request):
         except:
             pass
 
-
-
         messages.success(request,"Successfully updated Project details")
         return redirect(request.META['HTTP_REFERER'])
 
@@ -1679,12 +1631,12 @@ def update_project_details(request):
 
 def update_task_details(request):
     if request.method == "POST":
-        today_date = datetime.today().strftime('%d-%m-%Y')
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        current_time = datetime.now().strftime("%H:%M:%S")
         task_id = request.POST.get("task_id",False)
         task_name = request.POST.get("task_name",False)
         print("task_name:::::",task_name)
         tag_name = request.POST.getlist("tag_name",False)
-        tag_name.pop(0)
         
         status_name = request.POST.get("status_name",False)
         progress = request.POST.get("progress",False)
@@ -1705,7 +1657,7 @@ def update_task_details(request):
 
             checkbox_checklist = request.POST.get("checkbox_checklist",False)
             print("checkbox_checklist:::::::",checkbox_checklist)
-            Add_task_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date)
+            Add_task_checklist.objects.filter(id=checkbox_checklist).update(status=True,updated_by = request.user,updated_dt=today_date,updated_tm =current_time)
 
         except:
             pass
@@ -1780,10 +1732,16 @@ def update_task_details(request):
         except:
             pass
 
+
+
+        
                
         add_task = Add_task_master.objects.get(id=task_id)
         for t in tag_name:
-            add_task.tag_id.add(t)
+            if t == '0':
+                pass
+            else:                
+                add_task.tag_id.add(t)
 
         try:
 
@@ -1800,32 +1758,11 @@ def update_task_details(request):
         return redirect(request.META['HTTP_REFERER'])
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def view_group(request):
     space_id = request.GET.get("space_id")
     space_data = space_master.objects.get(id=space_id)
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    space_member_data = space_view_access_user.objects.filter(space_id=space_id)
 
     user_details_data = User_details.objects.get(auth_user=request.user)
     
@@ -1834,7 +1771,6 @@ def view_group(request):
     context={
         "space_data":space_data,
         "today_date":today_date,
-        "space_member_data":space_member_data,
         "sub_space_data":sub_space_data
     }
     return render(request, 'view_group.html',context)
@@ -1848,10 +1784,11 @@ def view_project_page(request):
 
     sub_space_id = request.GET.get("sub_space_id")
     sub_space_data = sub_space_master.objects.get(id=sub_space_id)
+   
     space_id = sub_space_data.space_id
     space_data = space_master.objects.get(id=space_id.id)
 
-    task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None )
+    task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None)
 
 
     user_details_data = User_details.objects.get(auth_user=request.user)
@@ -1873,6 +1810,8 @@ def view_project_page(request):
     member_data = User_details.objects.filter(company_id =user_data.company_id)
 
     user_access_generate = Project_user_access_link.objects.filter(project_id_id=sub_space_id).first()
+    tag_selected_instance = list(sub_space_data.tag_id.all().values_list('id',flat=True))
+    tag_selected_instance.insert(0, 0)
     context = {
         "space_data":space_data,
         "sub_space_data":sub_space_data,
@@ -1890,6 +1829,7 @@ def view_project_page(request):
         "total_hr":total_hr,
         'user_access_generate':user_access_generate,
         "member_data":member_data,
+        "tag_data": tag_selected_instance
        
     }
     return render(request, 'view_project_page.html',context)
@@ -1919,18 +1859,25 @@ def task_management_action(request):
         member_checkbox = request.POST.getlist("member_checkbox")
         space_id = request.POST.get("space_id",False)
         sub_space_id = request.POST.get("sub_space_id",False)
-        task_name = request.POST.get("task_name",False)
+        task_name1 = request.POST.get("task_name",False)
+        task_name = task_name1.title()
+
         notes = request.POST.get("notes",False)
         bucket = request.POST.get("bucket",False)
         progress = request.POST.get("progress",False)
         priority = request.POST.get("priority",False)
         start_date = request.POST.get("start_date",False)
         end_date = request.POST.get("end_date",False)
-        checklist_item = request.POST.getlist("checklist",False)
-        new_checklist_item = list(filter(None, checklist_item))
-        checklist_end_date = request.POST.getlist("checklist_end_date",False)
-        new_checklist_end_date = list(filter(None, checklist_end_date))
+        try:
+
+            checklist_item = request.POST.getlist("checklist",False)
+            new_checklist_item = list(filter(None, checklist_item))
+            checklist_end_date = request.POST.getlist("checklist_end_date",False)
+            new_checklist_end_date = list(filter(None, checklist_end_date))
+        except:
+            pass
         comments = request.POST.get("comments",False)
+        print("comments::::::",comments)
 
         task_master_save = Add_task_master.objects.create(space_id_id = space_id,
         sub_space_id_id = sub_space_id,
@@ -1981,7 +1928,7 @@ def task_management_action(request):
 
 
         user_data = User_details.objects.get(auth_user=request.user)
-        if comments == False:
+        if comments == "":
             pass
         else:
             Add_task_comments.objects.create(add_task_id_id=task_master_save.id,
@@ -2084,6 +2031,10 @@ def view_task_page(request):
         suggestion_user = Add_task_master.objects.get(id=parent_id)
         pass
 
+    tag_selected_instance = list(task_data.tag_id.all().values_list('id',flat=True))
+    tag_selected_instance.insert(0, 0)
+
+
 
     context = {
         "space_data":space_data,
@@ -2105,7 +2056,8 @@ def view_task_page(request):
         'total_hr':total_hr,
         'parent_id':parent_id,
         'suggestion_user':suggestion_user,
-        'task_id':task_id
+        'task_id':task_id,
+        "tag_data": tag_selected_instance
       
     }
     return render(request, 'view_task_page.html',context)
@@ -2223,27 +2175,23 @@ def start_timer_action(request):
     return JsonResponse({"message":"success"})
 
 
-
-
-
 def sub_task_action(request):
     if request.method == "POST":
         task_id = request.POST.get("task_id") #child_id
         space_id = request.POST.get("space_id")
         sub_space_id = request.POST.get("sub_space_id") #parent_id
-
+        parent_id = request.POST.get("parent_id")
         member_checkbox = request.POST.getlist("member_checkbox")
-        sub_task_name = request.POST.get("sub_task_name",False)
+        sub_task_name1 = request.POST.get("sub_task_name",False)
+        sub_task_name = sub_task_name1.title()
         notes = request.POST.get("notes",False)
         bucket = request.POST.get("bucket",False)
         progress = request.POST.get("progress",False)
         priority = request.POST.get("priority",False)
         start_date = request.POST.get("start_date",False)
-        end_date = request.POST.get("end_date",False)        
-        comments = request.POST.get("comments",False)
+        end_date = request.POST.get("end_date",False)  
 
-
-        task_master_save = Add_task_master.objects.create(space_id_id = space_id,sub_space_id_id = sub_space_id,parent_id_id = task_id,
+        sub_task_master_save = Add_task_master.objects.create(space_id_id = space_id,sub_space_id_id = sub_space_id,parent_id_id = task_id,
         task_name =sub_task_name,
         bucket_mapping_id_id=bucket,
         progress = progress,
@@ -2254,38 +2202,33 @@ def sub_task_action(request):
         task_status = "sub_task",
         created_by = request.user
         )
+        task_list = []
+        def check(parent_id):
+            task_list.append(parent_id)
+            task_previous_data =  Add_task_master.objects.get(id=parent_id)  
+            if task_previous_data.parent_id:
+                prev_pid = task_previous_data.parent_id
+                check(prev_pid.id)
+            else:
+                pass
+            return task_list
+        
+        check(task_id)
+        print("task_lisffft:::::",task_list)
+        # task_list.sort()
+        # print("sorted_list:::::",task_list.sort())
 
+        
+        sub_task_data = Add_task_master.objects.get(id=sub_task_master_save.id)
+        for i in task_list:
+            sub_task_data.multiple_parent_id.add(i)
 
         for i in member_checkbox:
             user_details = User_details.objects.get(id=i)
-            task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
-            task_master_save.invite_user_details_id.add(i)
-
-            
-
+            sub_task_master_save.invite_user_auth_id.add(user_details.auth_user.id)
+            sub_task_master_save.invite_user_details_id.add(i)
         messages.success(request,"Successfully added Sub Task")
         return redirect(request.META['HTTP_REFERER'])
-
-
-
-
-
-
-
-def demo(request):
-
-    sub_space_master_data = sub_space_master.objects.get(id=1)
-    space_id = space_master.objects.get(id=1)
-
-    task_data = Add_task_master.objects.filter(space_id = space_id.id,sub_space_id = sub_space_master_data.id)
-
-    for i in task_data:
-
-        sub_task_data = Sub_tasks.objects.filter(parent_id=i.id,dynamic_status = False)
-        print("sub_task_data::::::",sub_task_data)
-
-        
-    return render(request,'demo.html',context)
 
 
 # -----------------------------------------------------tags_management-----------------------------------------------------------------
@@ -2361,35 +2304,22 @@ def new_tags(request):
 
 def project_management_board(request):
     today_date = datetime.today().strftime('%Y-%m-%d')
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+    user_details_data = ""
+    manager_data = ""
+    try:
 
-    user_details_data = User_details.objects.get(auth_user=request.user)
-    manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
-    else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id)
-        else:
-            member_data = User_details.objects.filter(manager_auth=request.user)
-
-
+        user_details_data = User_details.objects.get(auth_user=request.user)
+        member_data = User_details.objects.filter(company_id =user_details_data.company_id)
+        manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id)
+        status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
+    
+    except:
+        pass
     space_id =  request.GET.get("space_id")
     space_datas = ""
-    bucket_data = ""
     data_model = ""
     try:
         space_datas = space_master.objects.get(id=space_id)
-        bucket_data = space_datas.task_status.all()
     except:
         pass
 
@@ -2401,83 +2331,43 @@ def project_management_board(request):
         if userdetails_data.user_type == "company_admin":
             space_master_data = space_master.objects.get(id=space_id)
            
-    
         else:
             # if user is company_user(their space only)
             space_master_data = space_master.objects.get(id=space_id)
-            # sub_space = sub_space_master.objects.filter(invite_user_auth_id=request.user)
-            # user_permission_space = list(sub_space.values_list('space_id',flat=True))
-            # space_master_data = space_master.objects.filter(id__in=user_permission_space)
-            # print("space_master_data::::::",space_master_data)
-
-            # space_list = list(space_master_data.values_list('id',flat=True))
-
     except:
         pass
 
-    if user_details_data.user_type == "company_admin":
-        space_data = space_master.objects.filter(added_user_id = request.user)
-    
-    space_member_data = ""
     try:
-
         space_model = space_master.objects.get(id=space_id)
         status_model_data =list(space_model.task_status.values_list('id',flat=True))
         queryset = status_name_master.objects.filter(id__in=status_model_data)
         data_model = status_name_master_Serailzer(queryset,many=True,context={'space_id':space_id}).data
-        space_member_data = space_view_access_user.objects.filter(space_id=space_id)
-        print("space_member_data11111111111111111:",space_member_data)
-
-
     except:
         pass
 
-    
     context = {
     "user_details_data":user_details_data,
     "space_master_data":space_master_data,
     "today_date":today_date,
     "space_datas":space_datas,
-    "bucket_data":bucket_data,
     "data_model":data_model,
-    "space_member_data":space_member_data,
     "manager_data":manager_data,
-    "member_data":member_data
+    "member_data":member_data,
+    "status_name":status_name
     }
     return render(request, 'project_management_board.html',context)
 
 
 def get_group_details(request):
-    space_member_data =""
+
     today_date = datetime.today().strftime('%Y-%m-%d')
     space_id = request.GET.get("space_id")
     space_dept = space_master.objects.get(id=space_id)
     sub_space_data = sub_space_master.objects.filter(space_id=space_id)
 
-    # space_member_data = space_view_access_user.objects.filter(space_id=space_id)
-
-
-    user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-    user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
     user_details_data = User_details.objects.get(auth_user=request.user)
     manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
-    if user_manage_all_permission:
-        active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-        user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-        child_user_id.append(int(active_user_id.active_auth_user_id.id))
-        member_data = User_details.objects.filter(created_by__in=child_user_id)
-    else:
-        if user_details_data.user_type == "company_admin":
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(request.user.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id)
-        else:
-            member_data = User_details.objects.filter(manager_auth=request.user)
-
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id)
 
     context = {
         "today_date":today_date,
@@ -2485,7 +2375,6 @@ def get_group_details(request):
         "space_dept":space_dept,
         "manager_data":manager_data,
         "member_data":member_data
-        # "space_member_data":space_member_data
 
     }
     return render(request,'get_group_details.html',context)
@@ -2642,14 +2531,26 @@ def update_task_status(request):
 
 def get_project_comment(request):
     sub_space_id = request.GET.get("sub_space_id")
-    print("sub_space_id:",sub_space_id)
     comments = request.GET.get("comments")
-    print("comments:::::",comments)
     if comments == "":
         print("nulll")
     else:
         user_data = User_details.objects.get(auth_user=request.user)
         data = sub_space_comments.objects.create(sub_space_id_id=sub_space_id,
+        added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
+
+    return JsonResponse({"message":"success"},safe=False)
+
+
+
+def get_task_comment(request):
+    task_id = request.GET.get("task_id")
+    comments = request.GET.get("comments")
+    if comments == "":
+        print("nulll")
+    else:
+        user_data = User_details.objects.get(auth_user=request.user)
+        data = Add_task_comments.objects.create(add_task_id_id=task_id,
         added_by_id = user_data.id,user_auth_id_id =request.user.id ,comments = comments)
 
     return JsonResponse({"message":"success"},safe=False)
@@ -2698,12 +2599,303 @@ def open_project(request,name):
     
 
 
-
-
-
-
-
-
-
+def test_demo(request):
+    return render(request,'test_demo.html')
    
 
+
+
+#---------------------------------------------------------------------------------------------------chat module---------------------------------------------------------------
+
+
+
+def chat(request):
+    member_data = ""
+    user_details_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id).exclude(auth_user=request.user)
+
+    context = {
+        "member_data":member_data
+    }
+    return render(request, 'chat.html',context)
+
+
+def chat_inner_page_action(request):
+
+    id = request.GET.get("id")
+    selected_user_data = User_details.objects.get(id=id)
+    recev_id = User_details.objects.get(id=id)
+    sender_auth_id = request.user.id
+    receiver_auth_id = recev_id.auth_user.id
+    room_no1 = "channelname"+str(receiver_auth_id)
+    data_update_status = userMessage.objects.filter(send_user_id_id=receiver_auth_id,receiver_user_id_id=sender_auth_id,read_status=False).update(read_status=True)
+    exists_data = User_chat_room.objects.filter(send_user_id_id=sender_auth_id,receiver_user_id_id=receiver_auth_id) or User_chat_room.objects.filter(send_user_id_id=receiver_auth_id,receiver_user_id_id=sender_auth_id)
+    room_name = ''
+    if exists_data:
+        room_name = exists_data[0].room_name
+        print("room_name:::",exists_data[0].room_name)
+    else:
+        room_name = 'chat_room'+str(sender_auth_id)+str(receiver_auth_id)
+        data_save = User_chat_room.objects.create(send_user_id_id=sender_auth_id,receiver_user_id_id=receiver_auth_id,room_name=room_name)
+    from django.db.models import F
+    list1 = [sender_auth_id,receiver_auth_id]
+    data_chat = userMessage.objects.filter(send_user_id_id__in=list1,receiver_user_id__in=list1).order_by(F('id').asc(nulls_last=True))
+    # print("data_chat::::",str(data_chat))
+    context = {
+        'selected_user_data':selected_user_data,
+        'room_name':room_name,
+        'receiver_auth_id':receiver_auth_id,
+        'data_chat':data_chat,
+        'current_user_data':User_details.objects.get(auth_user=request.user),
+        'room_no1':room_no1
+    }
+    return render(request,'chat_inner.html',context)
+
+# Amar sir attachment update
+
+def user_upload_chat_file_action(request):
+    if request.method == "POST":
+        chat_file = request.FILES['chat_file']
+        send_user_id = request.POST.get("send_user_id")
+        receiver_user_id = request.POST.get("receiver_user_id")
+        import os
+        extension = os.path.splitext(str(chat_file))[1]
+        image_name = os.path.splitext(str(chat_file))[0]
+       
+        data_save = userMessage(read_status=False,send_user_id_id=send_user_id,receiver_user_id_id=receiver_user_id,message_type='file_type',image_extension=extension,image_name=image_name,file_path=chat_file)
+        data_save.save()
+        return JsonResponse({'message':'success'},safe=False)
+
+
+
+# calendar updates
+
+def calendar_detail(request):
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    user_details_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id)
+    manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
+
+    status_name = status_name_master.objects.filter(company_id=user_details_data.company_id)
+
+    space_master_data = ""
+    sub_space_data =""
+    space_dept = ""
+    try:
+        userdetails_data = User_details.objects.get(auth_user=request.user)
+
+        # if user is company_admin (navab sir (all space of him))
+        if userdetails_data.user_type == "company_admin":
+            space_master_data = space_master.objects.filter(added_user_id=request.user)
+            space_list = list(space_master_data.values_list('id',flat=True))
+            space_dept = space_master.objects.get(id=space_list[0])
+            sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
+        else:
+            # if user is company_user(their space only)
+            sub_space = sub_space_master.objects.filter(invite_user_auth_id=request.user)
+            user_permission_space = list(sub_space.values_list('space_id',flat=True))
+            space_master_data = space_master.objects.filter(id__in=user_permission_space)
+
+            space_list = list(space_master_data.values_list('id',flat=True))
+            space_dept = space_master.objects.get(id=space_list[0])
+            sub_space_data = sub_space_master.objects.filter(space_id =space_list[0])
+
+    except:
+        pass
+
+    context = {
+    "member_data" : member_data,
+    "user_details_data":user_details_data,
+    "status_name":status_name,
+    "manager_data":manager_data,
+    "space_master_data":space_master_data,
+    "sub_space_data":sub_space_data,
+    "space_dept":space_dept,
+    "today_date":today_date
+    }
+
+    return render(request,"calendar_detail.html",context)
+
+
+def get_group_details_calendar(request):
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    space_id = request.GET.get("space_id")
+    space_dept = space_master.objects.get(id=space_id)
+    sub_space_data = sub_space_master.objects.filter(space_id=space_id)
+
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    manager_data = User_details.objects.filter(user_level = "Manager",company_id = user_details_data.company_id.id )
+    member_data = User_details.objects.filter(company_id =user_details_data.company_id)
+
+    context = {
+        "today_date":today_date,
+        "sub_space_data":sub_space_data,
+        "space_dept":space_dept,
+        "manager_data":manager_data,
+        "member_data":member_data
+    }
+    
+    return render(request,'get_group_details_calendar.html',context)
+
+   
+def calendar_new(request):
+    id = request.GET.get("type")
+    sub_space_data = sub_space_master.objects.get(id=id)
+    task_data = Add_task_master.objects.filter(sub_space_id_id=sub_space_data.id)
+    sub_data = task_data.values_list('bucket_mapping_id', flat=True)
+    sub_space_data_new = status_name_master.objects.filter(id__in=sub_data)
+    return render(request,"calendar_new.html",{'sub_space_data':sub_space_data,'sub_space_data_new':sub_space_data_new})
+
+
+from django.http import JsonResponse
+def all_events(request):
+    id = request.GET.get("type")
+    sub_space_data = sub_space_master.objects.get(id=id)
+    task_data = Add_task_master.objects.filter(sub_space_id_id=sub_space_data.id)
+    out = []
+    for event in task_data:
+        from datetime import datetime
+        df = datetime.fromisoformat(str(event.end_date))
+        from datetime import timedelta
+        date_time_obj = df + timedelta(days=1)
+        date_to = date_time_obj.date()
+
+        title_data = str(event.task_name) + " ( " + str(event.start_date) + " --> " + str(event.end_date) + " )"
+
+        out.append({
+            'title': title_data,
+            'id': event.id,
+            'start': event.start_date.strftime("%m/%d/%Y, %H:%M:%S"),
+            'end': date_to,
+            'color': event.bucket_mapping_id.status_color,
+        })
+    return JsonResponse(out, safe=False)
+
+
+def event_depended(request):
+    from .models import progress, priority
+    event_id = request.GET.get("event_id")
+    task_data = Add_task_master.objects.get(id=event_id)
+    bucket_data = status_name_master.objects.all()
+    return render(request,"event_depended.html",{'task_data':task_data,'bucket_data':bucket_data,'progress':progress,'priority':priority})
+
+def event_depended_action(request):
+    task_id = request.POST.get("task_id")
+    bucket = request.POST.get("bucket")
+    progress = request.POST.get("progress")
+    start_date = request.POST.get("start_date")
+    end_date = request.POST.get("end_date")
+    priority = request.POST.get("priority")
+    data = Add_task_master.objects.get(id=task_id)
+    if (str(data.bucket_mapping_id_id)==str(bucket)) and (data.progress==progress) and (data.priority==priority) and (str(data.start_date)==str(start_date)) and (str(data.end_date)==str(end_date)):
+        messages.warning(request, str("No Updates"))
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        task_data = Add_task_master.objects.filter(id=task_id).update(
+            bucket_mapping_id_id=bucket,
+            progress=progress,
+            priority=priority,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        messages.success(request, str("Updated Succesfully"))
+        return redirect(request.META['HTTP_REFERER'])
+
+
+
+def calendar_task(request):
+    id = request.GET.get("type")
+    sub_space_data_new = ""
+    space_dept = ""
+    try:
+        userdetails_data = User_details.objects.get(auth_user=request.user)
+
+        # if user is company_admin (navab sir (all space of him))
+        if userdetails_data.user_type == "company_admin":
+            space_dept = space_master.objects.get(id=id)
+            sub_space_data = sub_space_master.objects.filter(space_id=space_dept)
+            sub_data = sub_space_data.values_list('bucket_mapping_id', flat=True)
+            sub_space_data_new = status_name_master.objects.filter(id__in=sub_data)
+        else:
+            # if user is company_user(their space only)
+            space_dept = space_master.objects.get(id=id)
+            sub_space_data = sub_space_master.objects.filter(space_id__in=space_dept)
+            sub_data = sub_space_data.values_list('bucket_mapping_id', flat=True)
+            sub_space_data_new = status_name_master.objects.filter(id__in=sub_data)
+
+    except:
+        pass
+    return render(request, "calendar_task.html",{'sub_space_data_new':sub_space_data_new,'space_dept':space_dept})
+
+
+def event_task(request):
+    id = request.GET.get("type")
+    sub_space_data = ""
+    try:
+        userdetails_data = User_details.objects.get(auth_user=request.user)
+
+        # if user is company_admin (navab sir (all space of him))
+        if userdetails_data.user_type == "company_admin":
+            space_dept = space_master.objects.get(id=id)
+            sub_space_data = sub_space_master.objects.filter(space_id=space_dept)
+        else:
+            # if user is company_user(their space only)
+            space_dept = space_master.objects.get(id=id)
+            sub_space_data = sub_space_master.objects.filter(space_id__in=space_dept)
+
+
+    except:
+        pass
+    out = []
+    for event in sub_space_data:
+        from datetime import datetime
+        df = datetime.fromisoformat(str(event.Actual_end_date))
+        from datetime import timedelta
+        date_time_obj = df + timedelta(days=1)
+        date_to = date_time_obj.date()
+
+        # title_data = str(event.task_name) + " ( " + str(event.start_date) + " --> " + str(date_to) + " )"
+
+        out.append({
+            'title': event.sub_space_name,
+            'id': event.id,
+            'start': event.Actual_start_date.strftime("%m/%d/%Y, %H:%M:%S"),
+            'end': date_to,
+            'color': event.bucket_mapping_id.status_color,
+        })
+    return JsonResponse(out, safe=False)
+
+
+
+def task_depended(request):
+    from .models import progress, priority
+    event_id = request.GET.get("event_id")
+    task_data = sub_space_master.objects.get(id=event_id)
+    bucket_data = status_name_master.objects.all()
+    return render(request,"task_depended.html",{'task_data':task_data,'bucket_data':bucket_data,'progress':progress,'priority':priority})
+
+def task_depended_action(request):
+    task_data_id = request.POST.get("task_data_id")
+    bucket = request.POST.get("bucket")
+    progress = request.POST.get("progress")
+    planning_start_date = request.POST.get("planning_start_date")
+    planning_end_date = request.POST.get("planning_end_date")
+    actual_start_date = request.POST.get("actual_start_date")
+    actual_end_date = request.POST.get("actual_end_date")
+    priority = request.POST.get("priority")
+    data = sub_space_master.objects.get(id=task_data_id)
+    if (str(data.bucket_mapping_id_id)==str(bucket)) and (data.progress==progress) and (data.priority==priority) and (str(data.Planning_start_date)==str(planning_start_date)) and (str(data.Planning_end_date)==str(planning_end_date)) and (str(data.Actual_start_date)==str(actual_start_date)) and (str(data.Actual_end_date)==str(actual_end_date)):
+        messages.warning(request, str("No Updates"))
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        task_data = sub_space_master.objects.filter(id=task_data_id).update(
+            bucket_mapping_id_id=bucket,
+            progress=progress,
+            priority=priority,
+            Planning_start_date=planning_start_date,
+            Planning_end_date=planning_end_date,
+            Actual_start_date=actual_start_date,
+            Actual_end_date=actual_end_date,
+        )
+        messages.success(request, str("Updated Succesfully"))
+        return redirect(request.META['HTTP_REFERER'])

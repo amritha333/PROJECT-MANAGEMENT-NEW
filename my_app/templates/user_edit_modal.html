@@ -1,4 +1,5 @@
-<form name="user_form" method="POST" action="edit_company_admin_user" enctype="multipart/form-data">
+
+<form name="user_edit_form" method="POST" action="edit_company_admin_user" enctype="multipart/form-data">
     {% csrf_token %}
     <div id="user_edit_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
         <div class="modal-dialog modal-lg">
@@ -16,7 +17,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">Name</label>
-                                <input type="text" value="{{user_data.name}}" class="form-control" name="name" id="field-1" placeholder="Yourname">
+                                <input type="text"  value="{{user_data.name}}" class="form-control capital" name="name" id="field-1" placeholder="Yourname">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -45,7 +46,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-1" class="control-label">Username</label>
-                                <input type="text" value="{{user_data.username}}" name="username" class="form-control" placeholder="Username">
+                                <input type="text" id="username_id" value="{{user_data.username}}" name="username" class="form-control" placeholder="Username">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -57,7 +58,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="field-2" class="control-label">Email</label>
-                                <input name="email" value="{{user_data.email}}" type="email" class="form-control" id="field-2" placeholder="yourmail@gmail.com">
+                                <input name="email" id="email_id" value="{{user_data.email}}" type="email" class="form-control"  placeholder="yourmail@gmail.com">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -118,3 +119,16 @@
         }
     });
 </script>
+
+
+<script>
+    var userName = document.querySelector('.numberField');
+    userName.addEventListener('input', restrictNumber);
+    function restrictNumber (e) {
+        var newValue = this.value.replace(new RegExp(/[^\d]/,'ig'), "");
+        this.value = newValue;
+    }
+</script>
+
+
+

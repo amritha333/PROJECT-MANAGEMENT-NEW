@@ -66,7 +66,6 @@
 
                                             <li><a style="cursor: pointer;"  data-status-id="{{i.id}}" class="status_click" >{{i.status_name}}</a></li>
 
-
                                             {% endif %}
 
                                         {% endfor %}
@@ -82,20 +81,18 @@
 
                                         {% elif current_status == "True" and button_status == "Start" %}
 
-                                        <button id="new_stop"  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
-                                        <button  class="btn btn-secondary pause_click" type="button">Pause</button>
+                                        <button data-toggle="modal" data-target="#stopwatch_stop" id="new_stop"  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 pause_click" type="button">Pause</button>
 
                                         {% elif current_status == "True" and button_status == "Pause" %}
-                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button data-toggle="modal" data-target="#stopwatch_stop"  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
                                         <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 resume_click" type="button">Resume</button>
 
                                         {% elif current_status == "True" and button_status == "Resume" %}
-                                        <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button data-toggle="modal" data-target="#stopwatch_stop"  class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
                                         <button  class="btn btn-pink waves-effect waves-light w-md m-b-5 pause_click" type="button">Pause</button>
 
                                         {% endif %}
-
-
 
                                         <!-- -----------------------------Javascript buttons----------------------------------------- -->
 
@@ -106,7 +103,7 @@
                                         {% elif current_status == "True" and button_status == "Resume" %}
 
                                         {% else %}
-                                        <button style="display:none;" class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
+                                        <button style="display:none;" data-toggle="modal" data-target="#stopwatch_stop" class="btn btn-pink waves-effect waves-light w-md m-b-5 stop_click" type="button">Stop</button>
                                         {% endif %}
 
 
@@ -215,7 +212,7 @@
                                 <div class="labeltag d-flex align-items-center mt-4">
                                     <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
                                     <select class="select2-selection__choice" multiple="multiple" name="tag_name"   id="myList">
-                                        <option value="1">Add label</option>
+                                        <option value="0">Add label</option>
                                         {% for t in tags_name %}
 
                                         <option value="{{t.id}}">{{t.tags_name}}</option>
@@ -322,26 +319,48 @@
                                                 <input name="checkbox_checklist"  value="{{ch.id}}" id="checkbox7" type="checkbox">
                                                 {% endif %}
 
-                                                <label for="checkbox7" >
+                                                <label for="checkbox8" >
                                                     {% if ch.status == "True" %}
                                                     <input  style="text-decoration: line-through;" disabled type="text" name="checklist_new" value="{{ch.item_name}}" placeholder="Add an item" class="form-control checkitem">
-                                                    <input  disabled type="text" name="checklist_date" value="{{ch.updated_dt|safe}}"  class="form-control checkitem">
+                                                    <h6 class="mt-2">Due date</h6>
+                                                        {% if request.user.id|due_date_task_checklist:ch.id == True %}
+                                                        <span name="checklist_date"  class="badge badge-size badge-pill badge-danger">{{ch.due_date|safe}}</span>
+                                                        {% else %}
+                                                        <input  disabled id="due_date" type="text" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                        {% endif %}
                                                     <div class="profile-image d-flex align-items-center m-2">
-                                                        <img class="" src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}"> <span class="" style="padding: 6px 13px;">
-                                                            
-                                                        
+                                                        <span class="m-2">closed by</span>
+                                                        <img src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}">
+                                                         <span class="" style="padding: 6px 13px;">
+                                                           
                                                          <span>
                                                             {{ch.updated_by}}
                                                          </span>
-
-                                                        </span>                                                      
+                                                        </span>                                           
                                                     </div>
+                                                    <div class="m-2">
+                                                        <span class="m-2">closed date and time</span> 
+
+                                                        <span>
+                                                            {{ch.updated_dt|safe}} , {{ch.updated_tm}}
+                                                         </span>
+                                                    </div>
+                                                       
+                                                          
 
                                                     {% else %}
                                                     <input  disabled type="text" name="checklist_new" value="{{ch.item_name}}" placeholder="Add an item" class="form-control checkitem">
+                                                    <h6 class="mt-2">Due date</h6>
+                                                    {% if request.user.id|due_date_task_checklist:ch.id == True %}
 
-                                                    <input  disabled type="date"  placeholder="Checklist due date" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                    <span name="checklist_date"  class="badge badge-size badge-pill badge-danger">{{ch.due_date|safe}}</span>
+                                                    
+                                                    {% else %}
+                                                    <input  disabled id="due_date" type="text" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                    {% endif %}
+
                                                     <div class="profile-image d-flex align-items-center m-2">
+                                                        <span class="m-2">added by</span>
                                                         <img class="" src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}"> <span class="" style="padding: 6px 13px;">
                                                             
                                                         
@@ -540,7 +559,8 @@
                                                                 <label for="checkbox-9">
                                                   
                                                                 </label>
-                                                                <p class="main-head">{{i.task_name}}</p>
+                                                                <p class="main-head">
+                                                                    <a href="view_task_page?task_id={{i.id}}&parent_id={{task_id}}">{{i.task_name}}</a></p>
                                                             </div>
 
                                                         </td>
@@ -592,9 +612,9 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group mt-2">
                                                         <!-- <label for="field-2" class="control-label">Comments</label> -->
-                                                        <textarea class="form-control" rows="3" id="example-textarea-input" placeholder="Type your message here"></textarea>                              
+                                                        <textarea class="form-control" id="task_comment" rows="3" id="example-textarea-input" placeholder="Type your message here"></textarea>                              
                                                     </div>
-                                                    <button type="button" class="btn btn-pink waves-effect waves-light w-sm m-b-5 float-right">Send</button>
+                                                    <button type="button" id="commnt_snd_task" class="btn btn-pink waves-effect waves-light w-sm m-b-5 float-right">Send</button>
                                                 </div>
 
                                                         {% for c in task_data.task_comments.all %}
@@ -768,6 +788,7 @@
                 <input type="hidden" name="space_id" value="{{space_data.id}}">
                 <input type="hidden" name="sub_space_id" value="{{sub_space_data.id}}">
                 <input type="hidden" id="task_id" name="task_id" value="{{task_data.id}}">
+                <input type="hidden" name="parent_id" value="{{task_id}}">
                 
                 <div class="row"> 
                     <div class="col-md-6"> 
@@ -912,7 +933,31 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary update_click">Confirm</button>
         </div>
-    </form>
+   
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="stopwatch_stop" tabindex="-1" role="dialog" aria-labelledby="stopwatch_stopLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="stopwatch_stopLabel">Are you sure you want to update details?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmation...
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary stop_confirm_click">Confirm</button>
+        </div>
+   
       </div>
     </div>
   </div>
@@ -927,7 +972,9 @@
     var colors = ["red", "blue", "green", "orange", "yellow"];
 
     $(document).ready(function () {
-        var checkList = [1];
+        var checkList = [0];
+        var selectedValuesTest = `{{tag_data}}`
+        parsedTest = JSON.parse(selectedValuesTest); 
         $("#myList").select2({
             width: "100%",
             templateSelection: function (data, container) {
@@ -940,6 +987,7 @@
                 return data.text;
             },
         }).val(checkList).trigger("change");
+        $('#myList').val(parsedTest).trigger('change');
 
     })
 </script>
@@ -1174,8 +1222,7 @@ $(document).ready(function() {
     })
 
 
-
-    $(".stop_click").click(function(){
+    $(".stop_confirm_click").click(function(){
 
         $(".resume_click").hide()
         $(".pause_click").hide()
@@ -1184,7 +1231,6 @@ $(document).ready(function() {
         $("#new_start").hide()
 
         task_id = document.getElementById("task_id").value;
-
         $.ajax(
         {
         type:"GET",
@@ -1196,6 +1242,7 @@ $(document).ready(function() {
         success: function(data) 
         {
             window.location.reload();
+            // $('#stopwatch_stop').modal('hide');
         }
     })
     })
@@ -1442,6 +1489,30 @@ $("#atttachment3"+value).hide()
 $("#atttachment4"+value).hide()
 
 }
+
+
+$("#commnt_snd_task").click(function(){
+
+comments = $('#task_comment').val()
+
+$.ajax(
+{
+    type:"GET",
+    url: "get_task_comment",
+    data:{
+        task_id: `{{task_id}}`,
+        comments : comments
+    },
+    success: function( data ) 
+    {
+        var comment = document.getElementById("task_comment");
+        comment.value = "";
+        window.location.reload();
+    }
+ });
+})
+
+
 
 </script>
 

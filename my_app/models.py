@@ -215,7 +215,7 @@ class Add_task_master(common_table):
     tag_id = models.ManyToManyField(tags_name_master,related_name="Add_task_master_tag")
     invite_user_details_id = models.ManyToManyField(User_details,related_name="add_task_user_id")
     invite_user_auth_id = models.ManyToManyField(User,related_name="add_task_auth_id")
-
+    multiple_parent_id = models.ManyToManyField('Add_task_master', blank=True,related_name="Add_task_master_parent_many_to_many")
 
 
 class Add_task_checklist(common_table):

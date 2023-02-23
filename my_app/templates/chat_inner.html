@@ -1,0 +1,439 @@
+<div class="chat-header">
+    <a href="#" class="media">
+        <div class="media-left">
+            <img src="../media/{{selected_user_data.photo}}" alt="user" class="rounded-circle thumb-md">
+        </div><!-- media-left -->
+        <div class="media-body">
+            <div>
+                <h6 class="m-0">{{selected_user_data.name}}</h6>
+                <!-- <p class="mb-0">Last seen: 2 hours ago</p> -->
+            </div>
+        </div><!-- end media-body -->
+    </a><!--end media-->   
+    <div class="chat-features">
+        <div class="d-none d-sm-inline-block dropleft">
+            <!-- <a href="#"><i class="fas fa-phone"></i></a>
+            <a href="#"><i class="fas fa-video"></i></a>
+            <a href="#"><i class="fas fa-trash-alt"></i></a> -->
+            <a href="#" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>     
+            <ul class="dropdown-menu" style="right: 0; left: auto;">
+                <li><a href="#" class="dropdown-item">Mute</a></li>
+                <li><a href="#" class="dropdown-item">Clear chat</a></li>
+
+            </ul>                                                    
+        </div>
+    </div><!-- end chat-features -->
+</div><!-- end chat-header -->
+
+
+<div class="chat-body" data-simplebar>
+    <div class="chat-detail chat-detailnew12">
+
+        {% for chat in data_chat %}
+
+        
+
+        {% if chat.send_user_id == request.user %}
+
+       {% if chat.message_type == 'file_type' %}
+       <div class="media">
+        <div class="media-body reverse">
+            {% if chat.image_extension == '.png' or chat.image_extension == '.jpg' or chat.image_extension == '.jpeg' %}
+
+            <img style="    width: 24%;
+            padding: 20px 17px;" src="../media/{{chat.file_path}}">
+            
+
+            {% elif  chat.image_extension == '.pdf' %}
+
+            <div class="chat-msg">
+                
+                <p><i style="font-size: 30px;
+                    color: #19a0e0;" class="fa fa-solid fa-file-pdf"></i>
+                <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                </p>
+                
+            </div>
+
+            {% elif  chat.image_extension == '.xlsx' %}
+
+            <div class="chat-msg">
+                
+                <p><i style="font-size: 30px;
+                    color: #19a0e0;" class="fas fa-file-excel"></i>
+                <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                </p>
+                
+            </div>
+
+            {% elif  chat.image_extension == '.zip' %}
+
+            <div class="chat-msg">
+                
+                <p><i style="font-size: 30px;
+                    color: #19a0e0;" class="fas fa-compress"></i>
+                <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                </p>
+                
+            </div>
+
+            {% else %}
+            <div class="chat-msg">
+                
+                <p><i style="font-size: 30px;
+                    color: #19a0e0;" class="fas fa-solid fa-file"></i>
+                <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                </p>
+                
+            </div>
+
+            {% endif %}
+            <div class="chat-time">{{chat.date_added.time}}</div>
+           
+        </div>
+        <!--end media-body-->
+        <!-- <div class="media-img">
+            <img src="../media/{{current_user_data.photo}}" alt="user"
+                class="rounded-circle thumb-md">
+        </div> -->
+    </div>
+            
+       {% else %}
+
+        <div class="media">
+            <div class="media-body reverse">
+                <div class="chat-msg">
+                    <p>{{chat.content}}</p>
+                </div>
+                <div class="chat-time">{{chat.date_added.time}}</div>
+               
+            </div>
+            <!--end media-body-->
+            <div class="media-img">
+                <img src="../media/{{current_user_data.photo}}" alt="user"
+                    class="rounded-circle thumb-md">
+            </div>
+        </div>
+
+        {% endif %}
+        
+        {% else %}
+        {% if chat.message_type == 'file_type' %}
+        <div class="media">
+            <div class="media-body ">
+                {% if chat.image_extension == '.png' or chat.image_extension == '.jpg' or chat.image_extension == '.jpeg' %}
+    
+                <img style="    width: 24%;
+                padding: 20px 17px;" src="../media/{{chat.file_path}}">
+                
+    
+                {% elif  chat.image_extension == '.pdf' %}
+    
+                <div class="chat-msg">
+                    
+                    <p><i style="font-size: 30px;
+                        color: #19a0e0;" class="fa fa-solid fa-file-pdf"></i>
+                    <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                    </p>
+                    
+                </div>
+    
+                {% elif  chat.image_extension == '.xlsx' %}
+    
+                <div class="chat-msg">
+                    
+                    <p><i style="font-size: 30px;
+                        color: #19a0e0;" class="fas fa-file-excel"></i>
+                    <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                    </p>
+                    
+                </div>
+    
+                {% elif  chat.image_extension == '.zip' %}
+    
+                <div class="chat-msg">
+                    
+                    <p><i style="font-size: 30px;
+                        color: #19a0e0;" class="fas fa-compress"></i>
+                    <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                    </p>
+                    
+                </div>
+    
+                {% else %}
+                <div class="chat-msg">
+                    
+                    <p><i style="font-size: 30px;
+                        color: #19a0e0;" class="fas fa-solid fa-file"></i>
+                    <span style="    padding: 7px 17px;">{{chat.image_name}}</span><a href="../media/{{chat.file_path}}" download=""><i class="fa fa-solid fa-download"></i></a>
+                    </p>
+                    
+                </div>
+    
+                {% endif %}
+                <div class="chat-time">{{chat.date_added.time}}</div>
+               
+            </div>
+            <!--end media-body-->
+            <!-- <div class="media-img">
+                <img src="../media/{{current_user_data.photo}}" alt="user"
+                    class="rounded-circle thumb-md">
+            </div> -->
+        </div>
+
+        {% else %}
+        <div class="media">
+            <div class="media-img">
+                <img src="../media/{{selected_user_data.photo}}" alt="user"
+                    class="rounded-circle thumb-md">
+            </div>
+            <div class="media-body">
+                <div class="chat-msg">
+                    <p> {{chat.content}}</p>
+                </div>
+                <div class="chat-time">{{chat.date_added.time}}</div>
+            </div>
+           
+        </div>
+        {% endif %}
+
+       
+        {% endif %}
+        {% endfor %}
+       
+        <!--end media-->
+
+        <!--end media-->
+
+    
+        <!--end media-->
+    </div> <!-- end chat-detail -->
+</div><!-- end chat-body -->
+
+
+<div class="chat-footer">
+    <div class="row">                                                    
+        <div class="col-12 col-md-11 chat-inpt">
+            <!-- <span class="chat-admin"><img src="../static/assets/images/users/user-8.jpg" alt="user" class="rounded-circle thumb-sm"></span> -->
+            <input type="text" class="form-control " id="chat-message-input" placeholder="Type something here...">
+            <a href="#" style="cursor:pointer;"  class="chat-message-submit"><i class="fa fa-send"></i></a>
+        </div><!-- col-8 -->
+        <div class="col-1 text-right">
+            <div class="d-none d-sm-inline-block chat-features">
+                <a href="#"  class="select_file_action"><i class="fa fa-paperclip" aria-hidden="true"></i></a>
+                
+            </div>
+        </div><!-- end col -->
+    </div><!-- end row -->
+
+
+<script>
+    var room_no1 = `{{room_no1}}`
+        // alert(room_no1)
+        const chatSocket123 = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/'
+        + room_no1
+        + '/'
+    );
+
+         roomName = `{{room_name}}`
+         receiver_user_id = `{{receiver_auth_id}}`
+     
+         chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/'
+        + roomName
+        + '/'
+    );
+    chatSocket.onclose = function(e) {
+        console.log('onclose')
+    }
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        current_user_id = `{{request.user.id}}`
+       console.log("------------start----------")
+
+       console.log(current_user_id)
+       if(current_user_id==data['username']){
+                var append_data = `  <div class="media">
+            <div class="media-body reverse">
+                <div class="chat-msg">
+                    <p>`+data['message']+`</p>
+                </div>
+                <div class="chat-time">10:00 AM</div>
+               
+            </div>
+            <!--end media-body-->
+            <div class="media-img">
+                <img src="../media/{{current_user_data.photo}}" alt="user"
+                    class="rounded-circle thumb-md">
+            </div>
+        </div>`
+
+        $(".chat-detailnew12").append(append_data)
+       }
+       else{
+        var append_data = `<div class="media">
+            <div class="media-img">
+                <img src="../media/{{selected_user_data.photo}}" alt="user"
+                    class="rounded-circle thumb-md">
+            </div>
+            <div class="media-body">
+                <div class="chat-msg">
+                    <p>`+data['message']+`</p>
+                </div>
+                <div class="chat-time">{{chat.date_added.time}}</div>
+            </div>
+           
+        </div>`
+
+        $(".chat-detailnew12").append(append_data)
+       
+       }
+
+       
+
+    }
+
+        document.querySelector('.chat-message-submit').onclick = function(e) {
+           const messageInputDom = document.querySelector('#chat-message-input');
+           const message = messageInputDom.value;
+          
+           chatSocket.send(JSON.stringify({
+            'message': message,
+            'username': send_user_id,
+            'room': roomName,
+            'receiver_user_id':receiver_user_id,
+            'insert_status':true
+        }));
+       
+    chatSocket123.send(JSON.stringify({
+            'message': message,
+            'username': send_user_id,
+            'room': room_no1,
+            'receiver_user_id':receiver_user_id,
+            'insert_status':false
+        }));
+
+        messageInputDom.value = '';
+
+        return false
+   
+        };
+   </script>
+
+   <script>
+$('#chat-message-input').on('input',function(){
+ var data = this.value
+ chatSocket123.send(JSON.stringify({
+            'message': false,
+            'username': send_user_id,
+            'room': room_no1,
+            'receiver_user_id':receiver_user_id,
+            'insert_status':false
+        }));
+});
+   
+   </script>
+
+<div class="modal fade" id="add_user_modal" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalDefaultLogin" aria-hidden="true">
+
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <input type="hidden" name="user_type" value="company_staff">
+        <div class="modal-header">
+            <h6 class="modal-title" id="exampleModalDefaultLogin">Select File</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!--end modal-header-->
+        <div class="modal-body">
+            <div class="card-body p-0 auth-header-box">
+
+            </div>
+            <div class="card-body p-0">
+
+            
+                <!--end form-group-->
+
+                <div class="form-group my-4">
+                    <label class="form-label" for="logo">Select File</label>
+                    <div class="input-group">
+                        <input  required type="file" class="form-control" name="chat_file" id="f123"
+                            >
+                    </div>
+                </div>
+                <!--end form-group-->
+
+              
+                </div>
+               
+                <div class="form-group mb-2 row">
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 waves-effect waves-light upload_file_Action" type="submit">Send
+                           <i class="fas fa-sign-in-alt ms-1"></i></button>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end form-group-->
+            </div>
+            <!--end card-body-->
+        </div>
+        <!--end modal-body-->
+    </div>
+
+    <!--end modal-content-->
+</div>
+
+<script>
+
+    $(".select_file_action").click(function(){
+        $("#add_user_modal").modal('show')
+    })
+
+    $(".upload_file_Action").click(function(){
+        alert("helllloooo")
+        var data1 = new FormData()
+        var token = '{{csrf_token}}';
+        data1.append('chat_file', $('#f123')[0].files[0])
+        data1.append('send_user_id',send_user_id)
+        data1.append('receiver_user_id',receiver_user_id)
+        $.ajax({   
+            headers: { "X-CSRFToken": token },                 
+        url: "user_upload_chat_file_action",                    
+        data: data1,
+		type: 'post',
+        processData: false,
+        contentType: false,
+        success: function (data) {  
+            
+            $("#add_user_modal").modal('hide')
+
+        }
+      });
+      
+    })
+   
+    $(document).ready(function () {
+    // Handler for .ready() called.
+    const element = document.getElementById('div1');
+    element.scrollTop = element.scrollHeight;
+   
+});
+   
+</script>
+</div><!-- end chat-footer -->
+
+
+
+
+
+
+
+
+
+

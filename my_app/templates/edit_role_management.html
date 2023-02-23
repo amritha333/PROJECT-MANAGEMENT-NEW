@@ -12,8 +12,6 @@ aria-hidden="true" style="display: none">
             </button>
         </div>
         <input type="hidden" value="{{role_data.id}}" name="role_data">
-        <input type="hidden" value="{{role_company.id}}" name="role_company">
-        <input type="hidden" value="{{role_user.id}}" name="role_user">
         <input type="hidden" value="{{role_role.id}}" name="role_role">
         <input type="hidden" value="{{role_team.id}}" name="role_team">
         <input type="hidden" value="{{role_tags.id}}" name="role_tags">
@@ -50,24 +48,7 @@ aria-hidden="true" style="display: none">
                         </thead>
 
                         <tbody class="body-textcls vertcle-center">
-                            <tr>
-                                <td>Company</td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="company_read" value="True" {% if role_company.read == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox2" name="company_write" value="True" {% if role_company.write == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3" name="company_edit" value="True" {% if role_company.edit == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4" name="company_delete"  value="True" {% if role_company.delete == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5" name="company_view_all" value="True" {% if role_company.view_all == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6" name="company_manage_all" value="True" {% if role_company.manage_all == True %} checked {% else %} {% endif %}></td>
-                            </tr>
-                            <tr>
-                                <td>User management</td>
-                                <td class="text-center"><input type="checkbox"  id="inlineCheckbox1" name="user_read" value="True" {% if role_user.read == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox"  id="inlineCheckbox2" name="user_write" value="True" {% if role_user.write == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3"  name="user_edit" value="True" {% if role_user.edit == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4"  name="user_delete" value="True" {% if role_user.delete == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5"  name="user_view_all" value="True" {% if role_user.view_all == True %} checked {% else %} {% endif %}></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6"  name="user_manage_all" value="True" {% if role_user.manage_all == True %} checked {% else %} {% endif %}></td>
-                            </tr>
+                           
                             <tr>
                                 <td>Role</td>
                                 <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="role_read" value="True" {% if role_role.read == True %} checked {% else %} {% endif %}></td>

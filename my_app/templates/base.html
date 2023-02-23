@@ -13,7 +13,7 @@
 
     <link rel="shortcut icon" href="veuz.png">
 
-    <link href="../static//plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css">
+    <link href="../static/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css">
     <link href="../static/plugins/select2/dist/css/select2.css" rel="stylesheet" type="text/css">
     <link href="../static/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet" type="text/css">
     <!-- Custom Files -->
@@ -190,7 +190,7 @@
                         </li> -->
 
                         <li>
-                            <a href="calendar" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
+                            <a href="calendar_detail" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
                         </li>
                         {% if request.user.id|company_nav_perm_check:"Company" %}
                         <li>
@@ -449,7 +449,7 @@
     </script>
 
     <!-- jQuery  -->
-    <script src="../static/assets/js/jquery.min.js"></script>
+    <!-- <script src="../static/assets/js/jquery.min.js"></script> -->
     <script src="../static/assets/js/bootstrap.bundle.min.js"></script>
     <script src="../static/assets/js/detect.js"></script>
     <script src="../static/assets/js/fastclick.js"></script>
@@ -504,13 +504,28 @@
     <!-- Dashboard js  -->
     <script src="../static/assets/pages/jquery.dashboard.js"></script>
 
-    <!-- App js  -->
+
     <script src="../static/assets/js/jquery.app.js"></script>
     <script src="../static/plugins/select2/dist/js/select2.min.js"></script>
     <script src="../static/plugins/jquery-multi-select/jquery.multi-select.js"></script>
     <script src="../static/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
     <script src="../static/plugins/timepicker/bootstrap-timepicker.min.js"></script>
     <script src="../static/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+
+    <script src="../static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../static/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Responsive examples -->
+    <script src="../static/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="../static/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+    <!-- Datatable init js -->
+    <script src="../static/assets/pages/datatables.init.js"></script>
+
+
+
+    <!-- App js  -->
+   
     <script>
         /* ==============================================
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Counter Up
@@ -696,7 +711,7 @@
     animation: false,
     position: 'top-right',
     showConfirmButton: false,
-    timer: 1000,
+    timer: 2000,
     timerProgressBar: true,
     didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)

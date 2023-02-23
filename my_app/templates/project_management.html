@@ -466,7 +466,7 @@
                             <input type="text" name="checklist" class="form-control">
 
                             <label for="field-2" class="control-label mt-2">Checklist Duedate</label>
-                            <input type="date" min="{{today_date}}" name="checklist_end_date" required  class="form-control">
+                            <input type="date" value="{{today_date|safe}}"  min="{{today_date}}" name="checklist_end_date"   class="form-control">
 
                     
                             <div class="" id="new_checklist" style="display:none;">
@@ -517,7 +517,7 @@
                         <div class="form-group"> 
                             <label for="field-2" class="control-label">Manager</label> 
                             <select required  class="form-control " name="manager_id">
-                                <option>Select Manager</option>
+                                <option value="">Select Manager</option>
                                 {% for i in  manager_data %}
                                 <option value="{{i.id}}">{{i.username}}</option>
                                 {% endfor %}
@@ -539,9 +539,6 @@
                         </div> 
                     </div> 
 
-                    
-
-                  
                 </div> 
               
             </div> 
@@ -553,14 +550,6 @@
     </div>
 </div><!-- /.modal -->
 </form>
-
-
-
-
-
-
-
-
 
 
 <link href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css"/>
@@ -623,8 +612,6 @@
 
 <script>
     $(".space_class").click(function(){
-      
-
     var space_id = $(this).attr("data-space-id")
     $.ajax(
     {
@@ -672,18 +659,6 @@
     })
 </script>
 
-<!-- <script>
-    $(".project_class").submit(function () {
-        event.preventDefault()
-        if( $('.member_data').is(':checked') ) {
-            document.forms["project_form"].submit();
-    }
-    else {
-        document.getElementById("message").style.display = "block";
-        document.getElementById("message").innerHTML = "Please choose a employee!";
-    }
-    })
-</script> -->
 
 <script>
     $("#add_checklist").click(function(){
@@ -730,8 +705,6 @@ $(".space_edit").click(function(){
 
 })
 })
-
-
 
 </script>
 

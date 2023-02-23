@@ -47,7 +47,7 @@
                                                     {{sub_space_data.sub_space_name}}
                                                 </label>
                                                 <label for="checkbox7" id="name_show"  style="display:none;">
-                                                    <input type="text" name="project_name" class="form-control" value="{{sub_space_data.sub_space_name}}">
+                                                    <input type="text" name="project_name" class="form-control capital" value="{{sub_space_data.sub_space_name}}">
                                                 </label>
                                        
                                             </div>
@@ -161,11 +161,14 @@
                                             </div>
                                                
                                             </div>
+                                           
+                                          
 
                                             <div class="labeltag d-flex align-items-center mt-4">
                                                 <img src="../static/assets/images/price-tag.png" alt="" class="label-tag">
                                                 <select class="select2-selection__choice" multiple="multiple" name="tag_name"  id="myList">
-                                                    <option value="1">Add tag</option>
+                                                    
+                                                    <option value="0">Add label</option>
                                                     {% for t in tags_name %}
 
                                                     <option value="{{t.id}}">{{t.tags_name}}</option>
@@ -300,26 +303,50 @@
                                                             <input name="checkbox_checklist"  value="{{ch.id}}" id="checkbox7" type="checkbox">
                                                             {% endif %}
 
-                                                            <label for="checkbox7" >
+                                                            <label for="checkbox8">
                                                                 {% if ch.status == "True" %}
                                                                 <input  style="text-decoration: line-through;" disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
-                                                                <input  disabled type="text" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                                <h6 class="mt-2">Due date</h6>
+                                                                {% if request.user.id|due_date_project_checklist:ch.id == True %}
+
+                                                                <span name="checklist_date"  class="badge badge-size badge-pill badge-danger">{{ch.due_date|safe}}</span>
+                                                                
+                                                                {% else %}
+                                                                <input  disabled id="due_date" type="text" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                                {% endif %}
                                                                 <div class="profile-image d-flex align-items-center m-2">
-                                                                    <img class="" src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}"> <span class="" style="padding: 6px 13px;">
-                                                                        
-                                                                    
+                                                                    <span class="m-2">closed by</span>
+                                                                    <img src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}">
+                                                                     <span class="" style="padding: 6px 13px;">
+                                                                       
                                                                      <span>
                                                                         {{ch.updated_by}}
                                                                      </span>
-
-                                                                    </span>                                                      
+                                                                    </span>                                           
                                                                 </div>
+                                                                <div class="m-2">
+                                                                    <span class="m-2">closed date and time</span> 
+
+                                                                    <span>
+                                                                        {{ch.updated_dt|safe}} , {{ch.updated_tm}}
+                                                                     </span>
+                                                                </div>
+                                                                   
+                                                                      
 
                                                                 {% else %}
                                                                 <input  disabled type="text" name="checklist_new" value="{{ch.milestone}}" placeholder="Add an item" class="form-control checkitem">
+                                                                <h6 class="mt-2">Due date</h6>
+                                                                {% if request.user.id|due_date_project_checklist:ch.id == True %}
 
-                                                                <input  disabled type="date"  placeholder="Checklist due date" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                                <span name="checklist_date"  class="badge badge-size badge-pill badge-danger">{{ch.due_date|safe}}</span>
+                                                                
+                                                                {% else %}
+                                                                <input  disabled id="due_date" type="text" name="checklist_date" value="{{ch.due_date|safe}}"  class="form-control checkitem">
+                                                                {% endif %}
+
                                                                 <div class="profile-image d-flex align-items-center m-2">
+                                                                    <span class="m-2">added by</span>
                                                                     <img class="" src="./media/{{ch.updated_by.user_details_authuser.all.0.photo}}"> <span class="" style="padding: 6px 13px;">
                                                                         
                                                                     
@@ -515,7 +542,8 @@
                                                                             <label for="checkbox-9">
                                                               
                                                                             </label>
-                                                                            <p class="main-head">{{i.task_name}}</p>
+                                                                            <p class="main-head">
+                                                                                <a style="cursor:pointer ;" href="view_task_page?task_id={{i.id}}&parent_id={{sub_space_data.id}}&status=task">{{i.task_name}}</a></p>
                                                                         </div>
     
                                                                     </td>
@@ -570,7 +598,9 @@
                                                                             <label for="checkbox-9">
                                                               
                                                                             </label>
-                                                                            <p class="main-head">{{i.task_name}}</p>
+                                                                            <p class="main-head">
+                                                                                <a style="cursor:pointer ;" href="view_task_page?task_id={{i.id}}&parent_id={{sub_space_data.id}}&status=task">{{i.task_name}}</a></p>
+
                                                                         </div>
     
                                                                     </td>
@@ -868,7 +898,7 @@
                             <input type="text" name="checklist" class="form-control">
 
                             <label for="field-2" class="control-label mt-2">Checklist Duedate</label>
-                            <input type="date" min="{{today_date}}" name="checklist_end_date" required  class="form-control">
+                            <input type="date" min="{{today_date}}" name="checklist_end_date"   class="form-control">
 
                     
                             <div class="" id="new_checklist" style="display:none;">
@@ -1044,7 +1074,9 @@
     var colors = ["red", "blue", "green", "orange", "yellow"];
 
     $(document).ready(function () {
-        var checkList = [1];
+        var checkList = [0];
+        var selectedValuesTest = `{{tag_data}}`
+        parsedTest = JSON.parse(selectedValuesTest); 
         $("#myList").select2({
             width: "100%",
             templateSelection: function (data, container) {
@@ -1057,6 +1089,7 @@
                 return data.text;
             },
         }).val(checkList).trigger("change");
+        $('#myList').val(parsedTest).trigger('change');
 
     })
 </script>
@@ -1243,7 +1276,7 @@ if (running == 1) {
 
     <script>
         $(".checklist_more").click(function(){
-        $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input name="checklist_new" type="text" placeholder="Add an item" class="form-control checkitem"><input  type="date" name="checklist_date" placeholder="Checklist due date"  class="form-control checkitem">
+        $('.append_add').append(` <div class="checkbox checkbox-circle mt-2" ><input  id="checkbox73" type="checkbox"><label for="checkbox73"><input name="checklist_new" type="text" placeholder="Add an item" class="form-control checkitem"><input type="date" name="checklist_date" placeholder="Checklist due date"  class="form-control checkitem">
         </label></div>`);
         })
     </script>
@@ -1263,7 +1296,7 @@ if (running == 1) {
 
     </script>
 
-    <script>
+<script>
 
 $("#commnt_snd").click(function(){
 
@@ -1279,6 +1312,8 @@ $("#commnt_snd").click(function(){
         },
         success: function( data ) 
         {
+            var comment = document.getElementById("project_comment");
+            comment.value = "";
             window.location.reload();
         }
      });
