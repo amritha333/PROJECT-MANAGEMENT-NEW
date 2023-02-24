@@ -14,8 +14,9 @@
                 <div class="card-body body-change card-border">
                     <div class="d-flex align-items-center justify-content-between">
                         <h2 class="main-heading-txt">Role Management</h2>
+                        {% if request.user.id|permission_create:"Role" %}
                         <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#role-modal"><i class="fa fa-plus"></i> New</button>
-                       
+                        {% endif %}
                     </div>
 
                     <div class="row mt-4">
@@ -115,39 +116,39 @@ aria-hidden="true" style="display: none">
                         <tbody class="body-textcls vertcle-center">
                             <tr>
                                 <td>Role</td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="role_read" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox2" name="role_write" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3"  name="role_edit" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4" name="role_delete" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5"  name="role_view_all" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6" name="role_manage_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_read" name="role_read" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_write" name="role_write" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_edit"  name="role_edit" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_delete" name="role_delete" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_view_all"  name="role_view_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="role_manage_all" name="role_manage_all" value="True"></td>
                             </tr>
                             <tr>
                                 <td>Team member</td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="team_member_read" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox2" name="team_member_write"  value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3" name="team_member_edit" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4" name="team_member_delete" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5" name="team_member_view_all" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6"  name="team_member_manage_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_read" name="team_member_read" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_write" name="team_member_write"  value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_edit" name="team_member_edit" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_delete" name="team_member_delete" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_view_all" name="team_member_view_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="team_member_manage_all"  name="team_member_manage_all" value="True"></td>
                             </tr>
                             <tr>
                                 <td>Tags</td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="tag_read" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox2" name="tag_write" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3"  name="tag_edit" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4" name="tag_delete" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5"  name="tag_view_all" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6" name="tag_manage_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_read" name="tag_read" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_write" name="tag_write" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_edit"  name="tag_edit" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_delete" name="tag_delete" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_view_all"  name="tag_view_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="tag_manage_all" name="tag_manage_all" value="True"></td>
                             </tr>
                             <tr>
                                 <td>Status</td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox1" name="status_read" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox2" name="status_write" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox3"  name="status_edit" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox4" name="status_delete" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox5"  name="status_view_all" value="True"></td>
-                                <td class="text-center"><input type="checkbox" id="inlineCheckbox6" name="status_manage_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_read" name="status_read" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_write" name="status_write" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_edit"  name="status_edit" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_delete" name="status_delete" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_view_all"  name="status_view_all" value="True"></td>
+                                <td class="text-center"><input type="checkbox" id="status_manage_all" name="status_manage_all" value="True"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -200,6 +201,131 @@ aria-hidden="true" style="display: none">
             $('#delete_role_modal').modal('show');
         }
       });messageCheckbox
+    })
+</script>
+
+<script>
+    $("#role_view_all").click(function(){
+        var status =  $(this).is(":checked")
+        if (status == true){
+            document.getElementById("role_read").checked = true;
+        }
+        else{
+            document.getElementById("role_read").checked = false;
+        } 
+    })
+    $("#role_manage_all").click(function(){
+        var status =  $(this).is(":checked")
+       if(status == true){
+        document.getElementById("role_read").checked = true;
+        document.getElementById("role_write").checked = true;
+        document.getElementById("role_edit").checked = true;
+        document.getElementById("role_delete").checked = true;
+        document.getElementById("role_view_all").checked = true;
+        document.getElementById("role_manage_all").checked = true;
+
+       }
+       else{
+        document.getElementById("role_read").checked = false;
+        document.getElementById("role_write").checked = false;
+        document.getElementById("role_edit").checked = false;
+        document.getElementById("role_delete").checked = false;
+        document.getElementById("role_view_all").checked = false;
+        document.getElementById("role_manage_all").checked = false;
+       }
+    })
+
+    $("#team_member_view_all").click(function(){
+        var status =  $(this).is(":checked")
+        if (status == true){
+            document.getElementById("team_member_read").checked = true;
+        }
+        else{
+            document.getElementById("team_member_read").checked = false;
+        } 
+    })
+
+    $("#team_member_manage_all").click(function(){
+        var status =  $(this).is(":checked")
+       if(status == true){
+        document.getElementById("team_member_read").checked = true;
+        document.getElementById("team_member_write").checked = true;
+        document.getElementById("team_member_edit").checked = true;
+        document.getElementById("team_member_delete").checked = true;
+        document.getElementById("team_member_view_all").checked = true;
+        document.getElementById("team_member_manage_all").checked = true;
+
+       }
+       else{
+        document.getElementById("team_member_read").checked = false;
+        document.getElementById("team_member_write").checked = false;
+        document.getElementById("team_member_edit").checked = false;
+        document.getElementById("team_member_delete").checked = false;
+        document.getElementById("team_member_view_all").checked = false;
+        document.getElementById("team_member_manage_all").checked = false;
+       }
+    })
+
+    $("#tag_view_all").click(function(){
+        var status =  $(this).is(":checked")
+        if (status == true){
+            document.getElementById("tag_read").checked = true;
+        }
+        else{
+            document.getElementById("tag_read").checked = false;
+        } 
+    })
+
+    $("#tag_manage_all").click(function(){
+        var status =  $(this).is(":checked")
+       if(status == true){
+        document.getElementById("tag_read").checked = true;
+        document.getElementById("tag_write").checked = true;
+        document.getElementById("tag_edit").checked = true;
+        document.getElementById("tag_delete").checked = true;
+        document.getElementById("tag_view_all").checked = true;
+        document.getElementById("tag_manage_all").checked = true;
+
+       }
+       else{
+        document.getElementById("tag_read").checked = false;
+        document.getElementById("tag_write").checked = false;
+        document.getElementById("tag_edit").checked = false;
+        document.getElementById("tag_delete").checked = false;
+        document.getElementById("tag_view_all").checked = false;
+        document.getElementById("tag_manage_all").checked = false;
+       }
+    })
+
+    $("#status_view_all").click(function(){
+        var status =  $(this).is(":checked")
+        if (status == true){
+            document.getElementById("status_read").checked = true;
+        }
+        else{
+            document.getElementById("status_read").checked = false;
+        } 
+    })
+
+    $("#status_manage_all").click(function(){
+        var status =  $(this).is(":checked")
+       if(status == true){
+        document.getElementById("status_read").checked = true;
+        document.getElementById("status_write").checked = true;
+        document.getElementById("status_edit").checked = true;
+        document.getElementById("status_delete").checked = true;
+        document.getElementById("status_view_all").checked = true;
+        document.getElementById("status_manage_all").checked = true;
+
+       }
+       else{
+        document.getElementById("status_read").checked = false;
+        document.getElementById("status_write").checked = false;
+        document.getElementById("status_edit").checked = false;
+        document.getElementById("status_delete").checked = false;
+        document.getElementById("status_view_all").checked = false;
+        document.getElementById("status_manage_all").checked = false;
+       }
     })
 </script>
 

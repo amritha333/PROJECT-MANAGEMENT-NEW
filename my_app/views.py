@@ -20,9 +20,19 @@ class signup(TemplateView):
         Phone = self.request.POST.get("Phone")
         password = self.request.POST.get("password")
         name = self.request.POST.get("name")
-        Photo = None
         try:
-            Photo = self.request.FILES['Photo']
+            photo =  request.FILES['Photo']
+            fixed_height = 128
+            image = Image.open(photo)
+            print("image.size",image.size)
+            width_size = int(fixed_height/image.height * image.width)
+
+            resized_image = image.resize((width_size,fixed_height))
+            print("resizeeeeeed:",resized_image.size)
+            from django.conf import settings
+            resized_image.save("media/user_image/"+photo.name)
+            image_new1 = 'user_image/'+photo.name
+       
         except:
             pass
         if User.objects.filter(username=Username).exists():
@@ -30,8 +40,15 @@ class signup(TemplateView):
                 return redirect(request.META['HTTP_REFERER'])
         else:
             if company_master.objects.filter(company_name = companyname).exists():
-                company_model_data =company_master.objects.get(company_name = companyname)
-                company_master_id = company_model_data.id
+                data1 = company_master.objects.get(company_name = companyname)
+                
+                if User_details.objects.filter(company_id_id = data1.id,user_type = "company_admin"):
+                    messages.warning(request,"Company admin already exist")
+                    return redirect('user_management_new')
+                else:
+
+                    company_model_data =company_master.objects.get(company_name = companyname)
+                    company_master_id = company_model_data.id
             else:
                 company_save = company_master.objects.create(company_name =companyname,status="False")
                 company_master_id = company_save.id
@@ -42,7 +59,7 @@ class signup(TemplateView):
                     company_name =companyname,
                     name = name,
                     auth_user = user,
-                    photo = Photo,
+                    photo = image_new1,
                     username = Username,
                     email = email,
                     phone = Phone,
@@ -53,8 +70,10 @@ class signup(TemplateView):
             messages.success(request,"Successfully added User details")
             return redirect('user_login')
             pass
-
+    company_data = company_master.objects.all()
     template_name = 'signup.html'
+
+    
 
 
 def index(request):
@@ -62,29 +81,8 @@ def index(request):
     member_data = ""
     try:
 
-        user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
-        user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-        user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
-
-        user_details_data = User_details.objects.get(auth_user=request.user)
-        if user_manage_all_permission:
-            active_user_id = user_active_account.objects.get(user_id_id=user_details_data.id)
-            user_active_account1 = user_active_account.objects.filter(active_auth_user_id_id =active_user_id.active_auth_user_id )
-            child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-            child_user_id.append(int(active_user_id.active_auth_user_id.id))
-            member_data = User_details.objects.filter(created_by__in=child_user_id).exclude(auth_user = request.user)
-        else:
-            if user_details_data.user_type == "company_admin":
-                user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
-                child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
-                child_user_id.append(int(request.user.id))
-                member_data = User_details.objects.filter(created_by__in=child_user_id) 
-                member_data1 = User_details.objects.filter(auth_user=request.user) 
-                member_data = list(chain(member_data1,member_data))
-
-            else:
-                member_data = User_details.objects.filter(manager_auth=request.user)
-
+        user_details_data = User_details.objects.get(auth_user = request.user)
+        member_data = User_details.objects.filter(company_id =user_details_data.company_id).exclude(auth_user=request.user)
     except:
         pass
 
@@ -437,29 +435,67 @@ def user_edit_modal(request):
     return render(request,"user_edit_modal.html",context)
 
 
-def user_details_check(request):
+def user_details_signup(request):
     username = request.GET.get("username",False)
-    password1 = request.GET.get("password2",False)
-    password2 = request.GET.get("password3",False)
     email_id = request.GET.get("email_id",False)
+    phone_number  =  request.GET.get("phone_number",False)
 
     data = []
     if User.objects.filter(username=username).exists():
         data = {"message":"usernameTrue"}
         return JsonResponse(data,safe=False)
     
-    elif password1 != password2:
-        data = {"message":"passwordTrue"}
-        return JsonResponse(data,safe=False)
     
     elif User_details.objects.filter(email=email_id).exists():
         data = {"message":"emailTrue"}
         return JsonResponse(data,safe=False)
     
-    elif password1 == "":
-        data = {"message":"password_blankTrue"}
+    elif len(phone_number) < 8 :
+        data = {"message":"phoneTrue"}
+        return JsonResponse(data,safe=False)
+    
+    else:
+        data = {"message":"False"}
         return JsonResponse(data,safe=False)
 
+
+
+
+
+
+def user_details_check(request):
+    username = request.GET.get("username",False)
+    password1 = request.GET.get("password2",False)
+    password2 = request.GET.get("password3",False)
+    email_id = request.GET.get("email_id",False)
+    Automatic = request.GET.get("Automatic",False)
+    phone_number  =  request.GET.get("phone_number",False)
+    print("Automatic:",Automatic)
+
+    data = []
+    if User.objects.filter(username=username).exists():
+        data = {"message":"usernameTrue"}
+        return JsonResponse(data,safe=False)
+    
+    elif Automatic != "true":
+        data = {"message":"hy"}
+        if password1 != password2:
+            data = {"message":"passwordTrue"}
+            return JsonResponse(data,safe=False)
+        elif password1 == "":
+            data = {"message":"password_blankTrue"}
+            return JsonResponse(data,safe=False)
+        return JsonResponse(data,safe=False)
+    
+    
+    elif User_details.objects.filter(email=email_id).exists():
+        data = {"message":"emailTrue"}
+        return JsonResponse(data,safe=False)
+    
+    elif len(phone_number) < 8 :
+        data = {"message":"phoneTrue"}
+        return JsonResponse(data,safe=False)
+    
     else:
         data = {"message":"False"}
         return JsonResponse(data,safe=False)
@@ -495,15 +531,27 @@ def user_management_action(request):
     elif User_details.objects.filter(email=data['email']).exists():
         messages.warning(request,"Email already exists")
         return redirect(request.META['HTTP_REFERER'])
+    elif len(data['phone']) < 8:
+        messages.warning(request,"Phone number should be minimum 8 digits")
+        return redirect(request.META['HTTP_REFERER'])
    
     else:
 
         # super_admin add company admin(navabsir)
 
         if data['user_type'] == "company_admin":
+
             if company_master.objects.filter(company_name = data['companyname']).exists():
-                company_model_data =company_master.objects.get(company_name = data['companyname'])
-                company_master_id = company_model_data.id
+
+                data1 = company_master.objects.get(company_name = data['companyname'])
+                
+                if User_details.objects.filter(company_id_id = data1.id,user_type = "company_admin"):
+                    messages.warning(request,"Company admin already exist")
+                    return redirect('user_management_new')
+                    
+                else:
+                    company_model_data =company_master.objects.get(company_name = data['companyname'])
+                    company_master_id = company_model_data.id
             else:
                 company_save = company_master.objects.create(company_name =data['companyname'],created_by = request.user,status="False")
                 company_master_id = company_save.id
@@ -761,7 +809,7 @@ def member_management(request):
 
     user_permission_modal = user_permission_mapping.objects.filter(auth_user_id=request.user)
     user_permission_modal1 = list(user_permission_modal.values_list('role_mapping_id',flat=True))
-    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",manage_all=True)
+    user_manage_all_permission = Role_mapping.objects.filter(role_master_id__in=user_permission_modal1,navbar_name="Team member",view_all=True)
 
     user_details_data = User_details.objects.get(auth_user=request.user)
     if user_manage_all_permission:
@@ -1274,6 +1322,8 @@ def project_management(request):
 
     except:
         pass
+   
+   
 
     context = {
     "member_data" : member_data,
@@ -1507,6 +1557,7 @@ def project_add_action(request):
         return redirect(request.META['HTTP_REFERER'])
 
 
+from django.http import HttpResponseRedirect
 def update_project_details(request):
     today_date = datetime.today().strftime('%Y-%m-%d')
     current_time = datetime.now().strftime("%H:%M:%S")
@@ -1607,8 +1658,8 @@ def update_project_details(request):
             pass
                
         sub_space = sub_space_master.objects.get(id=sub_space_id)
+        sub_space.tag_id.clear()
         for t in tag_name:
-            print("t:::::::::::",str(t))
             if t == '0':
                 pass
             else:                
@@ -1624,7 +1675,7 @@ def update_project_details(request):
             pass
 
         messages.success(request,"Successfully updated Project details")
-        return redirect(request.META['HTTP_REFERER'])
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 
@@ -1732,11 +1783,8 @@ def update_task_details(request):
         except:
             pass
 
-
-
-        
-               
         add_task = Add_task_master.objects.get(id=task_id)
+        add_task.tag_id.clear()
         for t in tag_name:
             if t == '0':
                 pass
@@ -1784,34 +1832,57 @@ def view_project_page(request):
 
     sub_space_id = request.GET.get("sub_space_id")
     sub_space_data = sub_space_master.objects.get(id=sub_space_id)
-   
+    manager_of_project = sub_space_data.sub_space_manager
+    user_details_manger = User_details.objects.get(auth_user=manager_of_project)
+
     space_id = sub_space_data.space_id
     space_data = space_master.objects.get(id=space_id.id)
 
     task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None)
 
-
     user_details_data = User_details.objects.get(auth_user=request.user)
     dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
     tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
 
+    time_details = ""
+    total_hr = ""
+
     task_data_time = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id)
     task_details = list(task_data_time.values_list('id',flat=True))
-    time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id = request.user)
-    total_hr = ""
-    try : 
-        total_price = sum(time_details.values_list('total_second', flat=True))
-        total_hr = convert(total_price)
-    except:
-        pass
+    if user_details_data.user_type == "company_admin":
+        print("user is company admin:")
 
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(request.user.id))
+        
+        member_data = User_details.objects.filter(created_by__in=child_user_id) 
+        member_data9 = list(member_data.values_list('auth_user',flat=True))
+        # member_data1 = User_details.objects.filter(auth_user=request.user) 
+        # member_data = list(chain(member_data1,member_data))
+        print("member_data:",member_data)
+        
+
+        time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id__in = member_data9)
+        print("time_details::::555555555555555::::::",time_details)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+        
+            
 
     user_data = User_details.objects.get(auth_user = request.user)
     member_data = User_details.objects.filter(company_id =user_data.company_id)
+    
 
     user_access_generate = Project_user_access_link.objects.filter(project_id_id=sub_space_id).first()
     tag_selected_instance = list(sub_space_data.tag_id.all().values_list('id',flat=True))
     tag_selected_instance.insert(0, 0)
+    
     context = {
         "space_data":space_data,
         "sub_space_data":sub_space_data,
@@ -1829,7 +1900,8 @@ def view_project_page(request):
         "total_hr":total_hr,
         'user_access_generate':user_access_generate,
         "member_data":member_data,
-        "tag_data": tag_selected_instance
+        "tag_data": tag_selected_instance,
+        "user_details_manger":user_details_manger
        
     }
     return render(request, 'view_project_page.html',context)
@@ -1962,6 +2034,7 @@ def view_task_page(request):
 
     task_id = request.GET.get("task_id")
     print("task_id:",task_id)
+    
 
     current_date = datetime.today().strftime('%Y-%m-%d')
     current_status = ""
@@ -2008,6 +2081,7 @@ def view_task_page(request):
 
 
     task_data = Add_task_master.objects.get(id=task_id)
+   
     space_id = task_data.space_id
     sub_space_data = task_data.sub_space_id
 
@@ -2899,3 +2973,11 @@ def task_depended_action(request):
         )
         messages.success(request, str("Updated Succesfully"))
         return redirect(request.META['HTTP_REFERER'])
+
+
+def test_r1(request):
+    if request.method == "POST":
+        messages.success(request,"Successfully updated Project details")
+        return redirect(request.META.get('HTTP_REFERER'))
+        pass
+    return render(request,'test_r1.html')

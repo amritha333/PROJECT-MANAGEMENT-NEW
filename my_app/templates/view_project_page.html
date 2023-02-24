@@ -100,13 +100,15 @@
                                         </div>
                                     </div>
                                     
-
+                                    
                                     <div class="row">
+                                        
                                         <div class="col-md-5 mt-3">
                                             <div class="d-flex align-items-center assign-prjct">
+                                                
                                                 <img src="../static/assets/images/user-avatar.png" alt="" class="add-icn" data-toggle="dropdown" aria-expanded="false">
 
-
+                                                
                                                 <ul class="dropdown-menu">
                                                     <input type="text" class="form-control" placeholder="Type a name or email address">
                                                     <h6>Assigned</h6>
@@ -150,10 +152,21 @@
                                                 </ul> 
 
                                                 <div class="append_user">
+                                                    
                                                 {% for m in sub_space_data.invite_user_details_id.all %}
 
                                                 <div class="profile-image d-flex align-items-center m-2 save_member_data{{m.id}}">
-                                                    <img class="save_member_data{{m.id}}" src="./media/{{m.photo}}"> <span class="save_member_data{{m.id}}">{{m.name}}</span>                                                      
+                                                    
+                                                    {% if user_details_manger.name == m.name  %}
+                                                    <img class="save_member_data{{m.id}}" src="./media/{{m.photo}}">
+                                                     <span class="save_member_data{{m.id}}">{{m.name}}(Manager)
+                                                    {% else %}
+                                                    <img class="save_member_data{{m.id}}" src="./media/{{m.photo}}">
+                                                    <span class="save_member_data{{m.id}}">{{m.name}}
+                                                        {%endif%}
+
+
+                                                    </span>                                                      
                                                 </div>
                                                
                                                 {% endfor %}
@@ -1371,6 +1384,8 @@ function attach_remove(value){
 
 
     </script>
+
+
 
 
 {% endblock %}

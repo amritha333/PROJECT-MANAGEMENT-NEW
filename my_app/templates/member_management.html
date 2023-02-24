@@ -23,7 +23,9 @@
                     <div class="card-body body-change card-border">
                         <div class="d-flex align-items-center justify-content-between">
                             <h2 class="main-heading-txt">Member Management</h2>
+                            {% if request.user.id|permission_create:"Team member" %}
                             <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#member-modal"><i class="fa fa-plus"></i> New</button>
+                            {% endif %}
                            
                         </div>
 
@@ -119,7 +121,7 @@ aria-hidden="true" style="display: none">
                         <label for="field-1" class="control-label">User Image</label>
                         <div class="input-group uploadFile1">
                            
-                            <input type="file" required name="photo" class="inputfile form-control" name="file" >
+                            <input type="file" accept="image/*"   required name="photo" class="inputfile form-control" name="file" >
                             <div class="input-group-append">
                                 <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
                             </div>
@@ -130,7 +132,8 @@ aria-hidden="true" style="display: none">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="control-label">Phone</label>
-                        <input type="text" required required class="form-control" name="phone">
+                        <input type="text" autocomplete="off" maxlength="10" onkeyup="no_validation(this)" minlength="10"  required class="form-control numberField" name="phone">
+                        <!-- <div style="display:none;color:red;" class="form-control alertshow">*phone number should be 8 digits</div> -->
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -170,7 +173,7 @@ aria-hidden="true" style="display: none">
                                 <label for="inlineRadio2"> Automatic </label>
                             </div>
                         </div>
-                        <input autocomplete="off" required name="password" type="password" id="password2" style="display:none ;" class="form-control"placeholder="Enter Password">
+                        <input autocomplete="off"  name="password" type="password" id="password2" style="display:none ;" class="form-control"placeholder="Enter Password">
                        
                     </div>
                 </div>
@@ -180,7 +183,7 @@ aria-hidden="true" style="display: none">
                         <label for="field-1" class="control-label">User Type</label>
                         <div class="my-1">
                             <div class="radio radio-primary form-check-inline">
-                                <input type="radio" name="user_level" value="Manager">
+                                <input type="radio" required name="user_level" value="Manager">
                                 <label for="inlineRadio1"> Manager </label>
                             </div>
                             <div class="radio radio-primary form-check-inline">
@@ -343,6 +346,28 @@ aria-hidden="true" style="display: none">
       });messageCheckbox
     })
 </script>
+
+
+<script>
+    var userName = document.querySelector('.numberField');
+    userName.addEventListener('input', restrictNumber);
+    function restrictNumber (e) {
+        var newValue = this.value.replace(new RegExp(/[^\d]/,'ig'), "");
+        this.value = newValue;
+    }
+</script>
+
+
+<!-- <script>
+    function no_validation(status){
+    if (status.value.length != 10) {
+      $(".alertshow").show()
+          }
+          else if (status.value.length == 10){
+          $(".alertshow").hide()
+  }
+    }
+  </script> -->
 
 
 {% endblock %}

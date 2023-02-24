@@ -41,8 +41,9 @@
                                             <td>
                                                 <div class="" >
                                                     {% if i.company_logo == "" or i.company_logo == None %}
+                                                    
                                                     <img style=" width: 45px;  height: 45px;
-                                                     border-radius: 50px;"  src="{% static 'assets/images/user-dummy-img.jpg' %}" alt="">
+                                                     border-radius: 50px;"  src="{% static 'assets/images/dummy.jpg' %}" alt="">
                                                     {% else %}
                                                     <img style=" width: 45px;  height: 45px;
                                                      border-radius: 50px;"  src="./media/{{i.company_logo}}" alt="">
@@ -117,7 +118,7 @@
                             <div class="form-group">
                                 <label for="logo" class="control-label">Logo</label>
                                 <div class="input-group uploadFile1">
-                                    <input type="file" name="logo" required id="logo" class="inputfile form-control">
+                                    <input type="file" accept="image/*"  name="logo" required id="logo" class="inputfile form-control">
                                     <div class="input-group-append">
                                         <span class="input-group-text"> <i class="fas fa-paperclip"></i></span>
                                     </div>

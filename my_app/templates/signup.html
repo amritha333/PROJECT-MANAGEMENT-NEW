@@ -47,7 +47,7 @@
                     <div class="login-veuz signup-veuz">
                         <div class="w-100">
                             <img src="../static/login_static/assets/images/veuzlogo.png" alt="" class="img-fluid" width="150px">
-                                    <form name="register" class="form" action="" method="POST" enctype="multipart/form-data">
+                                    <form name="register" class="submit_action"  action="" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <div class="row">
                                             <div class="col-md-6">
@@ -84,13 +84,18 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-control">
-                                                    <input type="tel" name="Phone" required placeholder="Phone" id="Phone"
-                                                        class="form-input">
+                                                    <input autocomplete="off" type="text"  onkeyup="no_validation(this)" minlength="8" name="Phone" required placeholder="Phone" id="Phone"
+                                                        class="form-input numberField">
+
                                                     <label for="Phone" class="form-label">Phone</label>
                                                     <span class="form-check">
                                                         <i class="md md-phone-iphone"></i>
                                                     </span>
+                                                    
                                                 </div>
+                                                <!-- <div style="display:none;color:red;" class="alertshow">*phone number should be 8 digits</div> -->
+
+                                                
                                             </div>
 
 
@@ -155,6 +160,9 @@
     <script>
         var resizefunc = [];
     </script>
+    </body>
+
+    </html>
 
     <!-- jQuery  -->
     <script src="../static/login_static/assets/js/jquery.min.js"></script>
@@ -206,6 +214,30 @@
     }
 </style>
 
+
+<script>
+    var userName = document.querySelector('.numberField');
+    userName.addEventListener('input', restrictNumber);
+    function restrictNumber (e) {
+        var newValue = this.value.replace(new RegExp(/[^\d]/,'ig'), "");
+        this.value = newValue;
+    }
+</script>
+
+
+<!-- <script>
+    function no_validation(status){
+    if (status.value.length != 8) {
+      $(".alertshow").show()
+          }
+          else if (status.value.length == 8){
+          $(".alertshow").hide()
+  }
+    }
+  </script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 {% if messages %}
 <script>
     {% for message in messages %}
@@ -233,6 +265,100 @@
 
 </script>
 {% endif %}
-</body>
 
-</html>
+
+
+
+
+<script>
+    $(".submit_action").submit(function(){
+        
+
+        event.preventDefault()
+        $.ajax({                    
+        url: "user_details_signup",                    
+        data: {
+          username : $("#Username").val(),
+          
+          email_id : $("#email").val(),
+          phone_number : $("#Phone").val(),
+         
+
+        },
+        success: function (data) {  
+            status = data['message']
+            if(status == "usernameTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: 'username already exists'
+                });
+                document.getElementById("Username").focus();
+                }
+            
+            
+            else if(status == "emailTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Email id already exist"
+                });
+                document.getElementById("email").focus();
+            }
+            
+            else if(status == "phoneTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Phone number should be minimum 8 digits"
+                });
+                document.getElementById("Phone").focus();
+            }
+            else{
+               
+                document.forms["register"].submit();
+                
+            }
+        }
+      });
+    })
+</script>

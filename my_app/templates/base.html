@@ -175,23 +175,26 @@
                         <li>
                             <a href="index" class="waves-effect "><i class="md md-home "></i><span> Dashboard </span></a>
                         </li>
+                        {% if user.is_superuser %}
+                            
+                        {% else %}
 
                         <li class="has_sub">
                             <a href="chat" class="waves-effect"><i class="md md-chat"></i><span> Chat </span><span class="pull-right"><i class="md md-add"></i></span></a>
-                            <!-- <ul class="list-unstyled">
-                                <li><a href="mail-inbox.html">Inbox</a></li>
-                                <li><a href="mail-compose.html">Compose Mail</a></li>
-                                <li><a href="mail-read.html">View Mail</a></li>
-                            </ul> -->
+                           
                         </li>
+                        {% endif %}
 
                         <!-- <li>
                             <a href="meeting" class="waves-effect"><i class="md md-call"></i><span> Meeting </span></a>
                         </li> -->
-
+                        {% if user.is_superuser %}
+                            
+                        {% else %}
                         <li>
                             <a href="calendar_detail" class="waves-effect"><i class="md md-event"></i><span> Calendar </span></a>
                         </li>
+                        {% endif %}
                         {% if request.user.id|company_nav_perm_check:"Company" %}
                         <li>
                             <a href="company_management_new" class="waves-effect"><i class="md md-face-unlock"></i><span> Company Management </span></a>

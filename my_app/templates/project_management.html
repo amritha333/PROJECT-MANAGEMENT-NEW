@@ -113,8 +113,11 @@
                             <h2 class="main-heading-txt">{{space_dept.space_name}}</h2>
                             <div class="">
 
+                                {% if space_master_data %}
                                 
                                 <button type="button" style="cursor: pointer;"  data-space-id="{{space_dept.id}}" class="new_project create-task">Create New Project</button>
+                                {% else %}
+                                {% endif %}
                                 
                             </div>
                         </div>

@@ -122,6 +122,12 @@ urlpatterns = [
     path('task_depended_action',views.task_depended_action,name='task_depended_action'),
 
     path('user_details_check',views.user_details_check,name='user_details_check'),
+
+    path('user_details_signup',views.user_details_signup,name='user_details_signup'),
+
+
+    path('test_r1',views.test_r1,name='test_r1'),
+    
     
 
 
