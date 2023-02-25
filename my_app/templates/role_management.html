@@ -14,7 +14,7 @@
                 <div class="card-body body-change card-border">
                     <div class="d-flex align-items-center justify-content-between">
                         <h2 class="main-heading-txt">Role Management</h2>
-                        {% if request.user.id|permission_create:"Role" %}
+                        {% if request.user.id|permission_manage_all:"Role" %}
                         <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#role-modal"><i class="fa fa-plus"></i> New</button>
                         {% endif %}
                     </div>

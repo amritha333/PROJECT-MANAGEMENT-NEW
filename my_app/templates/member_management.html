@@ -23,10 +23,13 @@
                     <div class="card-body body-change card-border">
                         <div class="d-flex align-items-center justify-content-between">
                             <h2 class="main-heading-txt">Member Management</h2>
-                            {% if request.user.id|permission_create:"Team member" %}
+                            {% if request.user.id|permission_change:"Team member ,write" %}
                             <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#member-modal"><i class="fa fa-plus"></i> New</button>
-                            {% endif %}
-                           
+                            
+                            {% elif request.user.id|permission_manage_all:"Team member" %}
+                            <button type="button" class="btn btn-pink waves-effect waves-light w-md m-b-5" data-toggle="modal" data-target="#member-modal"><i class="fa fa-plus"></i> New</button>
+                            
+                           {%endif%}
                         </div>
 
                         <div class="row mt-4">
@@ -69,8 +72,21 @@
                                             <td>{{i.email}} </td>
                                             <td>
                                                 <div class="action-tbl d-flex justify-content-end">
+
+                                                    {% if request.user.id|permission_change:"Team member ,edit" %}
                                                     <a href="#" class="member_edit" data-id="{{i.id}}"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                    {% elif request.user.id|permission_manage_all:"Team member" %}
+                                                    <a href="#" class="member_edit" data-id="{{i.id}}"><i class="fa fa-pencil mx-1 pencil-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></a>
+                                                    {%endif%}
+
+                                                    {% if request.user.id|permission_change:"Team member ,delete" %}
                                                     <a href="#" class="member_delete" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
+                                                    {% elif request.user.id|permission_manage_all:"Team member" %}
+                                                    <a href="#" class="member_delete" data-id="{{i.id}}"><i class="fa fa-trash-o mx-1 trash-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"></i></a>
+                                                    {%endif%}
+
+
+
                                                     <!-- <i class="fa fa-save mx-1 sv-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"></i>
                                                     <i class="ion-close mx-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel"></i>  -->
                                                 </div>
@@ -94,7 +110,7 @@
 <div id="member_edit_div"></div>
 <div id="member_delete_div"></div>
 
-<form name="comany_form" method="POST" action="user_management_action" enctype="multipart/form-data">
+<form name="user_form" class="submit_action" method="POST" action="user_management_action" enctype="multipart/form-data">
     {% csrf_token %}   
     <input type="hidden" name="user_type" value="company_staff">
 
@@ -132,20 +148,20 @@ aria-hidden="true" style="display: none">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="control-label">Phone</label>
-                        <input type="text" autocomplete="off" maxlength="10" onkeyup="no_validation(this)" minlength="10"  required class="form-control numberField" name="phone">
+                        <input type="text" id="phone_number" autocomplete="off" minlength="8" onkeyup="no_validation(this)"   required class="form-control numberField" name="phone">
                         <!-- <div style="display:none;color:red;" class="form-control alertshow">*phone number should be 8 digits</div> -->
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="control-label">Email</label>
-                        <input type="email" required name="email" class="form-control" id="field-1" placeholder="yourmail@gmail.com">
+                        <input type="email" required name="email" class="form-control" id="email_id" placeholder="yourmail@gmail.com">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="control-label">Username</label>
-                        <input type="text" required name="username" class="form-control" placeholder="Userame">
+                        <input type="text" id="username_id" required name="username" class="form-control" placeholder="Userame">
                     </div>
                 </div>
 
@@ -165,15 +181,23 @@ aria-hidden="true" style="display: none">
                         <label for="field-1" class="control-label">Password Option</label>
                         <div class="my-1">
                             <div class="radio radio-primary form-check-inline">
-                                <input type="radio" required id="Manual"  name="password_option"  value="Manual" name="radioInline">
+                                <input type="radio" required id="Manual"  name="password_option"  value="Manual">
                                 <label for="Manual"> Manual </label>
                             </div>
                             <div class="radio radio-primary form-check-inline">
-                                <input type="radio"  id="Automatic"  name="password_option" value="Automatic">
-                                <label for="inlineRadio2"> Automatic </label>
+                                <input type="radio" required  id="Automatic"  name="password_option" value="Automatic">
+                                <label for="Automatic"> Automatic </label>
                             </div>
                         </div>
-                        <input autocomplete="off"  name="password" type="password" id="password2" style="display:none ;" class="form-control"placeholder="Enter Password">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="password" style="display:none;" autocomplete="off" class="form-control" name="password" id="password2" placeholder="Enter Password">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="password" style="display:none;" autocomplete="off" class="form-control" name="confirm_password" id="password3" placeholder="Confirm Password">
+                                <span id='message_new'></span>
+                            </div>
+                        </div>
                        
                     </div>
                 </div>
@@ -304,13 +328,16 @@ aria-hidden="true" style="display: none">
 
 <script>
     $("#Manual").click(function(){
-       
+
         $("#password2").show()
+        $("#password3").show()
     })
     $("#Automatic").click(function(){
         $("#password2").hide()
+        $("#password3").hide()
     })
-    </script>
+</script>
+
 
 
 <script>
@@ -349,6 +376,18 @@ aria-hidden="true" style="display: none">
 
 
 <script>
+    $('#password2,#password3').on('keyup', function () {
+        if ($('#password2').val() == $('#password3').val()) {
+            $('#message_new').html('Matching').css('color', 'green');
+        }
+        else{
+            $('#message_new').html('Not Matching').css('color', 'red');
+        }
+    });
+</script>
+
+
+<script>
     var userName = document.querySelector('.numberField');
     userName.addEventListener('input', restrictNumber);
     function restrictNumber (e) {
@@ -369,6 +408,137 @@ aria-hidden="true" style="display: none">
     }
   </script> -->
 
+
+
+  
+<script>
+    $(".submit_action").submit(function(){
+
+        event.preventDefault()
+        $.ajax({                    
+        url: "user_details_check",                    
+        data: {
+          username : $("#username_id").val(),
+          password2 : $("#password2").val(),
+          password3 : $("#password3").val(),
+          email_id : $("#email_id").val(),
+          phone_number : $("#phone_number").val(),
+          Manual :  $("#Manual").is(":checked")
+         
+
+        },
+        success: function (data) {  
+            status = data['message']
+            if(status == "usernameTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: 'username already exists'
+                });
+            }
+            else if(status == "passwordTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "password doesn't match"
+                });
+            }
+            else if(status == "emailTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Email id already exist"
+                });
+            }
+            else if(status == "password_blankTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Please enter a password"
+                });
+            }
+
+            else if(status == "phoneTrue"){
+                var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                toastMixin.fire({
+                animation: true,
+                title: "Phone number should be minimum 8 digits"
+                });
+            }
+            else{
+               
+                document.forms["user_form"].submit();
+                
+            }
+        }
+      });
+    })
+</script>
 
 {% endblock %}
 {% endblock %}

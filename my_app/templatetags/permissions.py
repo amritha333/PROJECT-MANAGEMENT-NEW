@@ -38,96 +38,51 @@ def company_nav_perm_check(value,args):
         except:
             return permission_status
         
-@register.filter(name='user_all_permission')
-def user_all_permission(value,args):
-    today = date.today()
+
+@register.filter(name='permission_change')
+def permission_change(value,args):
+    print("args::::::::",args)
+    arg_list = args.split(',')
+    navbar_name = arg_list[0]
+    permission = arg_list[1]
     user_dat = User.objects.get(id=value)
-    user_role = user_dat.is_superuser
-    if user_role == True:
-        data = {
-                'view_all':True,
-                'read':True,
-                'write':True,
-                'edit':True,
-                'delete':True
-        }
-        return data
-
-    data_user_role = user_permission_mapping.objects.filter(auth_user_id=value,end_dt__gte=today,start_dt__lte=today) |  user_permission_mapping.objects.filter(auth_user_id=value,end_dt=None,start_dt__lte=today)
-    role_id = list(data_user_role.values_list("role_mapping_id",flat=True))
-    check_instance = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=args)
-
-   
-    if check_instance:
-        if check_instance.filter(manage_all="on"):
-            data = {
-                'view_all':True,
-                'read':True,
-                'write':True,
-                'edit':True,
-                'delete':True
-            }
-            return data
-        elif check_instance.filter(view_all="on"):
-
-            write = False
-            if check_instance.filter(write="on"):
-                write = True
-            edit = False
-            if check_instance.filter(edit="on"):
-                edit = True
-            
-            delete = False
-
-            if check_instance.filter(delete="on"):
-                delete = True
-
-
-
-            data = {
-                'view_all':True,
-                'read':True,
-                'write':write,
-                'edit':edit,
-                'delete':delete
-            }
-            return data
-            
-        elif check_instance.filter(read="on"):
-            write = False
-            if check_instance.filter(write="on"):
-                write = True
-            edit = False
-            if check_instance.filter(edit="on"):
-                edit = True
-            
-            delete = False
-
-            if check_instance.filter(delete="on"):
-                delete = True
-
-
-
-            data = {
-                'view_all':False,
-                'read':True,
-                'write':write,
-                'edit':edit,
-                'delete':delete
-            }
-            return data
-    else:
+    try:
+        user_details = User_details.objects.get(auth_user=user_dat)
+    except:
         pass
-    pass
+    if user_details.user_type == "company_admin":
+        if navbar_name == "Role" or navbar_name == "Team member" or navbar_name == "Tags" or navbar_name == "Status":
+            return True
+    else:
+        today = date.today()
+        permission_status = False
+        try:
+            data_user_role = user_permission_mapping.objects.filter(auth_user_id=value,end_dt__gte=today,start_dt__lte=today) |  user_permission_mapping.objects.filter(auth_user_id=value,end_dt=None,start_dt__lte=today)
+            role_id = list(data_user_role.values_list("role_mapping_id",flat=True))
+            if permission == "write":
+
+                check_data = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=navbar_name,write="True")
+                
+            elif permission == "delete":
+
+                check_data = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=navbar_name,delete="True")
+
+            elif permission == "edit":
+
+                check_data = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=navbar_name,edit="True")
+                print("check_data:::::::::",check_data)
+            if check_data:
+                permission_status = True
+            return permission_status
+        except:
+            return permission_status
 
 
 
 
 
-
-
-@register.filter(name='permission_create')
-def permission_create(value,args):
+@register.filter(name='permission_manage_all')
+def permission_manage_all(value,args):
     user_dat = User.objects.get(id=value)
     try:
         user_details = User_details.objects.get(auth_user=user_dat)
@@ -136,15 +91,13 @@ def permission_create(value,args):
     if user_details.user_type == "company_admin":
         if args == "Role" or args == "Team member" or args == "Tags" or args == "Status":
             return True
-        
     else:
         today = date.today()
         permission_status = False
         try:
-
             data_user_role = user_permission_mapping.objects.filter(auth_user_id=value,end_dt__gte=today,start_dt__lte=today) |  user_permission_mapping.objects.filter(auth_user_id=value,end_dt=None,start_dt__lte=today)
             role_id = list(data_user_role.values_list("role_mapping_id",flat=True))
-            check_data = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=args,write="True")
+            check_data = Role_mapping.objects.filter(role_master_id__in=role_id,navbar_name=args,manage_all="True")
             if check_data:
                 permission_status = True
             return permission_status

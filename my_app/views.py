@@ -462,43 +462,51 @@ def user_details_signup(request):
 
 
 
-
 def user_details_check(request):
     username = request.GET.get("username",False)
+    print("username::::::::",username)
     password1 = request.GET.get("password2",False)
+    print("password1::",password1)
     password2 = request.GET.get("password3",False)
+    print("password2:",password2)
     email_id = request.GET.get("email_id",False)
-    Automatic = request.GET.get("Automatic",False)
+    print("email_id::::::",email_id)
+    Manual = request.GET.get("Manual",False)
     phone_number  =  request.GET.get("phone_number",False)
-    print("Automatic:",Automatic)
+    print("phone_number::::::",phone_number)
+    print("Manual:",Manual)
 
     data = []
     if User.objects.filter(username=username).exists():
         data = {"message":"usernameTrue"}
         return JsonResponse(data,safe=False)
+
+    elif len(phone_number) < 8 :
+        print("len(phone_number)",len(phone_number))
+
+        data = {"message":"phoneTrue"}
+        return JsonResponse(data,safe=False)
+
+    elif User_details.objects.filter(email=email_id).exists():
+        data = {"message":"emailTrue"}
+        return JsonResponse(data,safe=False)
     
-    elif Automatic != "true":
-        data = {"message":"hy"}
+    elif Manual == "true":
+        
         if password1 != password2:
             data = {"message":"passwordTrue"}
             return JsonResponse(data,safe=False)
         elif password1 == "":
             data = {"message":"password_blankTrue"}
             return JsonResponse(data,safe=False)
-        return JsonResponse(data,safe=False)
-    
-    
-    elif User_details.objects.filter(email=email_id).exists():
-        data = {"message":"emailTrue"}
-        return JsonResponse(data,safe=False)
-    
-    elif len(phone_number) < 8 :
-        data = {"message":"phoneTrue"}
-        return JsonResponse(data,safe=False)
-    
-    else:
+        else:
+            print("elseeeeeeeeeeee")
+            data = {"message":"False"}
+            return JsonResponse(data,safe=False)
         data = {"message":"False"}
         return JsonResponse(data,safe=False)
+
+
 
 
 
@@ -1823,9 +1831,118 @@ def view_group(request):
     }
     return render(request, 'view_group.html',context)
 
-
-
 def view_project_page(request):
+    from.models import progress,priority
+    from datetime import datetime
+    today_date = datetime.today().strftime('%Y-%m-%d')
+
+    sub_space_id = request.GET.get("sub_space_id")
+    sub_space_data = sub_space_master.objects.get(id=sub_space_id)
+    manager_of_project = sub_space_data.sub_space_manager
+    print("manager_of_project:",manager_of_project)
+    user_details_manger = User_details.objects.get(auth_user=manager_of_project)
+
+    space_id = sub_space_data.space_id
+    space_data = space_master.objects.get(id=space_id.id)
+
+    task_data = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id,parent_id = None)
+
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    dynamic_status = status_name_master.objects.filter(company_id=user_details_data.company_id)    
+    tags_name = tags_name_master.objects.filter(company_id=user_details_data.company_id) 
+
+    time_details = ""
+    total_hr = ""
+
+    task_data_time = Add_task_master.objects.filter(space_id = space_id,sub_space_id = sub_space_id)
+    task_details = list(task_data_time.values_list('id',flat=True))
+    if user_details_data.user_type == "company_admin":
+        print("user is company admin:")
+
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(request.user.id))
+        
+        member_data = User_details.objects.filter(created_by__in=child_user_id) 
+        member_data9 = list(member_data.values_list('auth_user',flat=True))
+        member_data1 = User_details.objects.filter(auth_user=request.user) 
+        member_data10 = list(member_data1.values_list('auth_user',flat=True))
+        member_data = list(chain(member_data9,member_data10))
+        
+
+        time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id__in = member_data)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+
+    elif request.user == manager_of_project:
+        print("user is company manager:")
+        invite = sub_space_data.invite_user_details_id.all()
+        member_data9 = list(invite.values_list('auth_user',flat=True))
+        user_datas = User_details.objects.get(auth_user=manager_of_project)
+        user_company = user_datas.company_id
+        companyadmin = User_details.objects.filter(company_id =user_company,user_type = "company_admin" )
+        member_data10 = list(companyadmin.values_list('auth_user',flat=True))
+        member_data = list(chain(member_data9,member_data10))
+        print("member_data:",member_data)
+
+        time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id__in = member_data)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+    else:
+
+        time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id = request.user)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+
+        
+            
+
+    user_data = User_details.objects.get(auth_user = request.user)
+    member_data = User_details.objects.filter(company_id =user_data.company_id)
+    
+
+    user_access_generate = Project_user_access_link.objects.filter(project_id_id=sub_space_id).first()
+    tag_selected_instance = list(sub_space_data.tag_id.all().values_list('id',flat=True))
+    tag_selected_instance.insert(0, 0)
+    
+    context = {
+        "space_data":space_data,
+        "sub_space_data":sub_space_data,
+        "today_date":today_date,
+        "bucket_data":space_data.task_status.all(),
+        "progress":progress,
+        "priority":priority,
+        "today_date":today_date,
+        "task_data":task_data,
+        "sub_space_id":sub_space_id,
+        "user_details_data":user_details_data,
+        "dynamic_status":dynamic_status,
+        "tags_name":tags_name,
+        "time_details":time_details,
+        "total_hr":total_hr,
+        'user_access_generate':user_access_generate,
+        "member_data":member_data,
+        "tag_data": tag_selected_instance,
+        "user_details_manger":user_details_manger
+       
+    }
+    return render(request, 'view_project_page.html',context)
+
     from.models import progress,priority
     from datetime import datetime
     today_date = datetime.today().strftime('%Y-%m-%d')
@@ -1864,7 +1981,6 @@ def view_project_page(request):
         
 
         time_details = Task_time_details.objects.filter(task_id__in=task_details,user_auth_id__in = member_data9)
-        print("time_details::::555555555555555::::::",time_details)
         total_hr = ""
         try : 
             total_price = sum(time_details.values_list('total_second', flat=True))
@@ -2025,6 +2141,7 @@ def convert(seconds):
 
 
 
+
 def view_task_page(request):
     parent_id = request.GET.get("parent_id")
    
@@ -2034,6 +2151,12 @@ def view_task_page(request):
 
     task_id = request.GET.get("task_id")
     print("task_id:",task_id)
+    task_data = Add_task_master.objects.get(id=task_id)
+    space_id = task_data.space_id
+    sub_space_data = task_data.sub_space_id
+
+    sub_space_data = sub_space_master.objects.get(id=sub_space_data.id)
+    manager_of_project = sub_space_data.sub_space_manager
     
 
     current_date = datetime.today().strftime('%Y-%m-%d')
@@ -2070,20 +2193,62 @@ def view_task_page(request):
     except:
         pass
 
+    user_details_data = User_details.objects.get(auth_user=request.user)
+    if user_details_data.user_type == "company_admin":
+        print("user is company admin:")
 
-    time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id = request.user)
-    total_hr = ""
-    try : 
-        total_price = sum(time_details.values_list('total_second', flat=True))
-        total_hr = convert(total_price)
-    except:
-        pass
+        user_active_account1 = user_active_account.objects.filter(active_auth_user_id =request.user)
+        child_user_id = list(user_active_account1.values_list('user_id__auth_user',flat=True))
+        child_user_id.append(int(request.user.id))
+        
+        member_data = User_details.objects.filter(created_by__in=child_user_id) 
+        member_data9 = list(member_data.values_list('auth_user',flat=True))
+        member_data1 = User_details.objects.filter(auth_user=request.user) 
+        member_data10 = list(member_data1.values_list('auth_user',flat=True))
+        member_data = list(chain(member_data9,member_data10))
+        
+
+        time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id__in = member_data)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
 
 
-    task_data = Add_task_master.objects.get(id=task_id)
+    elif request.user == manager_of_project:
+        print("user is company manager:")
+        invite = task_data.invite_user_details_id.all()
+        member_data9 = list(invite.values_list('auth_user',flat=True))
+        user_datas = User_details.objects.get(auth_user=manager_of_project)
+        user_company = user_datas.company_id
+        companyadmin = User_details.objects.filter(company_id =user_company,user_type = "company_admin" )
+        member_data10 = list(companyadmin.values_list('auth_user',flat=True))
+        member_data = list(chain(member_data9,member_data10))
+        print("member_data:",member_data)
+
+        time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id__in = member_data)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+
+    else:
+
+        time_details = Task_time_details.objects.filter(task_id=task_id,user_auth_id = request.user)
+        total_hr = ""
+        try : 
+            total_price = sum(time_details.values_list('total_second', flat=True))
+            total_hr = convert(total_price)
+        except:
+            pass
+
+
    
-    space_id = task_data.space_id
-    sub_space_data = task_data.sub_space_id
 
 
     sub_task_data = Add_task_master.objects.filter(parent_id = task_id)
